@@ -2,4 +2,5 @@
     <string name="app_name">StyleStreetApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="passwordRequirements">Your password must be at least 7 characters and contain at least 1 letter and number.</string>
 </resources>

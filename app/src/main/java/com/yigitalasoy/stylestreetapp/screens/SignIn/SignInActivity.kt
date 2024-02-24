@@ -1,4 +1,4 @@
-package com.yigitalasoy.stylestreetapp.ui.Login
+package com.yigitalasoy.stylestreetapp.screens.SignIn
 
 import android.os.Bundle
 import android.view.View
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yigitalasoy.stylestreetapp.databinding.ActivityLoginBinding
 
 
-class LoginActivity : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
     private lateinit var loginBinding: ActivityLoginBinding
     //private lateinit var navController: NavController
     override fun onCreate(savedInstanceState: Bundle?) {

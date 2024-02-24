@@ -13,10 +13,10 @@
         android:theme="@style/Theme.StyleStreetApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.Splash.SplashActivity"
+            android:name=".screens.Splash.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.Login.LoginActivity"
+            android:name=".screens.SignIn.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
