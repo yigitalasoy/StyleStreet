@@ -12,7 +12,20 @@
           "package_name": "com.yigitalasoy.stylestreetapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "313392461381-i5sapaa73615vhnj42rm6d03sphq8dc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.yigitalasoy.stylestreetapp",
+            "certificate_hash": "3ec150d63fc6bd29227db3008234d28955f26e49"
+          }
+        },
+        {
+          "client_id": "313392461381-v7d0d7m0lglp79glmi3s6amiodhcm2rj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCxkmxEHw9VpRbqtFtjdldwq-pA4XB0w2A"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313392461381-v7d0d7m0lglp79glmi3s6amiodhcm2rj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

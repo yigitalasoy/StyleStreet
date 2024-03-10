@@ -4,8 +4,13 @@ import android.app.Application
 import android.content.ContentValues.TAG
 import android.provider.Settings.Global.getString
 import android.util.Log
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -25,6 +30,12 @@ class UserViewModel(application: Application): BaseViewModel(application) {
 
     private var auth = Firebase.auth
     private var db = Firebase.firestore
+
+    private lateinit var mAuth: FirebaseAuth
+
+
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
+
 
 
     fun userLogin(email: String,password: String){
@@ -119,16 +130,50 @@ class UserViewModel(application: Application): BaseViewModel(application) {
 
 
     fun loginWithGoogle() {
-        val signInRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(R.string.firebaseWebApiKey.toString())
-                    // Only show accounts previously used to sign in.
-                    .setFilterByAuthorizedAccounts(true)
-                    .build())
+
+        /*
+
+        val mauth = FirebaseAuth.getInstance()
+
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(R.string.firebaseWebApiKey.toString())
+            .requestEmail()
             .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getApplication(), gso)
+
+        val user = auth.currentUser
+
+        if (user != null) {
+            val userName = user.displayName
+            Log.e("LOGIN WITH GOOGLE","SUCCESFULLY LOGIN: ${userName}")
+        } else {
+            Log.e("LOGIN WITH GOOGLE","ERROR")
+        }
+
+        */
+
+/*
+        mAuth = FirebaseAuth.getInstance()
+
+        val currentUser = mAuth.currentUser
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(R.string.firebaseWebApiKey.toString())
+            .requestEmail()
+            .build()
+
+        val googleSignInClient = GoogleSignIn.getClient(getApplication(), gso)
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+*/
+
+    }
+
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
     }
 
 
