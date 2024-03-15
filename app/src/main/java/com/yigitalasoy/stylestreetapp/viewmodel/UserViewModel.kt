@@ -2,26 +2,25 @@ package com.yigitalasoy.stylestreetapp.viewmodel
 
 import android.app.Application
 import android.content.ContentValues.TAG
-import android.provider.Settings.Global.getString
 import android.util.Log
-import androidx.core.app.ActivityCompat.startActivityForResult
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.signin.GoogleSignIn
+import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.yigitalasoy.stylestreetapp.R
-import com.yigitalasoy.stylestreetapp.util.FireStoreUtil
 import com.yigitalasoy.stylestreetapp.model.UserResponse
+import com.yigitalasoy.stylestreetapp.repository.UserRepository
+import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.mapToObject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
-
-class UserViewModel(application: Application): BaseViewModel(application) {
+@HiltViewModel
+class UserViewModel @Inject constructor(val userRepository: UserRepository): ViewModel() {
 
     val userLiveData = MutableLiveData<UserResponse>()
     val userLoading = MutableLiveData<Boolean>()
@@ -67,7 +66,7 @@ class UserViewModel(application: Application): BaseViewModel(application) {
 
         //firecloud'dan user data alınacak
 
-        val docRef = db.collection(FireStoreUtil.FIRESTORE_DATABASE_DOCUMENT_ID).document(userUid.toString())
+        val docRef = db.collection(Constants.FIRESTORE_DATABASE_DOCUMENT_ID).document(userUid.toString())
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document != null) {
@@ -114,7 +113,7 @@ class UserViewModel(application: Application): BaseViewModel(application) {
         userLoading.value = true
 
 
-        db.collection(FireStoreUtil.FIRESTORE_DATABASE_DOCUMENT_ID).document(user.id.toString())
+        db.collection(Constants.FIRESTORE_DATABASE_DOCUMENT_ID).document(user.id.toString())
             .set(user)
             .addOnSuccessListener {
                 userLoading.value = false

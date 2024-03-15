@@ -18,7 +18,9 @@ import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var _mainFragmentBinding: FragmentMainBinding? = null

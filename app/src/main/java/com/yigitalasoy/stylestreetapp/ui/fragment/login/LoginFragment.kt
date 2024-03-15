@@ -92,6 +92,10 @@ class LoginFragment : Fragment() {
 
             }
 
+            buttonLogin.setOnClickListener {
+                userViewModel.userLogin(editTextEmail.text.toString(),editTextPassword.text.toString())
+            }
+
         }
 
         observer()

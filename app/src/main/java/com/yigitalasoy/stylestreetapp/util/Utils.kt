@@ -2,10 +2,6 @@ package com.yigitalasoy.stylestreetapp.util
 
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 
-object FireStoreUtil{
-    val FIRESTORE_DATABASE_DOCUMENT_ID = "users"
-}
-
 fun Map<String, Any>.mapToObject(): UserResponse {
     return UserResponse(
         id = this["id"].toString(),
