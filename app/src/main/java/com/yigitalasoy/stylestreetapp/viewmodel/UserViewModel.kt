@@ -6,26 +6,39 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.util.Constants
+import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.mapToObject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 
 @HiltViewModel
 class UserViewModel @Inject constructor(val userRepository: UserRepository): ViewModel() {
 
-    val userLiveData = MutableLiveData<UserResponse>()
-    val userLoading = MutableLiveData<Boolean>()
-    val userError = MutableLiveData<Boolean>()
-    val isLogin = MutableLiveData<Boolean>()
+    val userLiveData = MutableLiveData<Resource<UserResponse>>()
+    val userLoading = MutableLiveData<Resource<Boolean>>()
+    val userError = MutableLiveData<Resource<Boolean>>()
+    val isLogin = MutableLiveData<Resource<Boolean>>()
+
+    private var job : Job? = null
 
     private var auth = Firebase.auth
     private var db = Firebase.firestore
@@ -35,57 +48,63 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository): Vie
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
+    val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+        println("Error: ${throwable.localizedMessage}")
+        userError.value = Resource.error(throwable.localizedMessage ?: "error!",data = true)
+    }
+
 
 
     fun userLogin(email: String,password: String){
-        userError.value = false
-        userLoading.value = true
 
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener() { task ->
-                if (task.isSuccessful) {
-                    Log.d("fun userLogin", "signInWithEmail:success")
-                    val firebaseUser = auth.currentUser
-                    getUserDataFromDatabase(firebaseUser?.uid)
+        userLoading.value = Resource.loading(true)
+        userError.value = Resource.error("",false)
 
-                    userError.value = false
-                    userLoading.value = false
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            //IO'da sunucu işlemleri yapılır
+            val firebaseUser = userRepository.userLogin(email,password)
+            Log.e("FIREBASE LOGIN: ","${firebaseUser.message} ID=${firebaseUser.data?.uid}")
+            val databaseUser = userRepository.getUserDataFromDatabase(firebaseUser.data?.uid)
+            Log.e("DATABASE LOGIN: ","${databaseUser.message} ID=${databaseUser.data?.id}")
 
+            withContext(Dispatchers.Main){
+                if(firebaseUser.data==null || databaseUser.data==null){
+                    userError.value = Resource.error("Error",true)
+                    userLoading.value = Resource.loading(false)
                 } else {
-                    Log.w("fun userLogin", "signInWithEmail:failure", task.exception)
-                    userError.value = true
-                    userLoading.value = false
+                    userLiveData.value = databaseUser
+                    isLogin.value = Resource.success(true)
+                    userLoading.value = Resource.loading(false)
+                    userError.value = Resource.error("Error",false)
                 }
             }
+        }
 
         //giriş işlemi yapılacak
         //giriş doğru ise database'deki kullanıcı verilerini de alıp userLiveData' ya aktarılacak.
     }
 
-    private fun getUserDataFromDatabase(userUid: String?) {
-
-        //firecloud'dan user data alınacak
-
-        val docRef = db.collection(Constants.FIRESTORE_DATABASE_DOCUMENT_ID).document(userUid.toString())
-        docRef.get()
-            .addOnSuccessListener { document ->
-                if (document != null) {
-                    userLiveData.value = document.data?.mapToObject()
-                } else {
-                    Log.d(TAG, "No such document")
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "get failed with ", exception)
-            }
-    }
-
-
     fun userSignUp(user: UserResponse){
         //kayıt işlemi yapılacak
-        userLoading.value = true
-        userError.value = false
+        userLoading.value = Resource.loading(true)
+        userError.value = Resource.error("Error",false)
 
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            //IO'da sunucu işlemleri yapılır
+            val registeredUser = userRepository.userSignUp(user)
+
+            withContext(Dispatchers.Main){
+                if(registeredUser.data != null){
+                    userError.value = Resource.error("REGISTER SUCCESS",false)
+                    userLoading.value = Resource.loading(false)
+                } else {
+                    userError.value = Resource.error("Error Firebase register: ${registeredUser.message}",true)
+                }
+            }
+        }
+
+
+/*
         auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString())
             .addOnCompleteListener() { task ->
                 if (task.isSuccessful) {
@@ -97,38 +116,41 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository): Vie
                     user.id = firebaseUser?.uid
                     registerUserDatabase(user)
 
-                    userLiveData.value = user
-                    userLoading.value = false
+                    userLiveData.value = Resource.success(user)
+                    userLoading.value = Resource.loading(false)
                 } else {
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    userError.value = true
-                    userLoading.value = false
+                    userError.value = Resource.error("Error",false)
+                    userLoading.value = Resource.loading(false)
 
                 }
             }
-    }
-
-    fun registerUserDatabase(user: UserResponse) {
-        //firestore database kullanıcı kaydı yapılacak
-        userLoading.value = true
-
-
-        db.collection(Constants.FIRESTORE_DATABASE_DOCUMENT_ID).document(user.id.toString())
-            .set(user)
-            .addOnSuccessListener {
-                userLoading.value = false
-                println("USER SUCCESFULLY ADDED DATABASE: ${user.id}")
-            }
-            .addOnFailureListener {
-                userError.value = true
-                Log.e("ERROR",it.message.toString())
-            }
-
-
+*/
     }
 
 
-    fun loginWithGoogle() {
+    fun loginWithGoogle(account: GoogleSignInAccount?) {
+        userLoading.value = Resource.loading(true)
+        userError.value = Resource.error("Error",false)
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            //IO'da sunucu işlemleri yapılır
+            val googleLoginUser = userRepository.loginWithGoogle(account)
+
+            withContext(Dispatchers.Main){
+                if(googleLoginUser.data != null){
+                    Log.e("REGISTER SUCCESS","user email: ${googleLoginUser.data.email}")
+                    userError.value = Resource.error("REGISTER SUCCESS",false)
+                    userLoading.value = Resource.loading(false)
+                    userLiveData.value = googleLoginUser
+                    isLogin.value = Resource.success(true)
+                } else {
+                    userError.value = Resource.error("Error Firebase register: ${googleLoginUser.message}",true)
+                }
+            }
+        }
+
+
 
         /*
 

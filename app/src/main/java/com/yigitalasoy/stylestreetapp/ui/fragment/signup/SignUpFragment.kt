@@ -19,6 +19,9 @@ import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.databinding.FragmentSignUpBinding
+import com.yigitalasoy.stylestreetapp.util.hide
+import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,6 +76,8 @@ class SignUpFragment : Fragment() {
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANDI")
 
                     userViewModel.userSignUp(getUser())
+
+
                 } else {
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANMADI")
                 }
@@ -117,20 +122,24 @@ class SignUpFragment : Fragment() {
 
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
-                if(it){
-                    binding.textViewSignupError.visibility = View.VISIBLE
+                if(it.message.equals("REGISTER SUCCESS")){
+                    findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                    this.toast("Register successfully")
+                }
+                if(it.data!!){
+                    binding.textViewSignupError.show()
                 } else {
-                    binding.textViewSignupError.visibility = View.INVISIBLE
+                    binding.textViewSignupError.hide()
                 }
             }
         }
 
         userViewModel.userLoading.observe(viewLifecycleOwner){
             it?.let {
-                if(it){
-                    binding.progressBarSignupLoading.visibility = View.VISIBLE
+                if(it.data!!){
+                    binding.progressBarSignupLoading.show()
                 } else {
-                    binding.progressBarSignupLoading.visibility = View.INVISIBLE
+                    binding.progressBarSignupLoading.hide()
                 }
             }
         }

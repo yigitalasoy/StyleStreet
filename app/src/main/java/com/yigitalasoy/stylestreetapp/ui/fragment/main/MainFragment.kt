@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -17,6 +18,7 @@ import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
+import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,7 +28,7 @@ class MainFragment : Fragment() {
     private var _mainFragmentBinding: FragmentMainBinding? = null
     private val mainFragmentBinding get() = _mainFragmentBinding!!
 
-    private lateinit var userViewModel: UserViewModel
+    val userViewModel: UserViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,10 +48,6 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-
-
-
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
             Firebase.auth.signOut()
 
@@ -62,7 +60,7 @@ class MainFragment : Fragment() {
             googleSignInClient.signOut().addOnCompleteListener {
                 Log.e("GOOGLE SIGN OUT","SUCCUSFULLY SIGN OUT")
             }
-            userViewModel.isLogin.value = false
+            userViewModel.isLogin.value = Resource.success(false)
         }
 
         observer()
@@ -71,7 +69,7 @@ class MainFragment : Fragment() {
 
     private fun observer() {
         userViewModel.isLogin.observe(viewLifecycleOwner){
-            if(!it){
+            if(!it.data!!){
                 //val loginActivity
                 Log.e("FİREBASE GOOGLE LOGİN","SUCCESFULLY SIGNOUT")
 

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,7 +23,11 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.model.UserResponse
+import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
+import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.hide
+import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,7 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private lateinit var userViewModel: UserViewModel
+
+    private val userViewModel: UserViewModel by viewModels()
 
     private val googleSignInRequestCode = 234
 
@@ -50,7 +56,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        init()
 
         FirebaseAuth.getInstance().signOut()
 
@@ -85,8 +90,6 @@ class LoginFragment : Fragment() {
 
                 val googleSignInClient = GoogleSignIn.getClient(it.context,gso)
 
-
-
                 val signInClient = googleSignInClient.signInIntent
                 startActivityForResult(signInClient,googleSignInRequestCode)
 
@@ -109,7 +112,9 @@ class LoginFragment : Fragment() {
                 try {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     val account = task.getResult(ApiException::class.java)
-                    firebaseAuthWithGoogle(account)
+                    //view model çağırılacak
+                    userViewModel.loginWithGoogle(account)
+                    //firebaseAuthWithGoogle(account)
                 } catch (e: ApiException){
                     Log.e("GOOGLE LOGIN ERROR",e.stackTraceToString())
                     e.printStackTrace()
@@ -119,13 +124,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
+        /*
         val credential = GoogleAuthProvider.getCredential(account?.idToken,null)
         FirebaseAuth.getInstance().signInWithCredential(credential)
             .addOnSuccessListener {
                 Toast.makeText(context,"GOOGLE LOG IN SUCCESFULLY",Toast.LENGTH_LONG).show()
                 Log.e("GOOGLE SIGN IN","google sign in success")
 
-                userViewModel.isLogin.value = true
+                userViewModel.isLogin.value = Resource.success(true)
 
 
             }
@@ -135,66 +141,58 @@ class LoginFragment : Fragment() {
                 Log.e("GOOGLE SIGN IN ERROR",it.message.toString())
             }
 
-    }
-
-    private fun init() {
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
+         */
 
     }
+
+
 
     fun observer(){
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){
             it?.let {
-                Toast.makeText(context,"Login succesfully", Toast.LENGTH_LONG).show()
+                if(it.data != null){
+                    Toast.makeText(context,"Login succesfully", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context,"Login Error", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
         userViewModel.isLogin.observe(viewLifecycleOwner){
             it?.let {
-                if(it){
-                    /*val fragmentManager = requireActivity().supportFragmentManager
-                    val transaction = fragmentManager.beginTransaction()
-
-                    transaction.remove(this)
-                    transaction.commit()
-                    */
+                if(it.data!!){
+                    Toast.makeText(context,"Login succesfully islogin", Toast.LENGTH_LONG).show()
 
                     val mainActivity = Intent(activity, MainActivity::class.java)
                     startActivity(mainActivity)
                     activity?.finish()
-
-
+                } else {
+                    val loginActivity = Intent(activity, LoginActivity::class.java)
+                    startActivity(loginActivity)
+                    activity?.finish()
                 }
             }
         }
 
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
-                if(it){
-                    binding?.textViewError?.visibility = View.VISIBLE
+                if(it.data!!){
+                    binding?.textViewError?.show()
                 } else {
-                    binding?.textViewError?.visibility = View.INVISIBLE
+                    binding?.textViewError?.hide()
                 }
             }
         }
 
         userViewModel.userLoading.observe(viewLifecycleOwner){
             it?.let {
-                if(it){
-                    binding?.progressBarLoading?.visibility = View.VISIBLE
+                if(it.data!!){
+                    binding?.progressBarLoading?.show()
                 } else {
-                    binding?.progressBarLoading?.visibility = View.INVISIBLE
+                    binding?.progressBarLoading?.hide()
                 }
             }
         }
-
-
-
-
     }
-
-
-
-
 }

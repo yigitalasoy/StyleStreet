@@ -1,8 +1,0 @@
-dagger hilt injection eklenicek.
-    -ilk önce Firebase auth tarzı değişkenlere provides eklenicek
-    -sonra bütün projeye
-
-ana işlemler viewmodel'da olucak. repository'de fonksiyonlar tanımlanıcak
-repository'nin ana mantığı çözülecek
-
-firebasewithmvvm'deki extensionlar kullanılacak
