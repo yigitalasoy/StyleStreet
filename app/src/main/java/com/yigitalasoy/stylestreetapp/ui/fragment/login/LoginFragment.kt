@@ -5,27 +5,22 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthCredential
-import com.google.firebase.auth.GoogleAuthProvider
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
-import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
-import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
@@ -33,12 +28,11 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
+
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-
     private val userViewModel: UserViewModel by viewModels()
 
-    private val googleSignInRequestCode = 234
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,12 +51,13 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        FirebaseAuth.getInstance().signOut()
 
-        if (FirebaseAuth.getInstance().currentUser == null) {
+
+        if (FirebaseAuth.getInstance().currentUser != null) {
+            FirebaseAuth.getInstance().signOut()
             Log.e("login","başarıyla çıkış yapıldı")
         } else {
-            Log.e("login","çıkış yapılmadı")
+            Log.e("login","çıkış yapılmadı. kayıtlı hesap yok")
         }
 
 
@@ -91,16 +86,14 @@ class LoginFragment : Fragment() {
                 val googleSignInClient = GoogleSignIn.getClient(it.context,gso)
 
                 val signInClient = googleSignInClient.signInIntent
-                startActivityForResult(signInClient,googleSignInRequestCode)
+                startActivityForResult(signInClient,Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
 
             }
 
             buttonLogin.setOnClickListener {
                 userViewModel.userLogin(editTextEmail.text.toString(),editTextPassword.text.toString())
             }
-
         }
-
         observer()
 
     }
@@ -108,13 +101,11 @@ class LoginFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode){
-            googleSignInRequestCode -> {
+            Constants.GOOGLE_SIGN_IN_REQUEST_CODE -> {
                 try {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                     val account = task.getResult(ApiException::class.java)
-                    //view model çağırılacak
                     userViewModel.loginWithGoogle(account)
-                    //firebaseAuthWithGoogle(account)
                 } catch (e: ApiException){
                     Log.e("GOOGLE LOGIN ERROR",e.stackTraceToString())
                     e.printStackTrace()
@@ -122,29 +113,6 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
-    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount?) {
-        /*
-        val credential = GoogleAuthProvider.getCredential(account?.idToken,null)
-        FirebaseAuth.getInstance().signInWithCredential(credential)
-            .addOnSuccessListener {
-                Toast.makeText(context,"GOOGLE LOG IN SUCCESFULLY",Toast.LENGTH_LONG).show()
-                Log.e("GOOGLE SIGN IN","google sign in success")
-
-                userViewModel.isLogin.value = Resource.success(true)
-
-
-            }
-            .addOnFailureListener {
-                Toast.makeText(context,"GOOGLE LOG IN ERROR",Toast.LENGTH_LONG).show()
-
-                Log.e("GOOGLE SIGN IN ERROR",it.message.toString())
-            }
-
-         */
-
-    }
-
 
 
     fun observer(){
@@ -178,9 +146,9 @@ class LoginFragment : Fragment() {
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
                 if(it.data!!){
-                    binding?.textViewError?.show()
+                    binding.textViewError.show()
                 } else {
-                    binding?.textViewError?.hide()
+                    binding.textViewError.hide()
                 }
             }
         }
@@ -188,9 +156,9 @@ class LoginFragment : Fragment() {
         userViewModel.userLoading.observe(viewLifecycleOwner){
             it?.let {
                 if(it.data!!){
-                    binding?.progressBarLoading?.show()
+                    binding.progressBarLoading.show()
                 } else {
-                    binding?.progressBarLoading?.hide()
+                    binding.progressBarLoading.hide()
                 }
             }
         }

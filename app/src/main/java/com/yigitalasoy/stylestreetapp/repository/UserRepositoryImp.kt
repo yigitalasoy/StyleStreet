@@ -2,31 +2,16 @@ package com.yigitalasoy.stylestreetapp.repository
 
 import android.content.ContentValues
 import android.util.Log
-import android.widget.Toast
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.errorprone.annotations.Var
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.mapToObject
-import dagger.hilt.android.scopes.ActivityScoped
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.lang.reflect.Type
-import java.util.Objects
-import javax.inject.Inject
 
 
 class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserRepository {
@@ -74,8 +59,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
     }
 
     override suspend fun userSignUp(user: UserResponse): Resource<UserResponse> {
-
-
         return try {
 
             val task = auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString())
@@ -99,35 +82,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             Resource.error("repository userSignUp error: ${e.message}",null)
         }
-
-
-
-/*
-        return try {
-
-            val task = auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString()).await()
-
-            if (task != null) {
-                Log.e("error user sign up", "createUserWithEmail:success")
-                val firebaseUser = auth.currentUser
-                println("REGISTERED USER UUID: ${firebaseUser?.uid}")
-
-                user.id = firebaseUser?.uid
-                registerUserDatabase(user)
-
-                Resource.success(user)
-
-            } else {
-                Log.e(ContentValues.TAG, "createUserWithEmail:failure")
-                Resource.error("repository userSignUp error",null)
-
-            }
-
-        } catch (e: Exception){
-            Resource.error("repository userSignUp error: ${e.message}",null)
-        }
-
- */
     }
 
     override suspend fun registerUserDatabase(user: UserResponse): Resource<UserResponse> {
@@ -147,12 +101,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             Resource.error("Error ${e.message}",null)
         }
-
-
-
-
-
-
     }
 
     override suspend fun loginWithGoogle(account: GoogleSignInAccount?): Resource<UserResponse> {
@@ -163,10 +111,20 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
             val googleLogin = FirebaseAuth.getInstance().signInWithCredential(credential)
             googleLogin.await()
 
+
             if(googleLogin.isSuccessful){
                 Log.e("GOOGLE SIGN IN","google sign in success")
                 account!!.let {
-                    return@let Resource.success(UserResponse("",account.displayName.toString(),account.familyName.toString(),account.email.toString(),""))
+                    val user = UserResponse(
+                        id = auth.currentUser?.uid,
+                        name = account.givenName.toString(),
+                        surname = account.familyName.toString(),
+                        email = account.email.toString(),
+                        password = "")
+
+                    registerUserDatabase(user)
+
+                    return@let Resource.success(user)
                 }
             } else {
                 Log.e("GOOGLE SIGN IN ERROR",googleLogin.exception?.message.toString())
@@ -177,8 +135,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             Resource.error(e.message.toString(),null)
         }
-
-
 
     }
 }

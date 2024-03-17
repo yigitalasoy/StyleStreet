@@ -3,21 +3,18 @@ package com.yigitalasoy.stylestreetapp.ui.fragment.main
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.yigitalasoy.stylestreetapp.R
-import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
-import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -72,14 +69,6 @@ class MainFragment : Fragment() {
             if(!it.data!!){
                 //val loginActivity
                 Log.e("FİREBASE GOOGLE LOGİN","SUCCESFULLY SIGNOUT")
-
-
-/*
-                val preferences = getSharedPreferences("your_preference_name", Context.MODE_PRIVATE)
-                val editor = preferences.edit()
-                editor.clear()
-                editor.apply()
-*/
 
                 val loginActivity = Intent(activity, LoginActivity::class.java)
                 startActivity(loginActivity)
