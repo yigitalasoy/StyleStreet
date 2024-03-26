@@ -1,8 +1,10 @@
 package com.yigitalasoy.stylestreetapp.util
 
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 
 fun Map<String, Any>.mapToObject(): UserResponse {
@@ -25,4 +27,10 @@ fun View.show(){
 
 fun Fragment.toast(text: String){
     Toast.makeText(requireContext(),text,Toast.LENGTH_LONG).show()
+}
+
+fun ImageView.downloadImage(imageUrl: String){
+    Glide.with(context)
+        .load(imageUrl)
+        .into(this)
 }

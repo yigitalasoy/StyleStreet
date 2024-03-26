@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
@@ -16,6 +18,7 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +30,11 @@ class MainFragment : Fragment() {
 
     val userViewModel: UserViewModel by viewModels()
 
+    val categoryViewModel: CategoryViewModel by viewModels()
+
+    private val categoryAdapter = CategoryAdapter(arrayListOf())
+
+    private val productAdapter = ProductAdapter(arrayListOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +52,18 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mainFragmentBinding.reyclerViewCategory.apply {
+            layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL,false)
+            adapter = categoryAdapter
+        }
+
+        mainFragmentBinding.recyclerViewTopSelling.apply {
+            layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
+            adapter = productAdapter
+        }
+
+        categoryViewModel.getAllCategories()
 
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
             Firebase.auth.signOut()
@@ -75,6 +95,20 @@ class MainFragment : Fragment() {
                 activity?.finish()
             }
         }
+
+        categoryViewModel.categoryLiveData.observe(viewLifecycleOwner){ list ->
+
+            list?.let {
+                if(it.data != null){
+                    categoryAdapter.updateCategoryList(it.data)
+                }
+            }
+
+
+        }
+
+
+
     }
 
 }
