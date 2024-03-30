@@ -26,7 +26,14 @@ class ProductAdapter(var productList: ArrayList<ProductResponse>): RecyclerView.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         binding = ProductRowBinding.bind(holder.itemView)
 
-        binding.textViewProductName.text = "${binding.textViewProductName.text} ${productList[position].id}"
+        binding.textViewProductName.text = productList[position].productName
+
+        if(productList[position].allProducts?.size != 0){
+            productList[position].allProducts?.let {
+                binding.textViewPrice.text = productList[position].allProducts!![0].price
+            }
+        }
+
 
     }
 
@@ -34,8 +41,9 @@ class ProductAdapter(var productList: ArrayList<ProductResponse>): RecyclerView.
         return productList.size
     }
 
-    fun updateProductList(productList: List<ProductResponse>){
-        this.productList.addAll(productList)
+    fun updateProductList(newProductList: List<ProductResponse>){
+        this.productList.clear()
+        this.productList.addAll(newProductList)
         notifyDataSetChanged()
     }
 

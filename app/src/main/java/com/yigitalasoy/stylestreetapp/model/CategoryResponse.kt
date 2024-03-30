@@ -1,7 +1,7 @@
 package com.yigitalasoy.stylestreetapp.model
 
-data class CategoryResponse(
-    val categoryId:String,
-    val categoryName:String,
-    val categoryImage:String
+data class CategoryResponse (
+    var categoryId:String,
+    var categoryName:String? = "",
+    var categoryImage:String? = ""
 )

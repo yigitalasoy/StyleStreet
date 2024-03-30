@@ -27,7 +27,9 @@ class CategoryAdapter(var categoryList: ArrayList<CategoryResponse>): RecyclerVi
         binding = CategoryRowBinding.bind(holder.itemView)
 
         binding.textViewCategoryName.text = categoryList[position].categoryName
-        binding.imageView4.downloadImage(categoryList[position].categoryImage)
+        categoryList[position].categoryImage?.let {
+            binding.imageView4.downloadImage(it)
+        }
 
 
     }

@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -23,15 +22,23 @@ import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private val userViewModel: UserViewModel by viewModels()
+
+    @Inject lateinit var productViewModel: ProductViewModel
+    @Inject lateinit var userViewModel: UserViewModel
+    @Inject lateinit var productColorViewModel: ProductColorViewModel
+    @Inject lateinit var productSizeViewModel: ProductSizeViewModel
 
 
 
@@ -51,6 +58,9 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // productViewModel.getNewInProduct()
+        // productColorViewModel.getAllProductColors()
+        // productSizeViewModel.getAllProductSize()
 
 
         if (FirebaseAuth.getInstance().currentUser != null) {
