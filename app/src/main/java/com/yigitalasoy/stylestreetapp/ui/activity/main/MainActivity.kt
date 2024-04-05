@@ -1,18 +1,109 @@
 package com.yigitalasoy.stylestreetapp.ui.activity.main
 
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.fragment.NavHostFragment
 import com.yigitalasoy.stylestreetapp.R
-import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
+import com.yigitalasoy.stylestreetapp.databinding.ActivityMainBinding
+import com.yigitalasoy.stylestreetapp.util.hide
+import com.yigitalasoy.stylestreetapp.util.show
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainActivityBinding.root)
+
+
+
+        val navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
+
+        mainActivityBinding.apply {
+            constraintHome.setOnClickListener {
+
+                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home_filled,null))
+                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
+                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
+                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
+
+                imageViewStickHome.show()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.hide()
+
+
+                navController.navigate(R.id.mainFragment)
+
+            }
+
+            constraintWishList.setOnClickListener {
+                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
+                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart_filled,null))
+                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
+                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.show()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.hide()
+                navController.navigate(R.id.wishListFragment)
+
+            }
+
+            constraintProfile.setOnClickListener {
+
+                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
+                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
+                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile_filled,null))
+                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.show()
+                imageViewStickNotification.hide()
+                navController.navigate(R.id.profileFragment)
+
+            }
+
+            constraintNotification.setOnClickListener {
+
+                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
+                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
+                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
+                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification_filled,null))
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.show()
+                navController.navigate(R.id.notificationFragment)
+
+            }
+
+            floatingButtonBasket.setOnClickListener {
+
+                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
+                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
+                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
+                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.hide()
+                navController.navigate(R.id.basketFragment)
+
+            }
+
+
+        }
+
+
 
     }
 }

@@ -16,6 +16,7 @@ buildscript {
         classpath("androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version")
         classpath ("com.google.gms:google-services:4.4.1")
         classpath ("com.google.dagger:hilt-android-gradle-plugin:2.50")
+        classpath ("com.android.tools.build:gradle:3.2.1")
 
     }
 }

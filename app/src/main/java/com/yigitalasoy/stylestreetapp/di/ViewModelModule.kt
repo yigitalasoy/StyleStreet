@@ -1,10 +1,14 @@
 package com.yigitalasoy.stylestreetapp.di
 
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
+import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
@@ -54,9 +58,19 @@ object ViewModelModule {
     @Provides
     @Singleton
     fun getProvidesUserViewModel(
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        auth: FirebaseAuth,
+        db: FirebaseFirestore
     ): UserViewModel {
-        return UserViewModel(userRepository)
+        return UserViewModel(userRepository,auth,db)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesBasketViewModel(
+        basketRepository: BasketRepository
+    ): BasketViewModel {
+        return BasketViewModel(basketRepository)
     }
 
 

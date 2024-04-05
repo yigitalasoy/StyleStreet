@@ -16,9 +16,10 @@ class ProductColorRepositoryImp(val firebaseFirestore: FirebaseFirestore): Produ
         return try {
             docRef.documents.let {
                 for (category in it){
-                    val color = ProductColorResponse(category.data!!["Color_Id"].toString())
+                    val color = ProductColorResponse(category.data!![Constants.PRODUCTCOLORRESPONSE_colorId].toString())
                     // color.colorId = category.data!!["Color_Id"].toString()
-                    color.colorName = category.data!!["Color_Name"].toString()
+                    color.colorName = category.data!![Constants.PRODUCTCOLORRESPONSE_colorName].toString()
+                    color.colorCode = category.data!![Constants.PRODUCTCOLORRESPONSE_colorCode].toString()
                     colorList.add(color)
                 }
                 return@let Resource.success(colorList)

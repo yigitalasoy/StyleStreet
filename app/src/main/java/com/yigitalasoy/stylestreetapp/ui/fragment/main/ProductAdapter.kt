@@ -8,8 +8,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.ProductRowBinding
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
+import com.yigitalasoy.stylestreetapp.util.ItemClickListener
+import com.yigitalasoy.stylestreetapp.util.downloadImage
 
-class ProductAdapter(var productList: ArrayList<ProductResponse>): RecyclerView.Adapter<ViewHolder>() {
+
+class ProductAdapter(
+    var productList: ArrayList<ProductResponse>,
+    var onItemClickListener: ItemClickListener): RecyclerView.Adapter<ViewHolder>() {
 
     private lateinit var binding: ProductRowBinding
 
@@ -25,13 +30,21 @@ class ProductAdapter(var productList: ArrayList<ProductResponse>): RecyclerView.
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         binding = ProductRowBinding.bind(holder.itemView)
-
         binding.textViewProductName.text = productList[position].productName
 
-        if(productList[position].allProducts?.size != 0){
-            productList[position].allProducts?.let {
-                binding.textViewPrice.text = productList[position].allProducts!![0].price
+        if(productList[position].allProducts.size != 0){
+            productList[position].allProducts.let {
+                binding.textViewPrice.text = productList[position].allProducts[0].subProductPrice
+                productList[position].allProducts[0].subProductImageURL?.get(0)?.let{
+                    binding.imageViewProductImage.downloadImage(it)
+                }
+
+
             }
+        }
+
+        binding.cardViewProductDetail.setOnClickListener {
+            onItemClickListener.onItemClick(position)
         }
 
 

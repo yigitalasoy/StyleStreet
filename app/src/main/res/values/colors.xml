@@ -11,4 +11,7 @@
     <color name="red">#FF0000</color>
     <color name="green">#4CAF50</color>
     <color name="blue">#0000FF</color>
+    <color name="darkblue">#0000AC</color>
+    <color name="yellow">#F7FF00</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>

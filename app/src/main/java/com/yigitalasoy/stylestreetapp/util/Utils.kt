@@ -1,5 +1,6 @@
 package com.yigitalasoy.stylestreetapp.util
 
+import android.app.Activity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -27,6 +28,10 @@ fun View.show(){
 
 fun Fragment.toast(text: String){
     Toast.makeText(requireContext(),text,Toast.LENGTH_LONG).show()
+}
+
+fun Activity.toast(text: String){
+    Toast.makeText(this,text,Toast.LENGTH_LONG).show()
 }
 
 fun ImageView.downloadImage(imageUrl: String){

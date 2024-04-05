@@ -10,16 +10,238 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/navigation_main" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="133dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomNavBar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/background"
+            android:gravity="center_horizontal"
+            android:theme="@style/Theme.MaterialComponents"
+            app:fabCradleMargin="12dp"
+            app:fabCradleRoundedCornerRadius="50dp"
+            app:fabCradleVerticalOffset="6dp">
+
+
+
+
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            android:layout_gravity="bottom">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageViewHome"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/home_filled" />
+
+                    <ImageView
+                        android:id="@+id/imageViewStickHome"
+                        android:layout_width="35dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        app:layout_constraintEnd_toEndOf="@+id/imageViewHome"
+                        app:layout_constraintStart_toStartOf="@+id/imageViewHome"
+                        app:layout_constraintTop_toBottomOf="@+id/imageViewHome"
+                        app:srcCompat="@drawable/stick" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintWishList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageViewWishList"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/heart" />
+
+
+                    <ImageView
+                        android:id="@+id/imageViewStickHearth"
+                        android:layout_width="35dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="@+id/imageViewWishList"
+                        app:layout_constraintStart_toStartOf="@+id/imageViewWishList"
+                        app:layout_constraintTop_toBottomOf="@+id/imageViewWishList"
+                        app:srcCompat="@drawable/stick" />
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageViewProfile"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/profile" />
+
+                    <ImageView
+                        android:id="@+id/imageViewStickProfile"
+                        android:layout_width="35dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="@+id/imageViewProfile"
+                        app:layout_constraintStart_toStartOf="@+id/imageViewProfile"
+                        app:layout_constraintTop_toBottomOf="@+id/imageViewProfile"
+                        app:srcCompat="@drawable/stick" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintNotification"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/imageViewNotification"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_weight="1"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/notification" />
+
+                    <ImageView
+                        android:id="@+id/imageViewStickNotification"
+                        android:layout_width="35dp"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_weight="1"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="@+id/imageViewNotification"
+                        app:layout_constraintStart_toStartOf="@+id/imageViewNotification"
+                        app:layout_constraintTop_toBottomOf="@+id/imageViewNotification"
+                        app:srcCompat="@drawable/stick" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingButtonBasket"
+            style="@style/Floating"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:layout_anchor="@id/bottomNavBar"
+            app:maxImageSize="30dp" />
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

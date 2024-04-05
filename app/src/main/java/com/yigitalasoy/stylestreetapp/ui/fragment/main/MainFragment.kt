@@ -11,12 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
-import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailActivity
+import com.yigitalasoy.stylestreetapp.util.ItemClickListener
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
@@ -48,8 +48,7 @@ class MainFragment : Fragment() {
 
 
     private val categoryAdapter = CategoryAdapter(arrayListOf())
-
-    private val productAdapter = ProductAdapter(arrayListOf())
+    private lateinit var productAdapter: ProductAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,16 +68,30 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        productViewModel.getNewInProduct()
+
+        productAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
+            override fun onItemClick(position: Int) {
+
+                this@MainFragment.toast(productViewModel.productLiveData.value!!.data?.get(position)!!.productName)
+                val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
+                productDetailActivity.putExtra("selectedProductId",productViewModel.productLiveData.value!!.data?.get(position)!!.productId)
+                productDetailActivity.putExtra("selectedSubProductId",productViewModel.productLiveData.value!!.data?.get(position)!!.allProducts[0].subProductId)
+                startActivity(productDetailActivity)
+
+
+            }
+        })
+
+        //productViewModel.getNewInProduct()
+
+
 
 
         val istanbulDateTime = LocalDateTime.now(ZoneId.of("Europe/Istanbul"))
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
         val formattedDateTime = istanbulDateTime.format(formatter)
-
         println("güncel saat: $formattedDateTime")
 
-        println("main fragment ürünü: ${ productViewModel.productLiveData.value?.data }")
 
         mainFragmentBinding.reyclerViewCategory.apply {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL,false)
@@ -94,16 +107,11 @@ class MainFragment : Fragment() {
         productColorViewModel.getAllProductColors()
         productSizeViewModel.getAllProductSize()
 
-        //productViewModel.getNewInProduct()
-
-        println("MAİN FRAGMENT ÜRÜN: ${productViewModel.productLiveData.value?.data}")
-
-
-
-
-
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
-            Firebase.auth.signOut()
+
+            //Firebase.auth.signOut()
+
+            userViewModel.signOut(requireContext())
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.googleServerClientId))
@@ -114,7 +122,15 @@ class MainFragment : Fragment() {
             googleSignInClient.signOut().addOnCompleteListener {
                 Log.e("GOOGLE SIGN OUT","SUCCUSFULLY SIGN OUT")
             }
-            userViewModel.isLogin.value = Resource.success(false)
+
+
+
+            /*
+            val loginActivity = Intent(activity, LoginActivity::class.java)
+            startActivity(loginActivity)
+            activity?.finish()
+
+             */
         }
 
         observer()
@@ -122,11 +138,22 @@ class MainFragment : Fragment() {
     }
 
     private fun observer() {
-        userViewModel.isLogin.observe(viewLifecycleOwner){
+        /*userViewModel.isLogin.observe(viewLifecycleOwner){
+            println("login geldi. deger: ${it.data}")
             if(!it.data!!){
                 //val loginActivity
                 Log.e("FİREBASE GOOGLE LOGİN","SUCCESFULLY SIGNOUT")
 
+                val loginActivity = Intent(activity, LoginActivity::class.java)
+                startActivity(loginActivity)
+                activity?.finish()
+
+
+            }
+        }*/
+
+        userViewModel.userLiveData.observe(viewLifecycleOwner){ user ->
+            if(user.data == null){
                 val loginActivity = Intent(activity, LoginActivity::class.java)
                 startActivity(loginActivity)
                 activity?.finish()
@@ -135,11 +162,8 @@ class MainFragment : Fragment() {
 
         categoryViewModel.categoryLiveData.observe(viewLifecycleOwner){ list ->
             list?.let {
-
                 productViewModel.updateProductCategories(it.data!!)
-
                 categoryAdapter.updateCategoryList(it.data)
-
             }
         }
 
@@ -147,36 +171,20 @@ class MainFragment : Fragment() {
             products?.let {
                 if(it.data != null){
                     productAdapter.updateProductList(it.data)
-                    for (a in products.data!!){
-                        for (b in a.allProducts){
-                            println("colorname: ${b.productColor.colorName}")
-                        }
-                    }
                 }
             }
         }
 
         productColorViewModel.productColorLiveData.observe(viewLifecycleOwner) { colors ->
             colors?.let {
-
                 productViewModel.updateProductColorName(it.data!!)
-
-                for (color in it.data){
-                    println("color: ${color.colorId} \t ${color.colorName}")
-                }
 
             }
         }
 
         productSizeViewModel.productSizeLiveData.observe(viewLifecycleOwner) { sizeList ->
             sizeList?.let {
-                //productColorandSize.value = arrayListOf(productColorandSize.value?.get(1)!!,true)
-
                 productViewModel.updateProductSizeName(it.data!!)
-
-                for (size in it.data){
-                    println("size: ${size.productSizeId} \t ${size.sizeName}")
-                }
             }
         }
     }

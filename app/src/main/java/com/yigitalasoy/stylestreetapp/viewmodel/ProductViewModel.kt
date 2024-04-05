@@ -6,6 +6,7 @@ import com.yigitalasoy.stylestreetapp.model.CategoryResponse
 import com.yigitalasoy.stylestreetapp.model.ProductColorResponse
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.model.ProductSizeResponse
+import com.yigitalasoy.stylestreetapp.model.SubProductResponse
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class ProductViewModel @Inject constructor(val productRepository: ProductRepository): ViewModel() {
 
     val productLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
+    val testproductLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
     val productLoading = MutableLiveData<Resource<Boolean>>()
     val productError = MutableLiveData<Resource<Boolean>>()
 
@@ -37,12 +39,12 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
             val productResponse = productRepository.getNewInProduct()
+            val testproductResponse = productRepository.getSearchedProduct("")
 
             withContext(Dispatchers.Main){
                 if(productResponse.data != null){
-                    println("ürünler geldi..")
                     productLiveData.value = productResponse
-                    println(productLiveData.value?.data)
+                    testproductLiveData.value = testproductResponse
                 } else {
                     productResponse.message.let {
                         productError.value = Resource.error(productResponse.message.toString(),true)
@@ -81,17 +83,16 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             val productByIdMap = colors.associateBy { it.colorId }
 
             if(productLiveData.value?.data != null){
-                println("color kontrole girdi")
                 for (product in productLiveData.value?.data!!){
                     for (subproduct in product.allProducts){
-                        subproduct.productColor.colorName = productByIdMap[subproduct.productColor.colorId]?.colorName
-                        println("subproduct----> ${subproduct}")
+                        subproduct.subProductColorId.colorName = productByIdMap[subproduct.subProductColorId.colorId]?.colorName
+                        subproduct.subProductColorId.colorCode = productByIdMap[subproduct.subProductColorId.colorId]?.colorCode
                     }
                 }
-
-                println("color live datalar:  ${productLiveData.value?.data}")
-
             }
+
+
+
         }
     }
 
@@ -101,14 +102,11 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             val productByIdMap = productSizes.associateBy { it.productSizeId }
 
             if(productLiveData.value?.data != null){
-                println("size kontrole girdi")
                 for (product in productLiveData.value?.data!!){
                     for (subproduct in product.allProducts){
-                        subproduct.productSize.sizeName = productByIdMap[subproduct.productSize.productSizeId]?.sizeName
-                        println("subproduct----> ${subproduct}")
+                        subproduct.subProductSizeId.productSizeName = productByIdMap[subproduct.subProductSizeId.productSizeId]?.productSizeName
                     }
                 }
-                println("size live datalar:  ${productLiveData.value?.data}")
             }
         }
     }
@@ -120,16 +118,47 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             val productByIdMap = categories.associateBy { it.categoryId }
 
             if(productLiveData.value?.data != null){
-                println("category kontrole girdi")
                 for (product in productLiveData.value?.data!!){
                     product.categoryId.categoryName = productByIdMap[product.categoryId.categoryId]?.categoryName
                     product.categoryId.categoryImage = productByIdMap[product.categoryId.categoryId]?.categoryImage
-                    println("product----> $product")
 
                 }
-                println("category live datalar:  ${productLiveData.value?.data}")
             }
         }
+    }
+
+    fun getProductByProductIdAndSizeId(selectedProductId: String,selectedSizeId: String?): ArrayList<SubProductResponse>{
+        var array = ArrayList<SubProductResponse>()
+
+        if(selectedSizeId != null){
+
+            /*productLiveData.value?.data?.find { it.productId == selectedProductId }?.let {
+                for(a in it.allProducts){
+                    array.put(a.subProductColorId,a.subProductSizeId)
+                }
+            }*/
+
+            for(i in productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!){
+                if(i.subProductSizeId.productSizeId == selectedSizeId){
+                    array.add(i)
+                }
+            }
+            /*productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts?.find { it.subProductSizeId.productSizeId == selectedSizeId }?.let {
+                println("gelen it: $it")
+                array.add(it)
+            }*/
+
+
+            return array
+
+        } else {
+            return productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!
+        }
+
+    }
+
+    fun getSubProductWithId(selectedProductId: String,selectedSubProductId: String): SubProductResponse? {
+        return productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts?.find { it.subProductId == selectedSubProductId }
     }
 
 }

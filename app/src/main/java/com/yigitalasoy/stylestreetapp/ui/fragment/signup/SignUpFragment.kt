@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,22 +12,24 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
-import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.databinding.FragmentSignUpBinding
+import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
-    private lateinit var userViewModel: UserViewModel
+    @Inject lateinit var userViewModel: UserViewModel
 
     var isSevenChar: Boolean = false
     var isBigChar: Boolean = false
@@ -48,9 +49,6 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        init()
 
         binding.apply {
 
@@ -114,12 +112,6 @@ class SignUpFragment : Fragment() {
             }
         }
 
-        userViewModel.isLogin.observe(viewLifecycleOwner){
-            it?.let {
-                //false olduğu zaman çıkış yapılmış olacak
-            }
-        }
-
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
                 if(it.message.equals("REGISTER SUCCESS")){
@@ -143,10 +135,6 @@ class SignUpFragment : Fragment() {
                 }
             }
         }
-
-
-
-
     }
 
     fun passwordCheckRequirements(){

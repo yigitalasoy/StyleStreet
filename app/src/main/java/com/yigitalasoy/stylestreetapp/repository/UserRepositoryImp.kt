@@ -91,7 +91,7 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
             doc.await()
 
             if(doc.isSuccessful){
-                println("USER SUCCESFULLY ADDED DATABASE: ${user.id}")
+                Log.e("database added","USER SUCCESFULLY ADDED DATABASE: ${user.id}")
                 Resource.success(user)
             } else {
                 Log.e("ERROR", doc.exception!!.message!!)

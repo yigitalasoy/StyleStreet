@@ -2,6 +2,8 @@ package com.yigitalasoy.stylestreetapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yigitalasoy.stylestreetapp.repository.BasketRepository
+import com.yigitalasoy.stylestreetapp.repository.BasketRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
@@ -58,9 +60,17 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun getProvidesProductRepository(
-        firebaseFirestore: FirebaseFirestore,
-        productColorRepository: ProductColorRepository
+        firebaseFirestore: FirebaseFirestore
     ): ProductRepository{
-        return ProductRepositoryImp(productColorRepository,firebaseFirestore)
+        return ProductRepositoryImp(firebaseFirestore)
     }
+
+    @Provides
+    @Singleton
+    fun getProvidesBasketRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): BasketRepository{
+        return BasketRepositoryImp(firebaseFirestore)
+    }
+
 }

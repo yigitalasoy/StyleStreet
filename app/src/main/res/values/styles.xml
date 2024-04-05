@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Floating" parent="Widget.Design.FloatingActionButton">
+        <item name="android:foreground">@drawable/floating_background</item>
+    </style>
+
+    <style name="FloatButtons" parent="Widget.Design.FloatingActionButton">
+        <item name="android:foreground">@drawable/floating_black_background</item>
+    </style>
+
+</resources>
