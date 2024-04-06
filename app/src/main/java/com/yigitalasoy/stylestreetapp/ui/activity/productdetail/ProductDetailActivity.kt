@@ -23,6 +23,8 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var selectedSubProducts: ArrayList<SubProductResponse>
     private var subProductQuantity: Int = 1
     private val imageAdapter = ProductImageAdapter(arrayListOf())
+    var selectedSubProduct: SubProductResponse? = null
+    var coloritems = ArrayList<ProductColorResponse>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +35,8 @@ class ProductDetailActivity : AppCompatActivity() {
         var selectedProductId = intent.getStringExtra("selectedProductId")
         var selectedSubProductId = intent.getStringExtra("selectedSubProductId")
 
+        println("selected product ıd: $selectedProductId")
+        println("selected subproduct ıd: $selectedSubProductId")
 
         getSelectedSubProduct(selectedProductId, selectedSubProductId)
 
@@ -40,7 +44,6 @@ class ProductDetailActivity : AppCompatActivity() {
         selectedProductId?.let {
             selectedSubProducts = productViewModel.getProductByProductIdAndSizeId(selectedProductId,null)
         }
-
 
         var selectedProductSizeItems = ArrayList<ProductSizeResponse>()
 
@@ -50,6 +53,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
         val sizeAdapter = ProductSizeAdapter(this,selectedProductSizeItems.distinctBy { it.productSizeId })
         binding.spinnerProductSize.setAdapter(sizeAdapter)
+
+
 
         binding.recyclerViewProductDetailImage.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
@@ -65,9 +70,10 @@ class ProductDetailActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                val coloritems = ArrayList<ProductColorResponse>()
-
+                coloritems.clear()
                 val itemSelected: ProductSizeResponse = parent?.getItemAtPosition(position) as ProductSizeResponse
+
+                println("seçilen spinner productsize: ${binding.spinnerProductSize.selectedItem}")
 
                 selectedSubProducts = productViewModel.getProductByProductIdAndSizeId(selectedProductId!!,itemSelected.productSizeId)
 
@@ -77,6 +83,8 @@ class ProductDetailActivity : AppCompatActivity() {
 
                 val colorAdapter = ProductColorAdapter(this@ProductDetailActivity,coloritems)
                 binding.spinnerProductColor.setAdapter(colorAdapter)
+                binding.spinnerProductColor.setSelection(coloritems.indexOf(selectedSubProduct?.subProductColorId))
+
                 println("seçilen size name: ${itemSelected.productSizeName} \t renkleri: ${coloritems}")
             }
 
@@ -84,7 +92,7 @@ class ProductDetailActivity : AppCompatActivity() {
                 this@ProductDetailActivity.toast("item seçilmedi")
             }
         }
-
+        binding.spinnerProductSize.setSelection(selectedProductSizeItems.distinctBy { it.productSizeId }.indexOf(selectedSubProduct?.subProductSizeId))
 
         binding.spinnerProductColor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
@@ -95,15 +103,14 @@ class ProductDetailActivity : AppCompatActivity() {
             ) {
                 val itemSelected: ProductColorResponse = parent?.getItemAtPosition(position) as ProductColorResponse
 
-                imageAdapter.updateCategoryList(selectedSubProducts.find { it.subProductColorId.colorId == itemSelected.colorId}?.subProductImageURL!!)
-
+                if((selectedSubProducts.find { it.subProductColorId.colorId == itemSelected.colorId}?.subProductImageURL) != null){
+                    imageAdapter.updateCategoryList(selectedSubProducts.find { it.subProductColorId.colorId == itemSelected.colorId}?.subProductImageURL!!)
+                }
 
 
                 binding.apply {
-                    textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice + " TL"
-                    textViewSubProductBasketPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice + " TL"
-
-                    //imagelar değişecek
+                    textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
+                    textViewSubProductBasketPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
                 }
                 this@ProductDetailActivity.toast("tıklanan: ${itemSelected.colorName}")
 
@@ -123,19 +130,31 @@ class ProductDetailActivity : AppCompatActivity() {
             fabMinus.setOnClickListener {
                 if(subProductQuantity == 1){
                     this@ProductDetailActivity.toast("The number of orders cannot be less than 1")
+                    fabMinus.isClickable = false
                 } else {
+                    fabPlus.isClickable = true
                     subProductQuantity--
                     textViewSubProductQuantity.text = subProductQuantity.toString()
+                    textViewSubProductBasketPrice.text = (subProductQuantity * textViewSubProductPrice.text.toString().toInt()).toString()
                 }
             }
 
             fabPlus.setOnClickListener {
-                subProductQuantity++
-                textViewSubProductQuantity.text = subProductQuantity.toString()
+                if(subProductQuantity==9){
+                    this@ProductDetailActivity.toast("The number of orders cannot be more than 9")
+                    fabPlus.isClickable = false
+                } else {
+                    fabMinus.isClickable = true
+                    subProductQuantity++
+                    textViewSubProductQuantity.text = subProductQuantity.toString()
+                    textViewSubProductBasketPrice.text = (subProductQuantity * textViewSubProductPrice.text.toString().toInt()).toString()
+                }
+
             }
-
-
+            println("set selection: ${selectedProductSizeItems.distinctBy { it.productSizeId }.indexOf(selectedSubProduct?.subProductSizeId)}")
+            println("set selection: ${coloritems.indexOf(selectedSubProduct?.subProductColorId)}")
         }
+
 
     }
 
@@ -143,17 +162,21 @@ class ProductDetailActivity : AppCompatActivity() {
         selectedProductId: String?,
         selectedSubProductId: String?
     ) {
-        var selectedSubProduct: SubProductResponse?
         selectedProductId?.let {
             selectedSubProductId?.let {
                 selectedSubProduct =
                     productViewModel.getSubProductWithId(selectedProductId, selectedSubProductId)
                 binding.apply {
                     textViewSubProductName.text = selectedSubProduct?.subProductName
-                    textViewSubProductPrice.text = selectedSubProduct?.subProductPrice + " TL"
-                    textViewSubProductBasketPrice.text = selectedSubProduct?.subProductPrice + " TL"
+                    textViewSubProductPrice.text = selectedSubProduct?.subProductPrice
+                    textViewSubProductBasketPrice.text = selectedSubProduct?.subProductPrice
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("detail activity destroyed")
     }
 }

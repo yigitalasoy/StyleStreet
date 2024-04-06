@@ -70,6 +70,7 @@ class LoginFragment : Fragment() {
         }*/
 
         productViewModel.getNewInProduct()
+        productViewModel.getAllProduct()
 
 
 

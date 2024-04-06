@@ -21,8 +21,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(val productRepository: ProductRepository): ViewModel() {
 
-    val productLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
-    val testproductLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
+    val allProductLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
+    val newInProductLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
+
+
     val productLoading = MutableLiveData<Resource<Boolean>>()
     val productError = MutableLiveData<Resource<Boolean>>()
 
@@ -39,12 +41,10 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
             val productResponse = productRepository.getNewInProduct()
-            val testproductResponse = productRepository.getSearchedProduct("")
 
             withContext(Dispatchers.Main){
                 if(productResponse.data != null){
-                    productLiveData.value = productResponse
-                    testproductLiveData.value = testproductResponse
+                    newInProductLiveData.value = productResponse
                 } else {
                     productResponse.message.let {
                         productError.value = Resource.error(productResponse.message.toString(),true)
@@ -52,6 +52,29 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
                 }
             }
         }
+    }
+
+    fun getAllProduct(){
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+
+            val productResponse = productRepository.getAllProduct()
+
+            withContext(Dispatchers.Main){
+                if(productResponse.data != null){
+                    allProductLiveData.value = productResponse
+                } else {
+                    productResponse.message.let {
+                        productError.value = Resource.error(productResponse.message.toString(),true)
+                    }
+                }
+            }
+        }
+    }
+
+
+    fun searchProduct(searchString: String): ArrayList<ProductResponse>?{
+        return allProductLiveData.value?.data?.filter {it.productName.lowercase().contains(searchString.lowercase())} as ArrayList<ProductResponse>?
     }
 
     fun updateProductColorName(colors: ArrayList<ProductColorResponse>){
@@ -82,8 +105,8 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             val productByIdMap = colors.associateBy { it.colorId }
 
-            if(productLiveData.value?.data != null){
-                for (product in productLiveData.value?.data!!){
+            if(allProductLiveData.value?.data != null){
+                for (product in allProductLiveData.value?.data!!){
                     for (subproduct in product.allProducts){
                         subproduct.subProductColorId.colorName = productByIdMap[subproduct.subProductColorId.colorId]?.colorName
                         subproduct.subProductColorId.colorCode = productByIdMap[subproduct.subProductColorId.colorId]?.colorCode
@@ -101,8 +124,8 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             val productByIdMap = productSizes.associateBy { it.productSizeId }
 
-            if(productLiveData.value?.data != null){
-                for (product in productLiveData.value?.data!!){
+            if(allProductLiveData.value?.data != null){
+                for (product in allProductLiveData.value?.data!!){
                     for (subproduct in product.allProducts){
                         subproduct.subProductSizeId.productSizeName = productByIdMap[subproduct.subProductSizeId.productSizeId]?.productSizeName
                     }
@@ -117,8 +140,8 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             val productByIdMap = categories.associateBy { it.categoryId }
 
-            if(productLiveData.value?.data != null){
-                for (product in productLiveData.value?.data!!){
+            if(allProductLiveData.value?.data != null){
+                for (product in allProductLiveData.value?.data!!){
                     product.categoryId.categoryName = productByIdMap[product.categoryId.categoryId]?.categoryName
                     product.categoryId.categoryImage = productByIdMap[product.categoryId.categoryId]?.categoryImage
 
@@ -138,7 +161,7 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
                 }
             }*/
 
-            for(i in productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!){
+            for(i in allProductLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!){
                 if(i.subProductSizeId.productSizeId == selectedSizeId){
                     array.add(i)
                 }
@@ -152,13 +175,13 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             return array
 
         } else {
-            return productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!
+            return allProductLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!
         }
 
     }
 
     fun getSubProductWithId(selectedProductId: String,selectedSubProductId: String): SubProductResponse? {
-        return productLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts?.find { it.subProductId == selectedSubProductId }
+        return allProductLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts?.find { it.subProductId == selectedSubProductId }
     }
 
 }

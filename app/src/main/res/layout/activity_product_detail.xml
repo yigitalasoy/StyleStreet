@@ -252,6 +252,19 @@
             app:layout_constraintTop_toTopOf="@+id/button" />
 
         <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="10dp"
+            android:fontFamily="sans-serif"
+            android:text=" TL"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSubProductBasketPrice"
+            app:layout_constraintStart_toEndOf="@+id/textViewSubProductBasketPrice"
+            app:layout_constraintTop_toTopOf="@+id/textViewSubProductBasketPrice" />
+
+        <TextView
             android:id="@+id/textView17"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -268,7 +281,17 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" TL"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewSubProductPrice"
+        app:layout_constraintStart_toEndOf="@+id/textViewSubProductPrice"
+        app:layout_constraintTop_toTopOf="@+id/textViewSubProductPrice" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

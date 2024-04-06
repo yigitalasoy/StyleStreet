@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/imageViewSearchSubProductImage"
+            android:layout_width="64dip"
+            android:layout_height="64dip"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/textViewSearchProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif"
+            android:text="TextView"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/imageViewSearchSubProductImage"
+            app:layout_constraintTop_toTopOf="@+id/imageViewSearchSubProductImage" />
+
+        <TextView
+            android:id="@+id/textViewSearchProductPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif"
+            android:text="TextView"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/textViewSearchProductName"
+            app:layout_constraintTop_toBottomOf="@+id/textViewSearchProductName" />
+
+        <TextView
+            android:id="@+id/textView19"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text=" TL"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/textViewSearchProductPrice"
+            app:layout_constraintStart_toEndOf="@+id/textViewSearchProductPrice"
+            app:layout_constraintTop_toTopOf="@+id/textViewSearchProductPrice" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

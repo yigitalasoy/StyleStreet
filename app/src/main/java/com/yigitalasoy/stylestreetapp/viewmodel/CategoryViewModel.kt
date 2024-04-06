@@ -40,12 +40,12 @@ class CategoryViewModel @Inject constructor(val categoryRepository: CategoryRepo
             withContext(Dispatchers.Main){
                 if(response.data != null){
                     categoryLiveData.value = response
-                    categoryLoading.value = Resource.loading(false)
                 } else {
                     response.message?.let {
                         categoryError.value = Resource.error(it,true)
                     }
                 }
+                categoryLoading.value = Resource.loading(false)
             }
 
 

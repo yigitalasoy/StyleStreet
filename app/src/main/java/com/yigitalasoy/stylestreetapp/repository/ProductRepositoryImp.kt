@@ -18,10 +18,8 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
         TODO("Not yet implemented")
     }
 
-    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {
-
+    override suspend fun getAllProduct(): Resource<ArrayList<ProductResponse>> {
         val productList = ArrayList<ProductResponse>()
-
 
         val docRef = firebaseFirestore.collection(Constants.FIRESTORE_DATABASE_PRODUCTS).get().await()
 
@@ -64,17 +62,15 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
         } catch (e: Exception){
             return Resource.error(e.message.toString(),null)
         }
-
-
     }
 
-    override suspend fun getSearchedProduct(search: String): Resource<ArrayList<ProductResponse>> {
+    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {
 
         val productList = ArrayList<ProductResponse>()
         var subProductNumber = 0
 
         var guncelEpoch = Instant.now().epochSecond
-        var epochEsik = 432000
+        var epochEsik = 432000 //5 gün
 
         val docRef = firebaseFirestore.collection(Constants.FIRESTORE_DATABASE_PRODUCTS).get().await()
 
@@ -104,12 +100,9 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                                             subProductImageURL = hash[Constants.SUBPRODUCTRESPONSE_subProductImageURL] as ArrayList<String>
                                         )
                                     )
-                                    subProductNumber++
+                                    subProductNumber += 1
                                 }
-
-
                             }
-
                         }
                         val testProduct = ProductResponse(
                             categoryId = CategoryResponse(categoryId = product.data!![Constants.PRODUCTRESPONSE_categoryId].toString()),
@@ -122,6 +115,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                         if(testProduct.allProducts.size != 0){
                             productList.add(testProduct)
                         }
+
                         //testProduct.allProducts.addAll(subProductList)
                         //subProductList.clear()
                         if(subProductNumber > 5){
@@ -130,7 +124,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                         }
                     }
                     if(subProductNumber < 2){
-                        epochEsik += 259200
+                        epochEsik += 259200 //3 gün
                         println("product number $subProductNumber olduğu için epoch artırıldı. güncel epoch: $epochEsik")
                         productList.clear()
                         subProductNumber = 0
@@ -146,6 +140,11 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
             return Resource.error(e.message.toString(),null)
         }
 
+
+    }
+
+    override suspend fun getSearchedProduct(search: String): Resource<ArrayList<ProductResponse>> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getProductsWithId(productId: String): Resource<ArrayList<ProductResponse>> {

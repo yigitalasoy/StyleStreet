@@ -58,7 +58,7 @@ class BasketFragment : Fragment() {
         basketViewModel.basketLiveData.observe(viewLifecycleOwner){
             if(it.data != null){
                 Log.e("basket: ","basket datası başarıyla geldi.")
-                basketViewModel.getBasketProducts(productViewModel.productLiveData.value!!.data!!)
+                basketViewModel.getBasketProducts(productViewModel.allProductLiveData.value!!.data!!)
             }
         }
 

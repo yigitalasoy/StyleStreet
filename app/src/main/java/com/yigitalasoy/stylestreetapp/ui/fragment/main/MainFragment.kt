@@ -13,9 +13,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
+import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailActivity
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
+import com.yigitalasoy.stylestreetapp.util.hide
+import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
@@ -34,12 +37,6 @@ class MainFragment : Fragment() {
     private var _mainFragmentBinding: FragmentMainBinding? = null
     private val mainFragmentBinding get() = _mainFragmentBinding!!
 
-    //val userViewModel: UserViewModel by viewModels()
-    //val categoryViewModel: CategoryViewModel by viewModels()
-    //val productSizeViewModel: ProductSizeViewModel by viewModels()
-    //val productColorViewModel: ProductColorViewModel by viewModels()
-    //val productViewModel: ProductViewModel by viewModels()
-
     @Inject lateinit var productViewModel: ProductViewModel
     @Inject lateinit var userViewModel: UserViewModel
     @Inject lateinit var categoryViewModel: CategoryViewModel
@@ -48,7 +45,8 @@ class MainFragment : Fragment() {
 
 
     private val categoryAdapter = CategoryAdapter(arrayListOf())
-    private lateinit var productAdapter: ProductAdapter
+    private lateinit var newInProductAdapter: ProductAdapter
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,14 +66,15 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //val searchAdapter = SearchAdapter(requireContext(), productViewModel.productLiveData.value?.data!!)
 
-        productAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
-            override fun onItemClick(position: Int) {
+        newInProductAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
+            override fun onItemClick(position: Any) {
 
-                this@MainFragment.toast(productViewModel.productLiveData.value!!.data?.get(position)!!.productName)
+                this@MainFragment.toast(productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productName)
                 val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
-                productDetailActivity.putExtra("selectedProductId",productViewModel.productLiveData.value!!.data?.get(position)!!.productId)
-                productDetailActivity.putExtra("selectedSubProductId",productViewModel.productLiveData.value!!.data?.get(position)!!.allProducts[0].subProductId)
+                productDetailActivity.putExtra("selectedProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productId)
+                productDetailActivity.putExtra("selectedSubProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.allProducts[0].subProductId)
                 startActivity(productDetailActivity)
 
 
@@ -98,9 +97,9 @@ class MainFragment : Fragment() {
             adapter = categoryAdapter
         }
 
-        mainFragmentBinding.recyclerViewTopSelling.apply {
+        mainFragmentBinding.recyclerViewNewIn.apply {
             layoutManager = LinearLayoutManager(requireContext(),RecyclerView.HORIZONTAL,false)
-            adapter = productAdapter
+            adapter = newInProductAdapter
         }
 
         categoryViewModel.getAllCategories()
@@ -123,14 +122,6 @@ class MainFragment : Fragment() {
                 Log.e("GOOGLE SIGN OUT","SUCCUSFULLY SIGN OUT")
             }
 
-
-
-            /*
-            val loginActivity = Intent(activity, LoginActivity::class.java)
-            startActivity(loginActivity)
-            activity?.finish()
-
-             */
         }
 
         observer()
@@ -138,19 +129,15 @@ class MainFragment : Fragment() {
     }
 
     private fun observer() {
-        /*userViewModel.isLogin.observe(viewLifecycleOwner){
-            println("login geldi. deger: ${it.data}")
-            if(!it.data!!){
-                //val loginActivity
-                Log.e("FİREBASE GOOGLE LOGİN","SUCCESFULLY SIGNOUT")
-
-                val loginActivity = Intent(activity, LoginActivity::class.java)
-                startActivity(loginActivity)
-                activity?.finish()
-
-
+        categoryViewModel.categoryLoading.observe(viewLifecycleOwner){
+            if(it.data!!){
+                mainFragmentBinding.progressBarFragmentMain.show()
+                mainFragmentBinding.scrollViewFragmentMain.hide()
+            } else {
+                mainFragmentBinding.progressBarFragmentMain.hide()
+                mainFragmentBinding.scrollViewFragmentMain.show()
             }
-        }*/
+        }
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){ user ->
             if(user.data == null){
@@ -167,25 +154,63 @@ class MainFragment : Fragment() {
             }
         }
 
-        productViewModel.productLiveData.observe(viewLifecycleOwner){ products ->
+        productViewModel.allProductLiveData.observe(viewLifecycleOwner){ products ->
             products?.let {
                 if(it.data != null){
-                    productAdapter.updateProductList(it.data)
+                    println("product observe çalıştı")
+
+                    /*val searchAdapter = TestAdapter(requireContext(), products.data!!)
+
+                    mainFragmentBinding.editTextSearch.apply {
+                        setAdapter(searchAdapter)
+                    }
+
+                    productAdapter.updateProductList(it.data)*/
+
+
+
+                    val searchAdapter = SearchAdapter(requireContext(), products.data!!, object : ItemClickListener{
+                        override fun onItemClick(Item: Any) {
+                            mainFragmentBinding.editTextSearch.text.clear()
+                            Item as ProductResponse
+                            this@MainFragment.toast("tiklanan product id: ${Item.productId}")
+                            val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
+                            productDetailActivity.putExtra("selectedProductId", Item.productId)
+                            productDetailActivity.putExtra("selectedSubProductId", Item.allProducts[0].subProductId)
+                            startActivity(productDetailActivity)
+
+
+                        }
+                    })
+
+                    mainFragmentBinding.editTextSearch.apply {
+                        setAdapter(searchAdapter)
+                    }
+
+
+
                 }
             }
         }
 
-        productColorViewModel.productColorLiveData.observe(viewLifecycleOwner) { colors ->
+        productViewModel.newInProductLiveData.observe(viewLifecycleOwner){
+            it?.let {
+                newInProductAdapter.updateProductList(it.data!!)
+            }
+        }
+
+        productColorViewModel.productColorLiveData.observe(viewLifecycleOwner){ colors ->
             colors?.let {
                 productViewModel.updateProductColorName(it.data!!)
 
             }
         }
 
-        productSizeViewModel.productSizeLiveData.observe(viewLifecycleOwner) { sizeList ->
+        productSizeViewModel.productSizeLiveData.observe(viewLifecycleOwner){ sizeList ->
             sizeList?.let {
                 productViewModel.updateProductSizeName(it.data!!)
             }
         }
+
     }
 }
