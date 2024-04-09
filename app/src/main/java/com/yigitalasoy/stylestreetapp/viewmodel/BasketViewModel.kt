@@ -26,7 +26,8 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
 
     private var job : Job? = null
-
+    private var productQuantityTask = false
+    private var productRemoveTask = false
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
@@ -60,7 +61,7 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             val subproductsYeni = ArrayList<SubProductResponse>()
             val productByIdMap = products.associateBy { it.productId }
 
-            for (urun in basketLiveData.value?.data!!.basketProducts!!){
+            for (urun in productsYeni){
                 val z = productByIdMap[urun.productId.toString()]?.allProducts?.find { it.subProductId == urun.subProductId }
                 z?.let {
                     subproductsYeni.add(z)
@@ -73,4 +74,63 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             }
         }
     }
+
+    fun basketProductChangeQuantity(userId: String,subProductId: String, type: String, position: Int){
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            if(!productQuantityTask){
+                productQuantityTask = true
+                var state = basketRepository.productQuantityChange(userId,subProductId,type,position)
+
+                withContext(Dispatchers.Main){
+
+                    var newLiveData = MutableLiveData<Resource<BasketResponse>>()
+
+                    newLiveData.value = basketLiveData.value
+
+                    if(state && type.equals("increase")){
+                        newLiveData.value?.data?.basketProducts?.find { it.subProductId == subProductId }?.quantity = (newLiveData.value?.data?.basketProducts?.find { it.subProductId == subProductId }?.quantity!!) + 1
+                        basketLiveData.value = Resource.success(newLiveData.value!!.data)
+                    } else if(state && type.equals("decrease")){
+                        newLiveData.value?.data?.basketProducts?.find { it.subProductId == subProductId }?.quantity = (newLiveData.value?.data?.basketProducts?.find { it.subProductId == subProductId }?.quantity!!) - 1
+                        basketLiveData.value = Resource.success(newLiveData.value!!.data)
+                    }
+
+                    productQuantityTask = false
+                }
+            } else {
+                println("quantity change task devam ettiği için girilmedi!")
+            }
+
+        }
+    }
+
+    fun basketRemoveProduct(userId: String,subProductId: String, type: String, position: Int){
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            if(!productRemoveTask){
+                productRemoveTask=true
+
+                var state = basketRepository.productRemove(userId,subProductId,type,position)
+
+                withContext(Dispatchers.Main){
+
+                    var newLiveData = MutableLiveData<Resource<BasketResponse>>()
+
+                    newLiveData.value = basketLiveData.value
+                    if(state){
+                        newLiveData.value?.data?.basketProducts?.removeAt(position)
+                        basketLiveData.value = Resource.success(newLiveData.value!!.data)
+                    }
+
+                    productRemoveTask = false
+                }
+
+            } else {
+                println("remove task devam ettiği için girilmedi !")
+            }
+        }
+
+    }
+
 }

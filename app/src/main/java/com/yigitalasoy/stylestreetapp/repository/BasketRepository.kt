@@ -7,4 +7,8 @@ interface BasketRepository {
 
     suspend fun getUserBasket(userId: String): Resource<BasketResponse>
 
+    suspend fun productQuantityChange(userId: String,subProductId: String,type: String,position: Int): Boolean
+
+    suspend fun productRemove(userId: String,subProductId: String,type: String,position: Int): Boolean
+
 }

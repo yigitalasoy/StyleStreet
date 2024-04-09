@@ -1,11 +1,13 @@
 package com.yigitalasoy.stylestreetapp.ui.activity.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.ActivityMainBinding
+import com.yigitalasoy.stylestreetapp.ui.activity.basket.BasketActivity
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import dagger.hilt.android.AndroidEntryPoint
@@ -96,7 +98,13 @@ class MainActivity : AppCompatActivity() {
                 imageViewStickHearth.hide()
                 imageViewStickProfile.hide()
                 imageViewStickNotification.hide()
-                navController.navigate(R.id.basketFragment)
+
+
+                val basketActivity = Intent(this@MainActivity,BasketActivity::class.java)
+                startActivity(basketActivity)
+
+
+                //navController.navigate(R.id.basketFragment)
 
             }
 

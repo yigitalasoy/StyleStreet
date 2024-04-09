@@ -35,7 +35,7 @@ class SearchAdapter (
         binding.textViewSearchProductPrice.text = productResponse?.allProducts!![0].subProductPrice + " TL"
         binding.imageViewSearchSubProductImage.downloadImage(productResponse?.allProducts!![0].subProductImageURL!![0])
         binding.searchCardView.setOnClickListener {
-            onItemClickListener.onItemClick(productFull[position])
+            onItemClickListener.onItemClick(productResponse)
         }
         return itemView
     }

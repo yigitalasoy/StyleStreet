@@ -1,6 +1,9 @@
 package com.yigitalasoy.stylestreetapp.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.yigitalasoy.stylestreetapp.model.BasketDetailResponse
 import com.yigitalasoy.stylestreetapp.model.BasketResponse
 import com.yigitalasoy.stylestreetapp.util.Constants
@@ -12,6 +15,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
 
     override suspend fun getUserBasket(userId: String): Resource<BasketResponse> {
 
+        println("get user basket repo çalışacak")
+
         val docRef = firebaseFirestore.collection(Constants.FIRESTORE_DATABASE_BASKET).document(userId).get().await()
 
 
@@ -22,7 +27,7 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                 val hashMap : ArrayList<HashMap<String, String>> = it.data!!["Basket_Products"] as ArrayList<HashMap<String, String>>
 
                 for (hash in hashMap){
-
+                    println("quantity: ${hash["Quantity"]?.toInt()}")
                     basketProductList.add(
                         BasketDetailResponse(
                             subProductId = hash["SubProduct_Id"].toString(),
@@ -49,6 +54,84 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
         } catch (e: Exception){
             return Resource.error(e.message.toString(),null)
         }
+
+
+    }
+
+    override suspend fun productQuantityChange(userId: String,subProductId: String, type: String, position: Int): Boolean{
+
+        //val docRef = firebaseFirestore.collection(Constants.FIRESTORE_DATABASE_BASKET).document(userId).get().await()
+
+        //var database: DatabaseReference
+
+        //database = Firebase.database.reference
+        //println("position: $position")
+
+        //database.child(Constants.FIRESTORE_DATABASE_BASKET).child(userId).child("Basket_Products").child(position.toString()).child("Quantity").setValue(5)
+        //println("database: ${database.child(Constants.FIRESTORE_DATABASE_BASKET).child(userId).child("Basket_Products").child(position.toString()).child("Quantity").get()}")
+
+
+        val db = Firebase.firestore
+        val collectionRef = db.collection("tbl_Basket")
+        val documentRef = collectionRef.document(userId)
+        var state = false
+        val snapshot = documentRef.get().await()
+
+        snapshot.data?.let {data ->
+            if (data != null) {
+                val productsArray = data["Basket_Products"] as ArrayList<HashMap<String, String>>
+                if (productsArray.isNotEmpty()) {
+                    val firstProduct = productsArray[position]
+                    val quantity = firstProduct["Quantity"] as String  // Quantity alanını al
+                    Log.e("şuanki: ",quantity)
+                    if(type.equals("increase")){
+                        firstProduct["Quantity"] = (quantity.toInt() + 1).toString()
+                    } else if(type.equals("decrease")) {
+                        firstProduct["Quantity"] = (quantity.toInt() - 1).toString()
+                    }
+                    val update = documentRef.update("Basket_Products", productsArray)
+                    update.await()
+                    if(update.isSuccessful){
+                        state = true
+                        Log.d("Firestore", "Doküman güncellendi.")
+                    }
+                }
+            }
+        }
+        return state
+
+    }
+
+    override suspend fun productRemove(
+        userId: String,
+        subProductId: String,
+        type: String,
+        position: Int
+    ): Boolean {
+
+
+        val db = Firebase.firestore
+        val collectionRef = db.collection("tbl_Basket")
+        val documentRef = collectionRef.document(userId)
+        var state = false
+        val snapshot = documentRef.get().await()
+
+        snapshot.data?.let {data ->
+            if (data != null) {
+                val productsArray = data["Basket_Products"] as ArrayList<HashMap<String, String>>
+                if (productsArray.isNotEmpty()) {
+                    productsArray.removeAt(position)
+
+                    val update = documentRef.update("Basket_Products", productsArray)
+                    update.await()
+                    if(update.isSuccessful){
+                        state = true
+                        Log.d("Firestore", "Doküman silindi.")
+                    }
+                }
+            }
+        }
+        return state
 
 
     }

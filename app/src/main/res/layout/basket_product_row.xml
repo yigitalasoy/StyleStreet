@@ -21,19 +21,17 @@
         android:id="@+id/textViewBasketProductSize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewBasketProductImage"
-        app:layout_constraintStart_toEndOf="@+id/imageViewBasketProductImage" />
+        app:layout_constraintStart_toStartOf="@+id/textViewBasketProductName"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBasketProductName" />
 
     <TextView
         android:id="@+id/textViewBasketProductName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginStart="10dp"
         android:text="TextView"
         android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/imageViewBasketProductImage"
@@ -43,22 +41,21 @@
         android:id="@+id/textViewBasketProductColor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewBasketProductSize"
-        app:layout_constraintStart_toEndOf="@+id/textViewBasketProductSize"
-        app:layout_constraintTop_toTopOf="@+id/textViewBasketProductSize" />
+        app:layout_constraintStart_toStartOf="@+id/textViewBasketProductSize"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBasketProductSize" />
 
     <Button
-        android:id="@+id/buttonIncreaseProductQuantity"
+        android:id="@+id/buttonDecreaseProductQuantity"
         style="@style/FloatButtons"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginEnd="25dp"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonDecreaseProductQuantity"
-        app:layout_constraintEnd_toStartOf="@+id/buttonDecreaseProductQuantity"
-        app:layout_constraintTop_toTopOf="@+id/buttonDecreaseProductQuantity" />
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonIncreaseProductQuantity"
+        app:layout_constraintEnd_toStartOf="@+id/buttonIncreaseProductQuantity"
+        app:layout_constraintTop_toTopOf="@+id/buttonIncreaseProductQuantity" />
 
     <TextView
         android:id="@+id/textViewBasketProductQuantity"
@@ -66,43 +63,44 @@
         android:layout_height="wrap_content"
         android:text="1"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/buttonIncreaseProductQuantity"
-        app:layout_constraintEnd_toStartOf="@+id/buttonDecreaseProductQuantity"
-        app:layout_constraintStart_toEndOf="@+id/buttonIncreaseProductQuantity"
-        app:layout_constraintTop_toTopOf="@+id/buttonIncreaseProductQuantity" />
+        app:layout_constraintBottom_toBottomOf="@+id/buttonDecreaseProductQuantity"
+        app:layout_constraintEnd_toStartOf="@+id/buttonIncreaseProductQuantity"
+        app:layout_constraintStart_toEndOf="@+id/buttonDecreaseProductQuantity"
+        app:layout_constraintTop_toTopOf="@+id/buttonDecreaseProductQuantity" />
 
     <Button
-        android:id="@+id/buttonDecreaseProductQuantity"
+        android:id="@+id/buttonIncreaseProductQuantity"
         style="@style/FloatButtons"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewBasketProductSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewBasketProductSize" />
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/textViewBasketProductTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:text="TextView"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewBasketProductName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewBasketProductName" />
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewBasketProductImage"
+        app:layout_constraintStart_toStartOf="@+id/textViewBasketProductColor" />
 
     <TextView
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:elevation="1dp"
-        android:fontFamily="@font/times_new_roman"
+        android:fontFamily="sans-serif"
         android:text="+"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        android:translationZ="1dp"
+        android:textSize="26sp"
+        android:translationZ="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonIncreaseProductQuantity"
         app:layout_constraintEnd_toEndOf="@+id/buttonIncreaseProductQuantity"
         app:layout_constraintStart_toStartOf="@+id/buttonIncreaseProductQuantity"
@@ -118,8 +116,8 @@
         android:text="-"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="28sp"
-        android:translationZ="1dp"
+        android:textSize="27sp"
+        android:translationZ="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/buttonDecreaseProductQuantity"
         app:layout_constraintEnd_toEndOf="@+id/buttonDecreaseProductQuantity"
         app:layout_constraintStart_toStartOf="@+id/buttonDecreaseProductQuantity"
@@ -137,7 +135,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/imageViewDelete"
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginEnd="2dp"

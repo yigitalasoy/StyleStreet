@@ -19,9 +19,6 @@
         <action
             android:id="@+id/action_mainFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
-        <action
-            android:id="@+id/action_mainFragment_to_basketFragment"
-            app:destination="@id/basketFragment" />
     </fragment>
     <fragment
         android:id="@+id/notificationFragment"
@@ -37,9 +34,6 @@
         <action
             android:id="@+id/action_notificationFragment_to_wishListFragment"
             app:destination="@id/wishListFragment" />
-        <action
-            android:id="@+id/action_notificationFragment_to_basketFragment"
-            app:destination="@id/basketFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -55,9 +49,6 @@
         <action
             android:id="@+id/action_profileFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_basketFragment"
-            app:destination="@id/basketFragment" />
     </fragment>
     <fragment
         android:id="@+id/wishListFragment"
@@ -73,26 +64,5 @@
         <action
             android:id="@+id/action_wishListFragment_to_notificationFragment"
             app:destination="@id/notificationFragment" />
-        <action
-            android:id="@+id/action_wishListFragment_to_basketFragment"
-            app:destination="@id/basketFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/basketFragment"
-        android:name="com.yigitalasoy.stylestreetapp.ui.fragment.basket.BasketFragment"
-        android:label="fragment_basket"
-        tools:layout="@layout/fragment_basket" >
-        <action
-            android:id="@+id/action_basketFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-        <action
-            android:id="@+id/action_basketFragment_to_wishListFragment"
-            app:destination="@id/wishListFragment" />
-        <action
-            android:id="@+id/action_basketFragment_to_notificationFragment"
-            app:destination="@id/notificationFragment" />
-        <action
-            android:id="@+id/action_basketFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>

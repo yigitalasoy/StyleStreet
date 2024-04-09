@@ -149,8 +149,8 @@ class ProductDetailActivity : AppCompatActivity() {
                     textViewSubProductQuantity.text = subProductQuantity.toString()
                     textViewSubProductBasketPrice.text = (subProductQuantity * textViewSubProductPrice.text.toString().toInt()).toString()
                 }
-
             }
+
             println("set selection: ${selectedProductSizeItems.distinctBy { it.productSizeId }.indexOf(selectedSubProduct?.subProductSizeId)}")
             println("set selection: ${coloritems.indexOf(selectedSubProduct?.subProductColorId)}")
         }
