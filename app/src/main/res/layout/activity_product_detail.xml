@@ -229,7 +229,7 @@
         app:layout_constraintTop_toBottomOf="@+id/frameLayoutQuantity">
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/buttonAddToBasket"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/orange_button"
@@ -248,9 +248,9 @@
             android:text="TextView"
             android:fontFamily="sans-serif"
             android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/button"
-            app:layout_constraintStart_toStartOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintBottom_toBottomOf="@+id/buttonAddToBasket"
+            app:layout_constraintStart_toStartOf="@+id/buttonAddToBasket"
+            app:layout_constraintTop_toTopOf="@+id/buttonAddToBasket" />
 
         <TextView
             android:id="@+id/textView18"
@@ -275,9 +275,9 @@
             android:fontFamily="sans-serif"
             android:textSize="18sp"
             android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/button"
+            app:layout_constraintBottom_toBottomOf="@+id/buttonAddToBasket"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            app:layout_constraintTop_toTopOf="@+id/buttonAddToBasket" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

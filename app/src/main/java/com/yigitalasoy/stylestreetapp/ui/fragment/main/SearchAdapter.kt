@@ -32,7 +32,7 @@ class SearchAdapter (
 
         val productResponse = getItem(position)
         binding.textViewSearchProductName.text = productResponse?.productName
-        binding.textViewSearchProductPrice.text = productResponse?.allProducts!![0].subProductPrice + " TL"
+        binding.textViewSearchProductPrice.text = productResponse?.allProducts!![0].subProductPrice
         binding.imageViewSearchSubProductImage.downloadImage(productResponse?.allProducts!![0].subProductImageURL!![0])
         binding.searchCardView.setOnClickListener {
             onItemClickListener.onItemClick(productResponse)

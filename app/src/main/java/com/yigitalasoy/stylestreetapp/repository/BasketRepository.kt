@@ -11,4 +11,7 @@ interface BasketRepository {
 
     suspend fun productRemove(userId: String,subProductId: String,type: String,position: Int): Boolean
 
+    suspend fun addProduct(userId: String,basketItem: BasketResponse): HashMap<String,Any>
+
+
 }

@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yigitalasoy.stylestreetapp.model.BasketDetailResponse
 import com.yigitalasoy.stylestreetapp.model.BasketResponse
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.model.SubProductResponse
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
 
 @HiltViewModel
 class BasketViewModel @Inject constructor(val basketRepository: BasketRepository): ViewModel() {
@@ -68,10 +70,8 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
                 }
             }
 
-            if(subproductsYeni.size != 0){
-                basketLoading.value = Resource.loading(false)
-                basketSubProductsLiveData.value = Resource.success(subproductsYeni)
-            }
+            basketLoading.value = Resource.loading(false)
+            basketSubProductsLiveData.value = Resource.success(subproductsYeni)
         }
     }
 
@@ -119,8 +119,12 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
                     newLiveData.value = basketLiveData.value
                     if(state){
+                        println("newLiveDatavalue: ${newLiveData.value}")
                         newLiveData.value?.data?.basketProducts?.removeAt(position)
+                        println("newLiveDatavalue sildikten sonra: ${newLiveData.value}")
                         basketLiveData.value = Resource.success(newLiveData.value!!.data)
+                        println("basketLiveData sildikten sonra: ${basketLiveData.value}")
+
                     }
 
                     productRemoveTask = false
@@ -129,6 +133,42 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             } else {
                 println("remove task devam ettiği için girilmedi !")
             }
+        }
+
+    }
+
+    fun addProductToBasket(userId: String,basketDetail: BasketDetailResponse){
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+
+            var basketResponse = BasketResponse(null,userId, arrayListOf(basketDetail))
+
+            var varmi = false
+            var returnHashMap: HashMap<String,Any>? = null
+            if((basketLiveData.value?.data?.basketProducts?.find { it.subProductId == basketDetail.subProductId }) != null){
+                varmi = true
+                println("aynı ürün var")
+            } else {
+                varmi = false
+                returnHashMap = basketRepository.addProduct(userId,basketResponse)
+            }
+
+
+            withContext(Dispatchers.Main){
+                if(varmi){
+                    println("aynı ürün var")
+                } else {
+                    if(returnHashMap!!.get("state") as Boolean){
+                        basketDetail.basketDetailId = returnHashMap["newBasketProductId"].toString()
+                        basketLiveData.value?.data?.basketProducts?.add(basketDetail)
+                    } else {
+                        println("basket ürün ekleme state false geldi")
+                    }
+                }
+
+
+            }
+
         }
 
     }

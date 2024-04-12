@@ -6,5 +6,4 @@ data class BasketDetailResponse(
     var subProductId: String?,
     var productId: String?,
     var quantity: Int?,
-    var total: Int?,
 )

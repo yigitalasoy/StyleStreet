@@ -7,11 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yigitalasoy.stylestreetapp.databinding.ActivityProductDetailBinding
+import com.yigitalasoy.stylestreetapp.model.BasketDetailResponse
 import com.yigitalasoy.stylestreetapp.model.ProductColorResponse
 import com.yigitalasoy.stylestreetapp.model.ProductSizeResponse
 import com.yigitalasoy.stylestreetapp.model.SubProductResponse
 import com.yigitalasoy.stylestreetapp.util.toast
+import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -20,20 +23,23 @@ class ProductDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductDetailBinding
 
     @Inject lateinit var productViewModel: ProductViewModel
+    @Inject lateinit var basketViewModel: BasketViewModel
+    @Inject lateinit var userViewModel: UserViewModel
     private lateinit var selectedSubProducts: ArrayList<SubProductResponse>
     private var subProductQuantity: Int = 1
     private val imageAdapter = ProductImageAdapter(arrayListOf())
     var selectedSubProduct: SubProductResponse? = null
     var coloritems = ArrayList<ProductColorResponse>()
-
+    private var selectedProductId: String? = null
+    private var selectedSubProductId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        var selectedProductId = intent.getStringExtra("selectedProductId")
-        var selectedSubProductId = intent.getStringExtra("selectedSubProductId")
+        selectedProductId = intent.getStringExtra("selectedProductId")
+        selectedSubProductId = intent.getStringExtra("selectedSubProductId")
 
         println("selected product ıd: $selectedProductId")
         println("selected subproduct ıd: $selectedSubProductId")
@@ -42,7 +48,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
 
         selectedProductId?.let {
-            selectedSubProducts = productViewModel.getProductByProductIdAndSizeId(selectedProductId,null)
+            selectedSubProducts = productViewModel.getProductByProductIdAndSizeId(selectedProductId!!,null)
         }
 
         var selectedProductSizeItems = ArrayList<ProductSizeResponse>()
@@ -111,6 +117,8 @@ class ProductDetailActivity : AppCompatActivity() {
                 binding.apply {
                     textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
                     textViewSubProductBasketPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
+                    textViewSubProductName.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductName
+                    selectedSubProductId = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductId
                 }
                 this@ProductDetailActivity.toast("tıklanan: ${itemSelected.colorName}")
 
@@ -149,6 +157,18 @@ class ProductDetailActivity : AppCompatActivity() {
                     textViewSubProductQuantity.text = subProductQuantity.toString()
                     textViewSubProductBasketPrice.text = (subProductQuantity * textViewSubProductPrice.text.toString().toInt()).toString()
                 }
+            }
+
+            buttonAddToBasket.setOnClickListener {
+
+                basketViewModel.addProductToBasket(userViewModel.userLiveData.value?.data?.id!!, BasketDetailResponse(
+                    null,
+                    basketViewModel.basketLiveData.value?.data?.basketId,
+                    selectedSubProductId,
+                    selectedProductId,
+                    textViewSubProductQuantity.text.toString().toInt()))
+
+
             }
 
             println("set selection: ${selectedProductSizeItems.distinctBy { it.productSizeId }.indexOf(selectedSubProduct?.subProductSizeId)}")

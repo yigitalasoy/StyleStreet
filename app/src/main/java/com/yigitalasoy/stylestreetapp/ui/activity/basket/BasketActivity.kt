@@ -25,7 +25,7 @@ class BasketActivity : AppCompatActivity() {
     private lateinit var basketProductAdapter: BasketProductAdapter
 
     private var SUB_TOTAL = 0
-    private var SHIPPING_COST = 30
+    private var SHIPPING_COST = 50
     private var BASKET_TOTAL = 0
 
 
@@ -88,6 +88,12 @@ class BasketActivity : AppCompatActivity() {
             println("basketViewModel.basketSubProductsLiveData.observe çalıştı")
             if(it.data != null){
                 SUB_TOTAL = 0
+                BASKET_TOTAL = 0
+                if(it.data.size != 0){
+                    SHIPPING_COST = 50
+                } else {
+                    SHIPPING_COST = 0
+                }
                 println("basketViewModel.basketSubProductsLiveData.observe null gelmedi")
 
                 basketProductAdapter.updateBasketSubProductList(it.data,basketViewModel.basketLiveData.value?.data!!)

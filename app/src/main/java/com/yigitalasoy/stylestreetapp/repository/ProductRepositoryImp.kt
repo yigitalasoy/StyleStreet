@@ -100,7 +100,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                                             subProductImageURL = hash[Constants.SUBPRODUCTRESPONSE_subProductImageURL] as ArrayList<String>
                                         )
                                     )
-                                    subProductNumber += 1
+                                    //subProductNumber += 1
                                 }
                             }
                         }
@@ -114,6 +114,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
 
                         if(testProduct.allProducts.size != 0){
                             productList.add(testProduct)
+                            subProductNumber += 1
                         }
 
                         //testProduct.allProducts.addAll(subProductList)
