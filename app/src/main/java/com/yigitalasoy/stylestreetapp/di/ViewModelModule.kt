@@ -9,6 +9,7 @@ import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
+import com.yigitalasoy.stylestreetapp.repository.WishListRepository
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
@@ -16,6 +17,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -81,6 +83,14 @@ object ViewModelModule {
         notificationRepository: NotificationRepository
     ): NotificationViewModel {
         return NotificationViewModel(notificationRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesWishListViewModel(
+        wishListRepository: WishListRepository
+    ): WishListViewModel {
+        return WishListViewModel(wishListRepository)
     }
 
 

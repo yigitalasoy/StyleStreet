@@ -25,6 +25,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -43,6 +44,7 @@ class MainFragment : Fragment() {
     @Inject lateinit var productSizeViewModel: ProductSizeViewModel
     @Inject lateinit var productColorViewModel: ProductColorViewModel
     @Inject lateinit var basketViewModel: BasketViewModel
+    @Inject lateinit var wishListViewModel: WishListViewModel
 
 
     private val categoryAdapter = CategoryAdapter(arrayListOf())
@@ -107,6 +109,7 @@ class MainFragment : Fragment() {
         productColorViewModel.getAllProductColors()
         productSizeViewModel.getAllProductSize()
         basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
+        wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
 
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
 

@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.ActivityProductDetailBinding
 import com.yigitalasoy.stylestreetapp.model.BasketDetailResponse
 import com.yigitalasoy.stylestreetapp.model.ProductColorResponse
@@ -15,6 +17,7 @@ import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -26,6 +29,9 @@ class ProductDetailActivity : AppCompatActivity() {
     @Inject lateinit var productViewModel: ProductViewModel
     @Inject lateinit var basketViewModel: BasketViewModel
     @Inject lateinit var userViewModel: UserViewModel
+    @Inject lateinit var wishListViewModel: WishListViewModel
+
+
     private lateinit var selectedSubProducts: ArrayList<SubProductResponse>
     private var subProductQuantity: Int = 1
     private val imageAdapter = ProductImageAdapter(arrayListOf())
@@ -46,6 +52,12 @@ class ProductDetailActivity : AppCompatActivity() {
         println("selected subproduct ıd: $selectedSubProductId")
 
         getSelectedSubProduct(selectedProductId, selectedSubProductId)
+
+        if(wishListViewModel.wishListLiveData.value?.data?.find { it.Product_Id == selectedProductId } != null){
+            binding.fabLike.setImageResource(R.drawable.heart_filled)
+        } else {
+            binding.fabLike.setImageResource(R.drawable.heart)
+        }
 
 
         selectedProductId?.let {
@@ -168,46 +180,17 @@ class ProductDetailActivity : AppCompatActivity() {
                     selectedSubProductId,
                     selectedProductId,
                     textViewSubProductQuantity.text.toString().toInt()),this@ProductDetailActivity, selectedSubProduct!!)
+            }
 
+            fabLike.setOnClickListener {
 
-                /*val dialog = Dialog(this@ProductDetailActivity)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setCancelable(false)
-                dialog.setContentView(R.layout.product_added_popup)
-                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-                val window: Window = dialog.window!!
-                val wlp = window.attributes
-
-                wlp.gravity = Gravity.BOTTOM
-                wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
-                window.setAttributes(wlp)
-
-                val displayMetrics = DisplayMetrics()
-                windowManager.defaultDisplay.getMetrics(displayMetrics)
-                val screenWidth = displayMetrics.widthPixels
-
-                val layoutParams: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
-                    screenWidth,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                dialog.window?.setLayout(layoutParams.width, layoutParams.height)
-
-                val buttonGoToBasket: Button = dialog.findViewById(R.id.buttonPopUpBasket)
-                val imageViewPopupImage: ImageView = dialog.findViewById(R.id.imageViewPopUpProductImage)
-                val textViewPopupProductName: TextView = dialog.findViewById(R.id.textViewPopUpProductName)
-
-                imageViewPopupImage.downloadImage(selectedSubProduct?.subProductImageURL!![0])
-                textViewPopupProductName.text = selectedSubProduct?.subProductName
-
-                buttonGoToBasket.setOnClickListener {
-                    val basketActivityIntent = Intent(this@ProductDetailActivity,BasketActivity::class.java)
-                    startActivity(basketActivityIntent)
-                    this@ProductDetailActivity.finish()
+                if (fabLike.drawable.constantState == ContextCompat.getDrawable(this@ProductDetailActivity, R.drawable.heart)?.constantState) {
+                    wishListViewModel.addProductToWishList(userViewModel.userLiveData.value?.data?.id!!,selectedProductId!!)
+                    binding.fabLike.setImageResource(R.drawable.heart_filled)
+                } else {
+                    wishListViewModel.removeProductToWishList(wishListViewModel.wishListLiveData.value?.data?.find { it.Product_Id == selectedProductId }?.Wish_Id!!)
+                    binding.fabLike.setImageResource(R.drawable.heart)
                 }
-
-                dialog.show()
-*/
 
             }
 

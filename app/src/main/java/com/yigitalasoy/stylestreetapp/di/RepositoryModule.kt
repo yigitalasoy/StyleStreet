@@ -16,6 +16,8 @@ import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepositoryImp
+import com.yigitalasoy.stylestreetapp.repository.WishListRepository
+import com.yigitalasoy.stylestreetapp.repository.WishListRepositoryImp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -81,6 +83,14 @@ object RepositoryModule {
         firebaseFirestore: FirebaseFirestore
     ): NotificationRepository{
         return NotificationRepositoryImp(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesWishListRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): WishListRepository{
+        return WishListRepositoryImp(firebaseFirestore)
     }
 
 }

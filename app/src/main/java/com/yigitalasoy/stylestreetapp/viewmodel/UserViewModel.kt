@@ -15,7 +15,6 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
-import com.yigitalasoy.stylestreetapp.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -157,7 +156,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
                     println("LINK SEND: ${email}")
                 } else {
-                    fragment.toast("DOES NOT EXIST EMAIL")
+                    //fragment.toast("DOES NOT EXIST EMAIL")
                     println("LINK error: ${email}")
                 }
             }
