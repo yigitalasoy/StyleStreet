@@ -4,12 +4,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
+import com.yigitalasoy.stylestreetapp.repository.NotificationRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
@@ -71,6 +73,14 @@ object ViewModelModule {
         basketRepository: BasketRepository
     ): BasketViewModel {
         return BasketViewModel(basketRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesNotificationViewModel(
+        notificationRepository: NotificationRepository
+    ): NotificationViewModel {
+        return NotificationViewModel(notificationRepository)
     }
 
 

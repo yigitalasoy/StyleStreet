@@ -1,13 +1,32 @@
 package com.yigitalasoy.stylestreetapp.viewmodel
 
+import android.app.Activity
+import android.app.Dialog
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Handler
+import android.os.Looper
+import android.util.DisplayMetrics
+import android.view.Gravity
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.BasketDetailResponse
 import com.yigitalasoy.stylestreetapp.model.BasketResponse
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.model.SubProductResponse
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
+import com.yigitalasoy.stylestreetapp.ui.activity.basket.BasketActivity
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.downloadImage
+import com.yigitalasoy.stylestreetapp.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -137,7 +156,7 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
     }
 
-    fun addProductToBasket(userId: String,basketDetail: BasketDetailResponse){
+    fun addProductToBasket(userId: String,basketDetail: BasketDetailResponse, activity: Activity,selectedSubProductResponse: SubProductResponse){
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
@@ -147,7 +166,6 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             var returnHashMap: HashMap<String,Any>? = null
             if((basketLiveData.value?.data?.basketProducts?.find { it.subProductId == basketDetail.subProductId }) != null){
                 varmi = true
-                println("aynı ürün var")
             } else {
                 varmi = false
                 returnHashMap = basketRepository.addProduct(userId,basketResponse)
@@ -157,10 +175,17 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             withContext(Dispatchers.Main){
                 if(varmi){
                     println("aynı ürün var")
+                    activity.toast("You already have this product in your basket")
                 } else {
-                    if(returnHashMap!!.get("state") as Boolean){
+                    if(returnHashMap!!["state"] as Boolean){
                         basketDetail.basketDetailId = returnHashMap["newBasketProductId"].toString()
+
                         basketLiveData.value?.data?.basketProducts?.add(basketDetail)
+                        basketLiveData.value = Resource.success(basketLiveData.value?.data)
+
+                        showPopUpAlert(activity,selectedSubProductResponse)
+
+
                     } else {
                         println("basket ürün ekleme state false geldi")
                     }
@@ -170,6 +195,52 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             }
 
         }
+
+    }
+
+    private fun showPopUpAlert(activity: Activity, selectedSubProductResponse: SubProductResponse) {
+        val dialog = Dialog(activity)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.product_added_popup)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val window: Window = dialog.window!!
+        val wlp = window.attributes
+
+        wlp.gravity = Gravity.BOTTOM
+        wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+        window.setAttributes(wlp)
+
+        val displayMetrics = DisplayMetrics()
+        activity.windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val screenWidth = displayMetrics.widthPixels
+
+        val layoutParams: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
+            screenWidth,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dialog.window?.setLayout(layoutParams.width, layoutParams.height)
+
+        val buttonGoToBasket: Button = dialog.findViewById(R.id.buttonPopUpBasket)
+        val imageViewPopupImage: ImageView = dialog.findViewById(R.id.imageViewPopUpProductImage)
+        val textViewPopupProductName: TextView = dialog.findViewById(R.id.textViewPopUpProductName)
+
+        imageViewPopupImage.downloadImage(selectedSubProductResponse?.subProductImageURL!![0])
+        textViewPopupProductName.text = selectedSubProductResponse?.subProductName
+
+        buttonGoToBasket.setOnClickListener {
+            val basketActivityIntent = Intent(activity, BasketActivity::class.java)
+            activity.startActivity(basketActivityIntent)
+            activity.finish()
+        }
+
+        dialog.show()
+
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            dialog.cancel()
+        }, 3000)
 
     }
 

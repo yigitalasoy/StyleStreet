@@ -22,6 +22,7 @@ import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
+import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
@@ -39,6 +40,7 @@ class LoginFragment : Fragment() {
     @Inject lateinit var userViewModel: UserViewModel
     @Inject lateinit var productColorViewModel: ProductColorViewModel
     @Inject lateinit var productSizeViewModel: ProductSizeViewModel
+    @Inject lateinit var basketViewModel: BasketViewModel
 
 
 
@@ -57,6 +59,8 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         // productViewModel.getNewInProduct()
         // productColorViewModel.getAllProductColors()
@@ -111,10 +115,13 @@ class LoginFragment : Fragment() {
                 } catch (e: Exception){
                     println(e.printStackTrace())
                 }
-
-
-
             }
+
+            textViewForgotPassword.setOnClickListener {
+                findNavController().navigate(R.id.action_loginFragment_to_recoverPasswordFragment)
+            }
+
+
         }
         observer()
 

@@ -10,11 +10,15 @@ import com.yigitalasoy.stylestreetapp.databinding.ActivityMainBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.basket.BasketActivity
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var mainActivityBinding: ActivityMainBinding
+
+    @Inject lateinit var basketViewModel: BasketViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +93,7 @@ class MainActivity : AppCompatActivity() {
 
             floatingButtonBasket.setOnClickListener {
 
-                imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
+                /*imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
                 imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
                 imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
                 imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
@@ -97,10 +101,10 @@ class MainActivity : AppCompatActivity() {
                 imageViewStickHome.hide()
                 imageViewStickHearth.hide()
                 imageViewStickProfile.hide()
-                imageViewStickNotification.hide()
+                imageViewStickNotification.hide()*/
 
 
-                val basketActivity = Intent(this@MainActivity,BasketActivity::class.java)
+                val basketActivity = Intent(this@MainActivity, BasketActivity::class.java)
                 startActivity(basketActivity)
 
 
@@ -108,10 +112,24 @@ class MainActivity : AppCompatActivity() {
 
             }
 
+            observe()
 
         }
 
 
 
     }
+
+    fun observe(){
+
+        basketViewModel.basketLiveData.observe(this){
+            if(it.data != null){
+                mainActivityBinding.textViewBasketQuantity.text = basketViewModel.basketLiveData.value?.data?.basketProducts?.size.toString()
+            }
+        }
+
+    }
+
+
+
 }

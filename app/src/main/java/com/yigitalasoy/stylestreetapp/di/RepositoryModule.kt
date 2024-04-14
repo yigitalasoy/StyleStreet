@@ -6,6 +6,8 @@ import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.repository.BasketRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepositoryImp
+import com.yigitalasoy.stylestreetapp.repository.NotificationRepository
+import com.yigitalasoy.stylestreetapp.repository.NotificationRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
@@ -71,6 +73,14 @@ object RepositoryModule {
         firebaseFirestore: FirebaseFirestore
     ): BasketRepository{
         return BasketRepositoryImp(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesNotificationRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): NotificationRepository{
+        return NotificationRepositoryImp(firebaseFirestore)
     }
 
 }

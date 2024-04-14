@@ -19,7 +19,7 @@ import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailAct
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
-import com.yigitalasoy.stylestreetapp.util.toast
+import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
@@ -42,6 +42,7 @@ class MainFragment : Fragment() {
     @Inject lateinit var categoryViewModel: CategoryViewModel
     @Inject lateinit var productSizeViewModel: ProductSizeViewModel
     @Inject lateinit var productColorViewModel: ProductColorViewModel
+    @Inject lateinit var basketViewModel: BasketViewModel
 
 
     private val categoryAdapter = CategoryAdapter(arrayListOf())
@@ -71,7 +72,7 @@ class MainFragment : Fragment() {
         newInProductAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
             override fun onItemClick(position: Any) {
 
-                this@MainFragment.toast(productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productName)
+                //this@MainFragment.toast(productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productName)
                 val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
                 productDetailActivity.putExtra("selectedProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productId)
                 productDetailActivity.putExtra("selectedSubProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.allProducts[0].subProductId)
@@ -105,6 +106,7 @@ class MainFragment : Fragment() {
         categoryViewModel.getAllCategories()
         productColorViewModel.getAllProductColors()
         productSizeViewModel.getAllProductSize()
+        basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
 
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
 
@@ -173,7 +175,7 @@ class MainFragment : Fragment() {
                         override fun onItemClick(Item: Any) {
                             mainFragmentBinding.editTextSearch.text.clear()
                             Item as ProductResponse
-                            this@MainFragment.toast("tiklanan product id: ${Item.productId}")
+                            //this@MainFragment.toast("tiklanan product id: ${Item.productId}")
                             val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
                             productDetailActivity.putExtra("selectedProductId", Item.productId)
                             productDetailActivity.putExtra("selectedSubProductId", Item.allProducts[0].subProductId)
@@ -202,7 +204,6 @@ class MainFragment : Fragment() {
         productColorViewModel.productColorLiveData.observe(viewLifecycleOwner){ colors ->
             colors?.let {
                 productViewModel.updateProductColorName(it.data!!)
-
             }
         }
 

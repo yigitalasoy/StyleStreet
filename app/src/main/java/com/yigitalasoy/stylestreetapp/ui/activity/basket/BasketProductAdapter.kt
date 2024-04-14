@@ -93,17 +93,24 @@ class BasketProductAdapter(val activity: Activity,
             }
 
             textViewDeleteText.setOnClickListener {
+                deleteProduct(position)
+            }
 
-                val dataTransferList = mapOf(
-                    "subProductId" to productList[position].subProductId,
-                    "type" to "remove",
-                    "position" to position.toString())
-                onItemClickListener.onItemClick(dataTransferList)
-
+            imageViewDelete.setOnClickListener {
+                deleteProduct(position)
             }
 
 
         }
+    }
+
+    private fun deleteProduct(position: Int) {
+        val dataTransferList = mapOf(
+            "subProductId" to productList[position].subProductId,
+            "type" to "remove",
+            "position" to position.toString()
+        )
+        onItemClickListener.onItemClick(dataTransferList)
     }
 
     fun updateBasketSubProductList(newProductList: List<SubProductResponse>,newBasketData: BasketResponse){

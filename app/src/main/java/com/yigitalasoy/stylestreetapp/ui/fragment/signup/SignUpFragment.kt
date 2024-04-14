@@ -13,7 +13,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
@@ -86,9 +85,6 @@ class SignUpFragment : Fragment() {
 
     }
 
-    private fun init() {
-        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
-    }
 
     fun getUser(): UserResponse {
         return UserResponse(
@@ -104,10 +100,12 @@ class SignUpFragment : Fragment() {
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){
             it?.let {
-                Toast.makeText(context,"Succesfully registered", Toast.LENGTH_LONG).show()
-                this.view?.let {view ->
-                    val action = SignUpFragmentDirections.actionSignUpFragmentToLoginFragment()
-                    Navigation.findNavController(view).navigate(action)
+                if(it.data != null){
+                    Toast.makeText(context,"Succesfully registered", Toast.LENGTH_LONG).show()
+                    this.view?.let {view ->
+                        val action = SignUpFragmentDirections.actionSignUpFragmentToLoginFragment()
+                        Navigation.findNavController(view).navigate(action)
+                    }
                 }
             }
         }

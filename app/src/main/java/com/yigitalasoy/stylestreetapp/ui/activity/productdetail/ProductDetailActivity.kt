@@ -18,6 +18,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class ProductDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductDetailBinding
@@ -95,7 +96,7 @@ class ProductDetailActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                this@ProductDetailActivity.toast("item seçilmedi")
+                //this@ProductDetailActivity.toast("item seçilmedi")
             }
         }
         binding.spinnerProductSize.setSelection(selectedProductSizeItems.distinctBy { it.productSizeId }.indexOf(selectedSubProduct?.subProductSizeId))
@@ -120,12 +121,12 @@ class ProductDetailActivity : AppCompatActivity() {
                     textViewSubProductName.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductName
                     selectedSubProductId = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductId
                 }
-                this@ProductDetailActivity.toast("tıklanan: ${itemSelected.colorName}")
+                //this@ProductDetailActivity.toast("tıklanan: ${itemSelected.colorName}")
 
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                this@ProductDetailActivity.toast("item seçilmedi")
+                //this@ProductDetailActivity.toast("item seçilmedi")
             }
         }
 
@@ -166,8 +167,47 @@ class ProductDetailActivity : AppCompatActivity() {
                     basketViewModel.basketLiveData.value?.data?.basketId,
                     selectedSubProductId,
                     selectedProductId,
-                    textViewSubProductQuantity.text.toString().toInt()))
+                    textViewSubProductQuantity.text.toString().toInt()),this@ProductDetailActivity, selectedSubProduct!!)
 
+
+                /*val dialog = Dialog(this@ProductDetailActivity)
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+                dialog.setCancelable(false)
+                dialog.setContentView(R.layout.product_added_popup)
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+                val window: Window = dialog.window!!
+                val wlp = window.attributes
+
+                wlp.gravity = Gravity.BOTTOM
+                wlp.flags = wlp.flags and WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv()
+                window.setAttributes(wlp)
+
+                val displayMetrics = DisplayMetrics()
+                windowManager.defaultDisplay.getMetrics(displayMetrics)
+                val screenWidth = displayMetrics.widthPixels
+
+                val layoutParams: ViewGroup.LayoutParams = ViewGroup.LayoutParams(
+                    screenWidth,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                dialog.window?.setLayout(layoutParams.width, layoutParams.height)
+
+                val buttonGoToBasket: Button = dialog.findViewById(R.id.buttonPopUpBasket)
+                val imageViewPopupImage: ImageView = dialog.findViewById(R.id.imageViewPopUpProductImage)
+                val textViewPopupProductName: TextView = dialog.findViewById(R.id.textViewPopUpProductName)
+
+                imageViewPopupImage.downloadImage(selectedSubProduct?.subProductImageURL!![0])
+                textViewPopupProductName.text = selectedSubProduct?.subProductName
+
+                buttonGoToBasket.setOnClickListener {
+                    val basketActivityIntent = Intent(this@ProductDetailActivity,BasketActivity::class.java)
+                    startActivity(basketActivityIntent)
+                    this@ProductDetailActivity.finish()
+                }
+
+                dialog.show()
+*/
 
             }
 

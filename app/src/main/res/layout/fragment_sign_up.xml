@@ -26,14 +26,19 @@
 
                 <ImageView
                     android:id="@+id/imageViewBackButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_weight="1"
-                    android:src="@drawable/back_arrow"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/background"
+                    android:clickable="true"
+                    android:scrollX="2dp"
+                    android:scrollY="2dp"
+                    app:borderWidth="0dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:maxImageSize="38dp"
+                    app:srcCompat="@drawable/arrowleft_white" />
 
                 <ImageView
                     android:id="@+id/imageView2"

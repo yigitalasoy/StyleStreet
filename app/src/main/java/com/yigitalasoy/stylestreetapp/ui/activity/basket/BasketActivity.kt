@@ -35,7 +35,7 @@ class BasketActivity : AppCompatActivity() {
         _binding = ActivityBasketBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
+        //basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
 
         basketProductAdapter = BasketProductAdapter(this,
             arrayListOf(), null, object : ItemClickListener{

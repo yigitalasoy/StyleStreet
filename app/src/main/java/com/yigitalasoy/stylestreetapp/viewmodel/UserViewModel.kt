@@ -3,6 +3,7 @@ package com.yigitalasoy.stylestreetapp.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.core.content.ContextCompat.getString
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -14,6 +15,7 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +62,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     liveDataLoading(false)
                 } else {
                     userLiveData.value = databaseUser
+                    println("user live data değişti: ${userLiveData.value!!.data}")
                     //isLogin.value = Resource.success(true)
                     liveDataLoading(false)
                     liveDataError("userLogin", false)
@@ -106,6 +109,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     liveDataError("REGISTER SUCCESS",false)
                     liveDataLoading(false)
                     userLiveData.value = googleLoginUser
+                    println("user live data değişti: ${userLiveData.value!!.data}")
                     //isLogin.value = Resource.success(true)
                 } else {
                     liveDataError("Error Firebase register: ${googleLoginUser.message}",true)
@@ -139,6 +143,25 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
         //isLogin.value = Resource.success(false)
         userLiveData.value = Resource.success(null)
+
+    }
+
+    fun sendResetPasswordLink(email: String, fragment: Fragment){
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val resetPasswordState = userRepository.resetPassword(email)
+
+            withContext(Dispatchers.Main){
+                if(resetPasswordState){
+                    Log.e("LINK SEND","user email: ${email}")
+
+                    println("LINK SEND: ${email}")
+                } else {
+                    fragment.toast("DOES NOT EXIST EMAIL")
+                    println("LINK error: ${email}")
+                }
+            }
+        }
 
     }
 

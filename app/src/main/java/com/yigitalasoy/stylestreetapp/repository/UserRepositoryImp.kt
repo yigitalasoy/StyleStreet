@@ -135,6 +135,18 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             Resource.error(e.message.toString(),null)
         }
+    }
+
+    override suspend fun resetPassword(email: String): Boolean {
+
+        return try {
+            val a = auth.sendPasswordResetEmail(email)
+            a.isSuccessful
+        } catch (e: Exception){
+            false
+        }
 
     }
+
+
 }

@@ -18,4 +18,6 @@ interface UserRepository {
 
     suspend fun loginWithGoogle(account: GoogleSignInAccount?): Resource<UserResponse>
 
+    suspend fun resetPassword(email: String): Boolean
+
 }
