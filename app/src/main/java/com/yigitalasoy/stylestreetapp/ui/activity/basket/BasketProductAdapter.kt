@@ -50,8 +50,8 @@ class BasketProductAdapter(val activity: Activity,
 
             textViewBasketProductName.text = productList[position].subProductName
             textViewBasketProductQuantity.text = basketData?.basketProducts?.find { it.subProductId == productList[position].subProductId}?.quantity.toString()
-            textViewBasketProductSize.text = "Beden: ${productList[position].subProductSizeId.productSizeName}"
-            textViewBasketProductColor.text = "Renk: ${productList[position].subProductColorId.colorName}"
+            textViewBasketProductSize.text = "Beden: ${productList[position].subProductSizeId?.productSizeName}"
+            textViewBasketProductColor.text = "Renk: ${productList[position].subProductColorId?.colorName}"
             textViewBasketProductTotal.text = "${productList[position].subProductPrice} TL"
 
             buttonIncreaseProductQuantity.setOnClickListener {

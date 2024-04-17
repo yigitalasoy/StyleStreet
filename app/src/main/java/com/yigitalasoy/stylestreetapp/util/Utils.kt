@@ -6,9 +6,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.yigitalasoy.stylestreetapp.model.UserResponse
 
-fun Map<String, Any>.mapToObject(): UserResponse {
+/*fun Map<String, Any>.mapToObject(): UserResponse {
     return UserResponse(
         id = this["id"].toString(),
         name = this["name"].toString(),
@@ -16,7 +15,7 @@ fun Map<String, Any>.mapToObject(): UserResponse {
         email = this["email"].toString(),
         password = this["password"].toString()
     )
-}
+}*/
 
 fun View.hide(){
     visibility = View.GONE

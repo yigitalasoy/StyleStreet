@@ -68,15 +68,17 @@ class SignUpFragment : Fragment() {
             }
 
             buttonSignUp.setOnClickListener {
-                if(!emailValidation && !isBigChar && !isNumber && !isSevenChar){
+                if(emailValidation && isBigChar && isNumber && isSevenChar){
                     //kayıt olma işlemi yapılacak
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANDI")
+                    this@SignUpFragment.toast("Successfully registered.")
 
                     userViewModel.userSignUp(getUser())
 
 
                 } else {
-                    Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANMADI")
+                    this@SignUpFragment.toast("Please enter your email and password according to the rules.")
+                    Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANMADI isSevenChar:$isSevenChar emailValidation:$emailValidation isBigChar:$isBigChar isNumber:$isNumber")
                 }
             }
         }
@@ -112,7 +114,7 @@ class SignUpFragment : Fragment() {
 
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
-                if(it.message.equals("REGISTER SUCCESS")){
+                if(it.message.equals("Error: REGISTER SUCCESS")){
                     findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
                     this.toast("Register successfully")
                 }

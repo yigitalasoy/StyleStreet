@@ -71,7 +71,7 @@ class WishListViewModel @Inject constructor(var wishListRepository: WishListRepo
 
             withContext(Dispatchers.Main){
                 if(response){
-                    wishListLiveData.value?.data?.remove(wishListLiveData.value?.data?.find { it.Wish_Id == wishId })
+                    wishListLiveData.value?.data?.remove(wishListLiveData.value?.data?.find { it.wish_Id == wishId })
                     wishListLiveData.value = Resource.success(wishListLiveData.value?.data)
                 } else {
                     wishListError.value = Resource.error("HATA",true)

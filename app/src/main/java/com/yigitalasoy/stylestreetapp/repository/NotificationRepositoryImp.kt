@@ -18,13 +18,15 @@ class NotificationRepositoryImp(val firebaseFirestore: FirebaseFirestore): Notif
             docRef.documents.let {results->
 
                 for (notification in results){
-                    notificationList.add(NotificationResponse(
+                    /*notificationList.add(NotificationResponse(
                         notification.data!!["Notification_Id"].toString(),
                         notification.data!!["User_Id"].toString(),
                         notification.data!!["Notification_Message"].toString(),
                         notification.data!!["Notification_Date"].toString(),
                         notification.data!!["It_Seen"].toString()
-                    ))
+                    ))*/
+
+                    notificationList.add(notification.toObject(NotificationResponse::class.java)!!)
 
                 }
                 return@let Resource.success(notificationList)

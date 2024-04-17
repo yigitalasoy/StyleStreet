@@ -53,7 +53,7 @@ class ProductDetailActivity : AppCompatActivity() {
 
         getSelectedSubProduct(selectedProductId, selectedSubProductId)
 
-        if(wishListViewModel.wishListLiveData.value?.data?.find { it.Product_Id == selectedProductId } != null){
+        if(wishListViewModel.wishListLiveData.value?.data?.find { it.product_Id == selectedProductId } != null){
             binding.fabLike.setImageResource(R.drawable.heart_filled)
         } else {
             binding.fabLike.setImageResource(R.drawable.heart)
@@ -188,7 +188,7 @@ class ProductDetailActivity : AppCompatActivity() {
                     wishListViewModel.addProductToWishList(userViewModel.userLiveData.value?.data?.id!!,selectedProductId!!)
                     binding.fabLike.setImageResource(R.drawable.heart_filled)
                 } else {
-                    wishListViewModel.removeProductToWishList(wishListViewModel.wishListLiveData.value?.data?.find { it.Product_Id == selectedProductId }?.Wish_Id!!)
+                    wishListViewModel.removeProductToWishList(wishListViewModel.wishListLiveData.value?.data?.find { it.product_Id == selectedProductId }?.wish_Id!!)
                     binding.fabLike.setImageResource(R.drawable.heart)
                 }
 

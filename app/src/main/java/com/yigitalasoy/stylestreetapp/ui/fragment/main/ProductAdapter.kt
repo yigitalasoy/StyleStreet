@@ -32,10 +32,10 @@ class ProductAdapter(
         binding = ProductRowBinding.bind(holder.itemView)
         binding.textViewProductName.text = productList[position].productName
 
-        if(productList[position].allProducts.size != 0){
+        if(productList[position].allProducts?.size != 0){
             productList[position].allProducts.let {
-                binding.textViewPrice.text = productList[position].allProducts[0].subProductPrice
-                productList[position].allProducts[0].subProductImageURL?.get(0)?.let{
+                binding.textViewPrice.text = productList[position].allProducts?.get(0)!!.subProductPrice
+                productList[position].allProducts?.get(0)!!.subProductImageURL?.get(0)?.let{
                     binding.imageViewProductImage.downloadImage(it)
                 }
 

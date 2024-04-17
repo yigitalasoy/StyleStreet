@@ -239,7 +239,9 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
 
         Handler(Looper.getMainLooper()).postDelayed({
-            dialog.cancel()
+            if(dialog.isShowing){
+                dialog.cancel()
+            }
         }, 3000)
 
     }
