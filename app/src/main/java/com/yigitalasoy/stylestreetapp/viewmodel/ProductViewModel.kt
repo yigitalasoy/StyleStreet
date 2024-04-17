@@ -74,7 +74,7 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
 
     fun searchProduct(searchString: String): ArrayList<ProductResponse>?{
-        return allProductLiveData.value?.data?.filter {it.productName.lowercase().contains(searchString.lowercase())} as ArrayList<ProductResponse>?
+        return allProductLiveData.value?.data?.filter {it.productName!!.lowercase().contains(searchString.lowercase())} as ArrayList<ProductResponse>?
     }
 
     fun updateProductColorName(colors: ArrayList<ProductColorResponse>){
@@ -107,9 +107,9 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             if(allProductLiveData.value?.data != null){
                 for (product in allProductLiveData.value?.data!!){
-                    for (subproduct in product.allProducts){
-                        subproduct.subProductColorId.colorName = productByIdMap[subproduct.subProductColorId.colorId]?.colorName
-                        subproduct.subProductColorId.colorCode = productByIdMap[subproduct.subProductColorId.colorId]?.colorCode
+                    for (subproduct in product.allProducts!!){
+                        subproduct.subProductColorId?.colorName = productByIdMap[subproduct.subProductColorId?.colorId]?.colorName
+                        subproduct.subProductColorId?.colorCode = productByIdMap[subproduct.subProductColorId?.colorId]?.colorCode
                     }
                 }
             }
@@ -126,8 +126,8 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             if(allProductLiveData.value?.data != null){
                 for (product in allProductLiveData.value?.data!!){
-                    for (subproduct in product.allProducts){
-                        subproduct.subProductSizeId.productSizeName = productByIdMap[subproduct.subProductSizeId.productSizeId]?.productSizeName
+                    for (subproduct in product.allProducts!!){
+                        subproduct.subProductSizeId?.productSizeName = productByIdMap[subproduct.subProductSizeId?.productSizeId]?.productSizeName
                     }
                 }
             }
@@ -142,8 +142,8 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
 
             if(allProductLiveData.value?.data != null){
                 for (product in allProductLiveData.value?.data!!){
-                    product.categoryId.categoryName = productByIdMap[product.categoryId.categoryId]?.categoryName
-                    product.categoryId.categoryImage = productByIdMap[product.categoryId.categoryId]?.categoryImage
+                    product.categoryId!!.categoryName = productByIdMap[product.categoryId!!.categoryId]?.categoryName
+                    product.categoryId!!.categoryImage = productByIdMap[product.categoryId!!.categoryId]?.categoryImage
 
                 }
             }
@@ -162,7 +162,7 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             }*/
 
             for(i in allProductLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts!!){
-                if(i.subProductSizeId.productSizeId == selectedSizeId){
+                if(i.subProductSizeId?.productSizeId == selectedSizeId){
                     array.add(i)
                 }
             }

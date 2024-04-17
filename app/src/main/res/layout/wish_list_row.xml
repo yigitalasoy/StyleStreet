@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
     android:background="@drawable/card_view_border"
-    android:backgroundTint="@color/background">
+    android:backgroundTint="#EFEFEF">
 
     <ImageView
         android:id="@+id/imageViewProductImage"
@@ -25,11 +25,10 @@
         android:layout_width="210dp"
         android:layout_height="22dp"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="10dp"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageViewProductImage"
         app:layout_constraintStart_toEndOf="@+id/imageViewProductImage"
         app:layout_constraintTop_toTopOf="@+id/imageViewProductImage" />
 
@@ -37,9 +36,11 @@
         android:id="@+id/textViewProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
         android:text="TextView"
-        android:textColor="@color/black"
+        android:textColor="@color/background"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textViewProductName"
         app:layout_constraintTop_toBottomOf="@+id/textViewProductName" />
 
@@ -48,8 +49,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" TL"
-        android:textColor="@color/black"
+        android:textColor="@color/background"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textViewProductPrice"
         app:layout_constraintStart_toEndOf="@+id/textViewProductPrice"
         app:layout_constraintTop_toTopOf="@+id/textViewProductPrice" />

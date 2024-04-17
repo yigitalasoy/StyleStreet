@@ -51,7 +51,7 @@ class SearchAdapter (
                 val filterPattern = constraint.toString().toLowerCase().trim()
 
                 for (item in productFull) {
-                    if (item.productName.toLowerCase().contains(filterPattern)) {
+                    if (item.productName!!.toLowerCase().contains(filterPattern)) {
                         suggest.add(item)
                     }
                 }
@@ -73,7 +73,7 @@ class SearchAdapter (
         }
 
         override fun convertResultToString(resultValue: Any?): CharSequence {
-            return (resultValue as ProductResponse).productName
+            return (resultValue as ProductResponse).productName!!
         }
     }
 

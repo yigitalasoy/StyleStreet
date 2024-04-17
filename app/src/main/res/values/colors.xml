@@ -14,4 +14,6 @@
     <color name="darkblue">#0000AC</color>
     <color name="yellow">#F7FF00</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="remove_red">#bb4841</color>
+
 </resources>

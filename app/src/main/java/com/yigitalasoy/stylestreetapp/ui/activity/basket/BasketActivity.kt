@@ -99,7 +99,7 @@ class BasketActivity : AppCompatActivity() {
                 basketProductAdapter.updateBasketSubProductList(it.data,basketViewModel.basketLiveData.value?.data!!)
 
                 it.data?.forEach {subProduct ->
-                    SUB_TOTAL += (subProduct.subProductPrice.toInt()) * (basketViewModel.basketLiveData.value?.data?.basketProducts?.find { it.subProductId == subProduct.subProductId }!!.quantity!!.toInt())
+                    SUB_TOTAL += (subProduct.subProductPrice!!.toInt()) * (basketViewModel.basketLiveData.value?.data?.basketProducts?.find { it.subProductId == subProduct.subProductId }!!.quantity!!.toInt())
                     BASKET_TOTAL = SUB_TOTAL + SHIPPING_COST
                 }
 

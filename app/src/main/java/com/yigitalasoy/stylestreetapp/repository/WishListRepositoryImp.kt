@@ -15,14 +15,16 @@ class WishListRepositoryImp(val firebaseFirestore: FirebaseFirestore): WishListR
         return try {
             docRef.documents.let {
                 for (wish in it){
-                    wishList.add(
+                    /*wishList.add(
                         WishListResponse(
                             wish.data!!["Wish_Id"].toString(),
                             wish.data!!["User_Id"].toString(),
                             wish.data!!["Product_Id"].toString(),
                         )
-                    )
+                    )*/
+                    wishList.add(wish.toObject(WishListResponse::class.java)!!)
                 }
+                println("for bitti: ${wishList}")
                 return@let Resource.success(wishList)
             }
 
@@ -37,13 +39,14 @@ class WishListRepositoryImp(val firebaseFirestore: FirebaseFirestore): WishListR
         val docRef = firebaseFirestore.collection("tbl_WishList")
         val newId = docRef.document().id
 
-        val state = docRef.document(newId).set(
+        /*val state = docRef.document(newId).set(
             hashMapOf(
                 "User_Id" to userId,
                 "Product_Id" to productId,
                 "Wish_Id" to newId
             )
-        )
+        )*/
+        val state = docRef.document(newId).set(WishListResponse(newId,userId,productId))
         state.await()
 
         if(state.isSuccessful){

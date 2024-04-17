@@ -17,6 +17,7 @@ import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailActivity
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
+import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
@@ -77,7 +78,9 @@ class MainFragment : Fragment() {
                 //this@MainFragment.toast(productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productName)
                 val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
                 productDetailActivity.putExtra("selectedProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productId)
-                productDetailActivity.putExtra("selectedSubProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.allProducts[0].subProductId)
+                productDetailActivity.putExtra("selectedSubProductId",
+                    productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.allProducts?.get(0)?.subProductId
+                )
                 startActivity(productDetailActivity)
 
 
@@ -105,17 +108,34 @@ class MainFragment : Fragment() {
             adapter = newInProductAdapter
         }
 
-        categoryViewModel.getAllCategories()
-        productColorViewModel.getAllProductColors()
-        productSizeViewModel.getAllProductSize()
-        basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
-        wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
+        if(categoryViewModel.categoryLiveData.value?.data == null ||
+            productColorViewModel.productColorLiveData.value?.data == null ||
+            productSizeViewModel.productSizeLiveData.value?.data == null ||
+            basketViewModel.basketLiveData.value?.data == null ||
+            wishListViewModel.wishListLiveData.value?.data == null){
+
+            categoryViewModel.getAllCategories()
+            productColorViewModel.getAllProductColors()
+            productSizeViewModel.getAllProductSize()
+            basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
+            wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
+        }
+
 
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
 
             //Firebase.auth.signOut()
 
             userViewModel.signOut(requireContext())
+
+            productViewModel.allProductLiveData.value = Resource.success(null)
+            productViewModel.newInProductLiveData.value = Resource.success(null)
+            categoryViewModel.categoryLiveData.value = Resource.success(null)
+            productSizeViewModel.productSizeLiveData.value = Resource.success(null)
+            productColorViewModel.productColorLiveData.value = Resource.success(null)
+            basketViewModel.basketLiveData.value = Resource.success(null)
+            basketViewModel.basketSubProductsLiveData.value = Resource.success(null)
+            wishListViewModel.wishListLiveData.value = Resource.success(null)
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.googleServerClientId))
@@ -138,6 +158,7 @@ class MainFragment : Fragment() {
             if(it.data!!){
                 mainFragmentBinding.progressBarFragmentMain.show()
                 mainFragmentBinding.scrollViewFragmentMain.hide()
+
             } else {
                 mainFragmentBinding.progressBarFragmentMain.hide()
                 mainFragmentBinding.scrollViewFragmentMain.show()
@@ -153,15 +174,18 @@ class MainFragment : Fragment() {
         }
 
         categoryViewModel.categoryLiveData.observe(viewLifecycleOwner){ list ->
-            list?.let {
-                productViewModel.updateProductCategories(it.data!!)
-                categoryAdapter.updateCategoryList(it.data)
+            if(list.data != null) {
+                list?.let {
+                    productViewModel.updateProductCategories(it.data!!)
+                    categoryAdapter.updateCategoryList(it.data)
+                }
             }
         }
 
         productViewModel.allProductLiveData.observe(viewLifecycleOwner){ products ->
-            products?.let {
-                if(it.data != null){
+            if(products.data != null){
+
+                products?.let {
                     println("product observe çalıştı")
 
                     /*val searchAdapter = TestAdapter(requireContext(), products.data!!)
@@ -181,7 +205,9 @@ class MainFragment : Fragment() {
                             //this@MainFragment.toast("tiklanan product id: ${Item.productId}")
                             val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
                             productDetailActivity.putExtra("selectedProductId", Item.productId)
-                            productDetailActivity.putExtra("selectedSubProductId", Item.allProducts[0].subProductId)
+                            productDetailActivity.putExtra("selectedSubProductId",
+                                Item.allProducts?.get(0)?.subProductId
+                            )
                             startActivity(productDetailActivity)
 
 
@@ -191,28 +217,32 @@ class MainFragment : Fragment() {
                     mainFragmentBinding.editTextSearch.apply {
                         setAdapter(searchAdapter)
                     }
-
-
-
                 }
             }
         }
 
         productViewModel.newInProductLiveData.observe(viewLifecycleOwner){
-            it?.let {
-                newInProductAdapter.updateProductList(it.data!!)
+            if(it.data != null){
+                it?.let {
+                    newInProductAdapter.updateProductList(it.data!!)
+                }
             }
+
         }
 
         productColorViewModel.productColorLiveData.observe(viewLifecycleOwner){ colors ->
-            colors?.let {
-                productViewModel.updateProductColorName(it.data!!)
+            if(colors.data != null) {
+                colors?.let {
+                    productViewModel.updateProductColorName(it.data!!)
+                }
             }
         }
 
         productSizeViewModel.productSizeLiveData.observe(viewLifecycleOwner){ sizeList ->
-            sizeList?.let {
-                productViewModel.updateProductSizeName(it.data!!)
+            if(sizeList.data != null) {
+                sizeList?.let {
+                    productViewModel.updateProductSizeName(it.data!!)
+                }
             }
         }
 

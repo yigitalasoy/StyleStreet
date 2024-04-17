@@ -10,7 +10,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.Resource
-import com.yigitalasoy.stylestreetapp.util.mapToObject
 import kotlinx.coroutines.tasks.await
 
 
@@ -45,15 +44,19 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
 
             if (document != null) {
-                Log.e("getUserDataFromDatabase succes","succes user: ${document.data?.mapToObject().toString()}")
-                Resource.success(document.data?.mapToObject())
+                //Log.e("getUserDataFromDatabase succes","succes user: ${document.data?.mapToObject().toString()}")
+                println("user: ${document.toObject(UserResponse::class.java)}")
+
+                //Resource.success(document.data?.mapToObject())
+                Resource.success(document.toObject(UserResponse::class.java))
             } else {
                 Log.d(ContentValues.TAG, "No such document")
                 Resource.error("getUserDataFromDatabase error :",null)
 
             }
         } catch (e: Exception){
-            Resource.error("getUserDataFromDatabase error :",null)
+            //Resource.error("getUserDataFromDatabase error :",null)
+            Resource.error("getUserDataFromDatabase error : ${e.message.toString()}",null)
         }
 
     }
