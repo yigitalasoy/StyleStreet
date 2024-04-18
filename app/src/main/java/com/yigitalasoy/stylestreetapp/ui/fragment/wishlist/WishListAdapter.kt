@@ -35,9 +35,10 @@ class WishListAdapter(val wishList: ArrayList<WishListResponse>,val productList:
 
 
         binding.apply {
-            imageViewProductImage.downloadImage(filteredProductList.find { it.productId == filteredWishList[position].product_Id }!!.allProducts?.get(0)!!.subProductImageURL?.get(0)!!)
-            textViewProductName.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }!!.allProducts?.get(0)!!.subProductName
-            textViewProductPrice.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }!!.allProducts?.get(0)!!.subProductPrice
+
+            imageViewProductImage.downloadImage(filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductImageURL?.get(0))
+            textViewProductName.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductName
+            textViewProductPrice.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductPrice
         }
 
 

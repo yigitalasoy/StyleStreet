@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentWishListBinding
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
+import com.yigitalasoy.stylestreetapp.ui.fragment.main.MainFragment
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
@@ -41,13 +41,14 @@ class WishListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        println("oncreate")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        println("onCreateView")
         _binding = FragmentWishListBinding.inflate(inflater,container,false)
         val view = binding.root
         return view.rootView
@@ -55,7 +56,7 @@ class WishListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        println("onViewCreated")
         wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
 
 
@@ -94,7 +95,15 @@ class WishListFragment : Fragment() {
             }
 
             buttonStartShopping.setOnClickListener {
-                findNavController().navigate(R.id.action_wishListFragment_to_mainFragment)
+
+
+                val fragmentManager = activity?.supportFragmentManager
+                val fragmentTransaction = fragmentManager?.beginTransaction()
+                fragmentTransaction?.replace(R.id.fragmentContainerView, MainFragment())
+                fragmentManager?.popBackStack()
+                fragmentTransaction?.commit()
+
+
             }
 
             val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT){
@@ -161,7 +170,7 @@ class WishListFragment : Fragment() {
     }
 
 
-    private fun observe(){
+    fun observe(){
         wishListViewModel.wishListLiveData.observe(viewLifecycleOwner){wishList->
             wishList?.let {
                 if(it.data?.size != 0){
@@ -190,13 +199,20 @@ class WishListFragment : Fragment() {
             }
         }
 
-        wishListViewModel.wishListError.observe(viewLifecycleOwner){
-            if(it.message != null){
-                println("WİSH LİST VİEW MODEL ERROR: ${it.message}")
+        /*wishListViewModel.wishListError.observe(this.viewLifecycleOwner){
+            it?.let{
+                if(it.message != null){
+                    println("WİSH LİST VİEW MODEL ERROR: ${it.message}")
+                }
             }
-        }
+        }*/
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        println("destroy edildi.")
+        wishListViewModel.wishListError.removeObservers(viewLifecycleOwner)
+    }
 
 }
