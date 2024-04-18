@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentSignUpBinding
 import com.yigitalasoy.stylestreetapp.model.UserResponse
+import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -71,10 +72,8 @@ class SignUpFragment : Fragment() {
                 if(emailValidation && isBigChar && isNumber && isSevenChar){
                     //kayıt olma işlemi yapılacak
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANDI")
-                    this@SignUpFragment.toast("Successfully registered.")
 
                     userViewModel.userSignUp(getUser())
-
 
                 } else {
                     this@SignUpFragment.toast("Please enter your email and password according to the rules.")
@@ -114,12 +113,14 @@ class SignUpFragment : Fragment() {
 
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
-                if(it.message.equals("Error: REGISTER SUCCESS")){
+                if(it.message.equals("REGISTER SUCCESS")){
                     findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                    userViewModel.userError.value = Resource.error("",null)
                     this.toast("Register successfully")
                 }
-                if(it.data!!){
+                if(it.data == true){
                     binding.textViewSignupError.show()
+                    this.toast(it.message.toString())
                 } else {
                     binding.textViewSignupError.hide()
                 }
@@ -128,7 +129,7 @@ class SignUpFragment : Fragment() {
 
         userViewModel.userLoading.observe(viewLifecycleOwner){
             it?.let {
-                if(it.data!!){
+                if(it.data == true){
                     binding.progressBarSignupLoading.show()
                 } else {
                     binding.progressBarSignupLoading.hide()
@@ -180,16 +181,18 @@ class SignUpFragment : Fragment() {
 
 
     fun checkEmailValidation() {
-        val emailRegex = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+        /*val emailRegex = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                 "\\@" +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
                 "(" +
                 "\\." +
                 "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                ")+"
+                ")+"*/
 
+        val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$")
         binding.apply {
-            emailValidation = editTextEmail.text.toString().matches(emailRegex.toRegex())
+            //emailValidation = editTextEmail.text.toString().matches(emailRegex.toRegex())
+            emailValidation = emailRegex.matches(editTextEmail.text.toString())
 
             if (emailValidation) {
                 editTextEmail.backgroundTintList =

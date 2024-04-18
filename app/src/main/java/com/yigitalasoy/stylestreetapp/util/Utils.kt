@@ -33,7 +33,7 @@ fun Activity.toast(text: String){
     Toast.makeText(this,text,Toast.LENGTH_LONG).show()
 }
 
-fun ImageView.downloadImage(imageUrl: String){
+fun ImageView.downloadImage(imageUrl: String? = ""){
     Glide.with(context)
         .load(imageUrl)
         .into(this)

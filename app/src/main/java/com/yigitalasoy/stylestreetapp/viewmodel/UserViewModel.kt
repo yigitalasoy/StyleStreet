@@ -15,6 +15,7 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -56,7 +57,32 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
             Log.e("DATABASE LOGIN: ","${databaseUser.message} ID=${databaseUser.data?.id}")
 
             withContext(Dispatchers.Main){
-                if(firebaseUser.data==null || databaseUser.data==null){
+
+
+                when (firebaseUser.status) {
+                    Status.SUCCESS ->{
+                        if(databaseUser.status == Status.SUCCESS){
+                            userLiveData.value = databaseUser
+                            println("user live data değişti: ${userLiveData.value!!.data}")
+                            //isLogin.value = Resource.success(true)
+                            liveDataLoading(false)
+                            //liveDataError("userLogin", false)
+                        } else {
+                            liveDataError(databaseUser.message, false)
+                        }
+                    }
+
+                    Status.ERROR -> {
+                        liveDataError(firebaseUser.message, true)
+                        liveDataLoading(false)
+                    }
+                    else -> {
+
+                    }
+                }
+
+
+                /*if(firebaseUser.data==null || databaseUser.data==null){
                     liveDataError("Error", true)
                     liveDataLoading(false)
                 } else {
@@ -65,7 +91,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     //isLogin.value = Resource.success(true)
                     liveDataLoading(false)
                     liveDataError("userLogin", false)
-                }
+                }*/
             }
         }
 
@@ -83,12 +109,29 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
             val registeredUser = userRepository.userSignUp(user)
 
             withContext(Dispatchers.Main){
-                if(registeredUser.data != null){
+                when (registeredUser.status) {
+                    Status.SUCCESS ->{
+                        println("user success")
+                        liveDataError("REGISTER SUCCESS",false)
+                        liveDataLoading(false)
+                    }
+
+                    Status.ERROR -> {
+                        liveDataLoading(false)
+                        liveDataError("Error Firebase register: ${registeredUser.message}",true)
+                    }
+
+                    else -> {
+                        println("else")
+                    }
+                }
+
+                /*if(registeredUser.data != null){
                     liveDataError("REGISTER SUCCESS",false)
-                    liveDataLoading(data = false)
+                    liveDataLoading(false)
                 } else {
                     liveDataError("Error Firebase register: ${registeredUser.message}",true)
-                }
+                }*/
             }
         }
     }
@@ -122,7 +165,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
     }
 
     private fun liveDataError(message: String? = "",data: Boolean) {
-        userError.value = Resource.error("Error: $message",data)
+        userError.value = Resource.error(message!!,data)
     }
 
 

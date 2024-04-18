@@ -230,6 +230,7 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
         textViewPopupProductName.text = selectedSubProductResponse?.subProductName
 
         buttonGoToBasket.setOnClickListener {
+            dialog.cancel()
             val basketActivityIntent = Intent(activity, BasketActivity::class.java)
             activity.startActivity(basketActivityIntent)
             activity.finish()

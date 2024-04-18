@@ -67,7 +67,7 @@ class ProductDetailActivity : AppCompatActivity() {
         var selectedProductSizeItems = ArrayList<ProductSizeResponse>()
 
         for (size in selectedSubProducts){
-            selectedProductSizeItems.add(size.subProductSizeId)
+            selectedProductSizeItems.add(size.subProductSizeId!!)
         }
 
         val sizeAdapter = ProductSizeAdapter(this,selectedProductSizeItems.distinctBy { it.productSizeId })
@@ -97,7 +97,7 @@ class ProductDetailActivity : AppCompatActivity() {
                 selectedSubProducts = productViewModel.getProductByProductIdAndSizeId(selectedProductId!!,itemSelected.productSizeId)
 
                 for (color in selectedSubProducts){
-                    coloritems.add(color.subProductColorId)
+                    coloritems.add(color.subProductColorId!!)
                 }
 
                 val colorAdapter = ProductColorAdapter(this@ProductDetailActivity,coloritems)
@@ -122,16 +122,16 @@ class ProductDetailActivity : AppCompatActivity() {
             ) {
                 val itemSelected: ProductColorResponse = parent?.getItemAtPosition(position) as ProductColorResponse
 
-                if((selectedSubProducts.find { it.subProductColorId.colorId == itemSelected.colorId}?.subProductImageURL) != null){
-                    imageAdapter.updateCategoryList(selectedSubProducts.find { it.subProductColorId.colorId == itemSelected.colorId}?.subProductImageURL!!)
+                if((selectedSubProducts.find { it.subProductColorId?.colorId == itemSelected.colorId}?.subProductImageURL) != null){
+                    imageAdapter.updateCategoryList(selectedSubProducts.find { it.subProductColorId?.colorId == itemSelected.colorId}?.subProductImageURL!!)
                 }
 
 
                 binding.apply {
-                    textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
-                    textViewSubProductBasketPrice.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductPrice
-                    textViewSubProductName.text = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductName
-                    selectedSubProductId = selectedSubProducts.find { it.subProductColorId.colorId ==  itemSelected.colorId}?.subProductId
+                    textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId?.colorId ==  itemSelected.colorId}?.subProductPrice
+                    textViewSubProductBasketPrice.text = selectedSubProducts.find { it.subProductColorId?.colorId ==  itemSelected.colorId}?.subProductPrice
+                    textViewSubProductName.text = selectedSubProducts.find { it.subProductColorId?.colorId ==  itemSelected.colorId}?.subProductName
+                    selectedSubProductId = selectedSubProducts.find { it.subProductColorId?.colorId ==  itemSelected.colorId}?.subProductId
                 }
                 //this@ProductDetailActivity.toast("tıklanan: ${itemSelected.colorName}")
 

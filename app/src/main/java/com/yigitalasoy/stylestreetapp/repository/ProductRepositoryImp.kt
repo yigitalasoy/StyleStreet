@@ -112,7 +112,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                         )
 
 
-                        if(testProduct.allProducts.size != 0){
+                        if(testProduct.allProducts?.size != 0){
                             productList.add(testProduct)
                             subProductNumber += 1
                         }

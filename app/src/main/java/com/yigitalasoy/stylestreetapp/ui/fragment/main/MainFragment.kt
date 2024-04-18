@@ -117,8 +117,8 @@ class MainFragment : Fragment() {
             categoryViewModel.getAllCategories()
             productColorViewModel.getAllProductColors()
             productSizeViewModel.getAllProductSize()
-            basketViewModel.getBasketData(userViewModel.userLiveData.value!!.data!!.id!!)
-            wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
+            basketViewModel.getBasketData(userViewModel.userLiveData.value?.data?.id.toString())
+            wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id.toString())
         }
 
 

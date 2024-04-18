@@ -34,7 +34,7 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                             subProductId = hash["SubProduct_Id"].toString(),
                             basketDetailId = hash["BasketDetail_Id"].toString(),
                             basketId = hash["Basket_Id"].toString(),
-                            quantity = hash["Quantity"]?.toInt(),
+                            quantity = hash["Quantity"]!!.toInt(),
                             productId = hash["Product_Id"].toString()
                         )
                     )

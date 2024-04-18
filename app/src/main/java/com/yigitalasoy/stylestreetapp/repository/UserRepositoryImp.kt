@@ -25,13 +25,13 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                 Log.d("fun userLogin", "signInWithEmail:success start")
                 firebaseUser?.let {
                     return@let Resource.success(auth.currentUser)
-                } ?: Resource.error("Repository signInWithEmail error",null)
+                } ?: Resource.error("USER NOT FOUND",null)
 
             } else {
-                Resource.error("Repository signInWithEmail error",null)
+                Resource.error("USER NOT FOUND",null)
             }
         } catch (e: Exception){
-            Resource.error("Repository signInWithEmail error : ${e.message}",null)
+            Resource.error(e.message.toString(),null)
         }
 
     }
@@ -51,22 +51,23 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                 Resource.success(document.toObject(UserResponse::class.java))
             } else {
                 Log.d(ContentValues.TAG, "No such document")
-                Resource.error("getUserDataFromDatabase error :",null)
+                Resource.error("No such document",null)
 
             }
         } catch (e: Exception){
-            //Resource.error("getUserDataFromDatabase error :",null)
-            Resource.error("getUserDataFromDatabase error : ${e.message.toString()}",null)
+            Resource.error(e.message.toString(),null)
         }
 
     }
 
     override suspend fun userSignUp(user: UserResponse): Resource<UserResponse> {
         return try {
-
+            println("66")
             val task = auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString())
+            println("68")
             task.await()
-
+            println("70")
+            println("errrorrr: ${task.exception?.message.toString()}")
             if (task.isSuccessful) {
                 Log.e("error user sign up", "createUserWithEmail:success")
                 val firebaseUser = auth.currentUser
@@ -79,11 +80,11 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
             } else {
                 Log.e(ContentValues.TAG, "createUserWithEmail:failure")
-                Resource.error("repository userSignUp error",null)
+                Resource.error(task.exception?.message.toString(),null)
             }
 
         } catch (e: Exception){
-            Resource.error("repository userSignUp error: ${e.message}",null)
+            Resource.error(e.message.toString(),null)
         }
     }
 
@@ -98,11 +99,11 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                 Resource.success(user)
             } else {
                 Log.e("ERROR", doc.exception!!.message!!)
-                Resource.error("Error",null)
+                Resource.error(doc.exception!!.message!!,null)
             }
 
         } catch (e: Exception){
-            Resource.error("Error ${e.message}",null)
+            Resource.error("${e.message}",null)
         }
     }
 

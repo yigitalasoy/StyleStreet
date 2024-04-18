@@ -208,13 +208,12 @@
                     android:layout_height="wrap_content"
                     android:text="error logging in"
                     android:textAllCaps="true"
-                    android:textSize="25sp"
                     android:textColor="@color/red"
+                    android:textSize="25sp"
                     android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/buttonSignUp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

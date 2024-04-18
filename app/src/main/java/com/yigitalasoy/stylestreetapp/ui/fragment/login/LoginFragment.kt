@@ -19,6 +19,7 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.util.Constants
+import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -60,7 +61,9 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        if(userViewModel.userError.value?.message.equals("Error: REGISTER SUCCESS")){
+            userViewModel.userError.value = Resource.error("",null)
+        }
 
         // productViewModel.getNewInProduct()
         // productColorViewModel.getAllProductColors()
@@ -178,8 +181,9 @@ class LoginFragment : Fragment() {
 
         userViewModel.userError.observe(viewLifecycleOwner){
             it?.let {
-                if(it.data!!){
+                if(it.data == true){
                     binding.textViewError.show()
+                    this.toast(it.message!!)
                 } else {
                     binding.textViewError.hide()
                 }
@@ -188,7 +192,7 @@ class LoginFragment : Fragment() {
 
         userViewModel.userLoading.observe(viewLifecycleOwner){
             it?.let {
-                if(it.data!!){
+                if(it.data == true){
                     binding.progressBarLoading.show()
                 } else {
                     binding.progressBarLoading.hide()
