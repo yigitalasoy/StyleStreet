@@ -48,14 +48,7 @@ class RecoverPasswordFragment : Fragment() {
                 email.let {
                     userViewModel.sendResetPasswordLink(it,this@RecoverPasswordFragment)
                 }
-
             }
-
-
-
         }
-
     }
-
-
 }

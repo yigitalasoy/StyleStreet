@@ -30,8 +30,8 @@ import javax.inject.Inject
 class UserViewModel @Inject constructor(val userRepository: UserRepository,val auth: FirebaseAuth,val db: FirebaseFirestore): ViewModel() {
 
     val userLiveData = MutableLiveData<Resource<UserResponse>>()
-    val userLoading = MutableLiveData<Resource<Boolean>>()
-    val userError = MutableLiveData<Resource<Boolean>>()
+    //val userLoading = MutableLiveData<Resource<Boolean>>()
+    //val userError = MutableLiveData<Resource<Boolean>>()
     //val isLogin = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
@@ -39,15 +39,14 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
-        liveDataError(throwable.localizedMessage ?: "error!",data = true)
+        userLiveData.value = Resource.error(throwable.localizedMessage ?: "error!",data = null)
     }
 
 
 
     fun userLogin(email: String,password: String){
 
-        liveDataLoading(true)
-        liveDataError(data = false)
+        userLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             //IO'da sunucu işlemleri yapılır
@@ -58,26 +57,21 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
             withContext(Dispatchers.Main){
 
-
                 when (firebaseUser.status) {
                     Status.SUCCESS ->{
                         if(databaseUser.status == Status.SUCCESS){
                             userLiveData.value = databaseUser
                             println("user live data değişti: ${userLiveData.value!!.data}")
-                            //isLogin.value = Resource.success(true)
-                            liveDataLoading(false)
-                            //liveDataError("userLogin", false)
                         } else {
-                            liveDataError(databaseUser.message, false)
+                            userLiveData.value = Resource.error(databaseUser.message.toString(),null)
                         }
                     }
 
                     Status.ERROR -> {
-                        liveDataError(firebaseUser.message, true)
-                        liveDataLoading(false)
+                        userLiveData.value = Resource.error(firebaseUser.message.toString(),null)
                     }
-                    else -> {
-
+                    Status.LOADING -> {
+                        userLiveData.value = Resource.loading(null)
                     }
                 }
 
@@ -101,8 +95,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
     fun userSignUp(user: UserResponse){
         //kayıt işlemi yapılacak
-        liveDataLoading(true)
-        liveDataError(data = false)
+        userLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             //IO'da sunucu işlemleri yapılır
@@ -112,13 +105,12 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                 when (registeredUser.status) {
                     Status.SUCCESS ->{
                         println("user success")
-                        liveDataError("REGISTER SUCCESS",false)
-                        liveDataLoading(false)
+                        userLiveData.value = Resource.success(registeredUser.data)
+
                     }
 
                     Status.ERROR -> {
-                        liveDataLoading(false)
-                        liveDataError("Error Firebase register: ${registeredUser.message}",true)
+                        userLiveData.value = Resource.error(registeredUser.message.toString(),null)
                     }
 
                     else -> {
@@ -138,35 +130,41 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
 
     fun loginWithGoogle(account: GoogleSignInAccount?) {
-        liveDataLoading(true)
-        liveDataError(data = false)
+        userLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             //IO'da sunucu işlemleri yapılır
             val googleLoginUser = userRepository.loginWithGoogle(account)
 
             withContext(Dispatchers.Main){
-                if(googleLoginUser.data != null){
-                    Log.e("REGISTER SUCCESS","user email: ${googleLoginUser.data}")
-                    liveDataError("REGISTER SUCCESS",false)
-                    liveDataLoading(false)
-                    userLiveData.value = googleLoginUser
-                    println("user live data değişti: ${userLiveData.value!!.data}")
-                    //isLogin.value = Resource.success(true)
-                } else {
-                    liveDataError("Error Firebase register: ${googleLoginUser.message}",true)
+                when(googleLoginUser.status){
+                    Status.SUCCESS -> {
+                        if(googleLoginUser.data != null){
+                            Log.e("REGISTER SUCCESS","user email: ${googleLoginUser.data}")
+                            userLiveData.value = Resource.success(googleLoginUser.data)
+                            println("user live data değişti: ${userLiveData.value!!.data}")
+                            //isLogin.value = Resource.success(true)
+                        }
+                    }
+                    Status.ERROR -> {
+                        userLiveData.value = Resource.error(googleLoginUser.message.toString(),null)
+                    }
+                    else -> {
+                        println("else")
+                    }
                 }
+
             }
         }
     }
 
-    private fun liveDataLoading(data: Boolean) {
+    /*private fun liveDataLoading(data: Boolean) {
         userLoading.value = Resource.loading(data)
     }
 
     private fun liveDataError(message: String? = "",data: Boolean) {
         userError.value = Resource.error(message!!,data)
-    }
+    }*/
 
 
     fun signOut(context: Context){

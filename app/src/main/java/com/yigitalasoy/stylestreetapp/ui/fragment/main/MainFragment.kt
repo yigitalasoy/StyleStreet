@@ -18,8 +18,10 @@ import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailActivity
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
@@ -144,7 +146,7 @@ class MainFragment : Fragment() {
 
             val googleSignInClient = GoogleSignIn.getClient(it.context,gso)
             googleSignInClient.signOut().addOnCompleteListener {
-                Log.e("GOOGLE SIGN OUT","SUCCUSFULLY SIGN OUT")
+                Log.i("GOOGLE SIGN OUT","SUCCUSFULLY SIGN OUT")
             }
 
         }
@@ -154,96 +156,156 @@ class MainFragment : Fragment() {
     }
 
     private fun observer() {
-        categoryViewModel.categoryLoading.observe(viewLifecycleOwner){
-            if(it.data!!){
-                mainFragmentBinding.progressBarFragmentMain.show()
-                mainFragmentBinding.scrollViewFragmentMain.hide()
-
-            } else {
-                mainFragmentBinding.progressBarFragmentMain.hide()
-                mainFragmentBinding.scrollViewFragmentMain.show()
-            }
-        }
-
         userViewModel.userLiveData.observe(viewLifecycleOwner){ user ->
-            if(user.data == null){
-                val loginActivity = Intent(activity, LoginActivity::class.java)
-                startActivity(loginActivity)
-                activity?.finish()
+
+            when(user.status){
+                Status.SUCCESS -> {
+                    Log.i("get user success","")
+
+                    if(user.data == null){
+                        mainFragmentBinding.progressBarFragmentMain.hide()
+                        mainFragmentBinding.scrollViewFragmentMain.show()
+
+                        val loginActivity = Intent(activity, LoginActivity::class.java)
+                        startActivity(loginActivity)
+                        activity?.finish()
+                    }
+                }
+                Status.ERROR -> {
+                    this.toast(user.message.toString())
+                    mainFragmentBinding.progressBarFragmentMain.hide()
+
+                    Log.i("user error",user.message.toString())
+                }
+                Status.LOADING -> {
+                    mainFragmentBinding.progressBarFragmentMain.show()
+                    Log.i("user loading","")
+                }
             }
         }
 
         categoryViewModel.categoryLiveData.observe(viewLifecycleOwner){ list ->
-            if(list.data != null) {
-                list?.let {
-                    productViewModel.updateProductCategories(it.data!!)
-                    categoryAdapter.updateCategoryList(it.data)
+            when(list.status){
+                Status.SUCCESS -> {
+                    mainFragmentBinding.progressBarFragmentMain.hide()
+                    mainFragmentBinding.scrollViewFragmentMain.show()
+
+                    Log.i("get category success","")
+
+                    if(list.data != null) {
+                        list?.let {
+                            productViewModel.updateProductCategories(it.data!!)
+                            categoryAdapter.updateCategoryList(it.data)
+                        }
+                    }
+                }
+                Status.ERROR -> {
+                    Log.i("category live data error",list.message.toString())
+                }
+                Status.LOADING -> {
+                    mainFragmentBinding.progressBarFragmentMain.show()
+                    mainFragmentBinding.scrollViewFragmentMain.hide()
+
+                    Log.i("category live data loading","")
                 }
             }
+
         }
 
         productViewModel.allProductLiveData.observe(viewLifecycleOwner){ products ->
-            if(products.data != null){
 
-                products?.let {
-                    println("product observe çalıştı")
+            when(products.status){
+                Status.SUCCESS -> {
+                    Log.i("get all products success","")
 
-                    /*val searchAdapter = TestAdapter(requireContext(), products.data!!)
-
-                    mainFragmentBinding.editTextSearch.apply {
-                        setAdapter(searchAdapter)
-                    }
-
-                    productAdapter.updateProductList(it.data)*/
-
-
-
-                    val searchAdapter = SearchAdapter(requireContext(), products.data!!, object : ItemClickListener{
-                        override fun onItemClick(Item: Any) {
-                            mainFragmentBinding.editTextSearch.text.clear()
-                            Item as ProductResponse
-                            //this@MainFragment.toast("tiklanan product id: ${Item.productId}")
-                            val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
-                            productDetailActivity.putExtra("selectedProductId", Item.productId)
-                            productDetailActivity.putExtra("selectedSubProductId",
-                                Item.allProducts?.get(0)?.subProductId
-                            )
-                            startActivity(productDetailActivity)
+                    if(products.data != null){
+                        products?.let {
+                            val searchAdapter = SearchAdapter(requireContext(), products.data!!, object : ItemClickListener{
+                                override fun onItemClick(Item: Any) {
+                                    mainFragmentBinding.editTextSearch.text.clear()
+                                    Item as ProductResponse
+                                    val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
+                                    productDetailActivity.putExtra("selectedProductId", Item.productId)
+                                    productDetailActivity.putExtra("selectedSubProductId",
+                                        Item.allProducts?.get(0)?.subProductId
+                                    )
+                                    startActivity(productDetailActivity)
 
 
+                                }
+                            })
+                            mainFragmentBinding.editTextSearch.apply {
+                                setAdapter(searchAdapter)
+                            }
                         }
-                    })
-
-                    mainFragmentBinding.editTextSearch.apply {
-                        setAdapter(searchAdapter)
                     }
                 }
+                Status.ERROR -> {
+                    Log.e("all products observe error",products.message.toString())
+                }
+                Status.LOADING -> {
+                    Log.e("all products observe loading","")
+                }
             }
+
+
         }
 
         productViewModel.newInProductLiveData.observe(viewLifecycleOwner){
-            if(it.data != null){
-                it?.let {
-                    newInProductAdapter.updateProductList(it.data!!)
+            when(it.status){
+                Status.SUCCESS -> {
+                    Log.i("get new in success","")
+
+                    if(it.data != null){
+                        newInProductAdapter.updateProductList(it.data)
+                    }
+                }
+                Status.ERROR -> {
+                    Log.i("get new in product error",it.message.toString())
+                }
+                Status.LOADING -> {
+                    Log.i("get new in product loading","")
                 }
             }
+
 
         }
 
         productColorViewModel.productColorLiveData.observe(viewLifecycleOwner){ colors ->
-            if(colors.data != null) {
-                colors?.let {
-                    productViewModel.updateProductColorName(it.data!!)
+            when(colors.status){
+                Status.SUCCESS -> {
+                    Log.i("get color success","")
+
+                    if(colors.data != null){
+                        productViewModel.updateProductColorName(colors.data)
+                    }
+                }
+                Status.ERROR -> {
+                    Log.i("get colors error",colors.message.toString())
+                }
+                Status.LOADING -> {
+                    Log.i("get colors loading","")
                 }
             }
         }
 
         productSizeViewModel.productSizeLiveData.observe(viewLifecycleOwner){ sizeList ->
-            if(sizeList.data != null) {
-                sizeList?.let {
-                    productViewModel.updateProductSizeName(it.data!!)
+            when(sizeList.status){
+                Status.SUCCESS -> {
+                    Log.i("get size success","")
+
+                    if(sizeList.data != null) {
+                        productViewModel.updateProductSizeName(sizeList.data)
+                    }
+                }
+                Status.ERROR -> {
+                    Log.i("get size error",sizeList.message.toString())
+                }
+                Status.LOADING -> {
+                    Log.i("get size loading","")
                 }
             }
+
         }
 
     }

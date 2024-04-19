@@ -25,6 +25,7 @@ import com.yigitalasoy.stylestreetapp.model.SubProductResponse
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.ui.activity.basket.BasketActivity
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.downloadImage
 import com.yigitalasoy.stylestreetapp.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,8 +43,8 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
     val basketLiveData = MutableLiveData<Resource<BasketResponse>>()
     val basketSubProductsLiveData = MutableLiveData<Resource<ArrayList<SubProductResponse>>>()
-    val basketLoading = MutableLiveData<Resource<Boolean>>()
-    val basketError = MutableLiveData<Resource<Boolean>>()
+    //val basketLoading = MutableLiveData<Resource<Boolean>>()
+    //val basketError = MutableLiveData<Resource<Boolean>>()
 
 
     private var job : Job? = null
@@ -52,21 +53,27 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
-        basketError.value = Resource.error(throwable.message.toString(),true)
+        basketLiveData.value = Resource.error(throwable.message.toString(),null)
     }
 
     fun getBasketData(userId: String){
 
-        basketLoading.value = Resource.loading(true)
+        basketLiveData.value = Resource.loading(null)
+
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = basketRepository.getUserBasket(userId)
             withContext(Dispatchers.Main){
-                if (response.data != null) {
-                    basketLoading.value = Resource.loading(false)
-                    basketLiveData.value = Resource.success(response.data)
-                } else {
-                    basketError.value = Resource.error(response.message.toString(), true)
+                when(response.status){
+                    Status.SUCCESS -> {
+                        basketLiveData.value = Resource.success(response.data)
+                    }
+                    Status.ERROR -> {
+                        basketLiveData.value = Resource.error(response.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        println("basket loading")
+                    }
                 }
             }
         }
@@ -74,11 +81,10 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
     fun getBasketProducts(products: ArrayList<ProductResponse>){
 
-        basketLoading.value = Resource.loading(true)
-
         products.let {
 
-            val productsYeni = basketLiveData.value?.data!!.basketProducts!!
+            val productsYeni = basketLiveData.value?.data?.basketProducts!!
+            println("products yeni: $productsYeni")
             val subproductsYeni = ArrayList<SubProductResponse>()
             val productByIdMap = products.associateBy { it.productId }
 
@@ -89,7 +95,6 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
                 }
             }
 
-            basketLoading.value = Resource.loading(false)
             basketSubProductsLiveData.value = Resource.success(subproductsYeni)
         }
     }

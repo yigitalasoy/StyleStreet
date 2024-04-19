@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.ui.fragment.wishlist
 
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentWishListBinding
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
-import com.yigitalasoy.stylestreetapp.ui.fragment.main.MainFragment
+import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
@@ -57,35 +60,7 @@ class WishListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("onViewCreated")
-        wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
-
-
-        //wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id!!)
-
-
-
-        /*wishListViewModel.wishListLiveData.value?.data!!.forEach {wishListResponse ->
-            wishListProducts.add(productViewModel.allProductLiveData.value?.data?.find { it.productId == wishListResponse.Product_Id }!!)
-        }*/
-
-        wishListViewModel.wishListLiveData.value?.data?.let {
-
-            println("data let: $it")
-            wishListAdapter = WishListAdapter(it,wishListProducts)
-
-            it.forEach {wishListResponse ->
-                println("every response: $wishListResponse")
-                wishListProducts.add(productViewModel.allProductLiveData.value?.data?.find { it.productId == wishListResponse.product_Id }!!)
-            }
-
-            println("wishListProducts eklendi: ${wishListProducts}")
-            println("it: ${it}")
-
-            wishListAdapter.updateWishList(it)
-
-        }
-
-
+        wishListViewModel.getWishList(userViewModel.userLiveData.value?.data?.id.toString())
 
         binding.apply {
 
@@ -96,12 +71,14 @@ class WishListFragment : Fragment() {
 
             buttonStartShopping.setOnClickListener {
 
+                //val fragmentManager = activity?.supportFragmentManager
+                //val fragmentTransaction = fragmentManager?.beginTransaction()
+                //fragmentTransaction?.replace(R.id.fragmentContainerView, MainFragment())
+                //fragmentManager?.popBackStack()
+                //fragmentTransaction?.commit()
 
-                val fragmentManager = activity?.supportFragmentManager
-                val fragmentTransaction = fragmentManager?.beginTransaction()
-                fragmentTransaction?.replace(R.id.fragmentContainerView, MainFragment())
-                fragmentManager?.popBackStack()
-                fragmentTransaction?.commit()
+
+                (activity as MainActivity?)?.homeButton()
 
 
             }
@@ -159,60 +136,62 @@ class WishListFragment : Fragment() {
 
             itemTouchHelper.attachToRecyclerView(binding.recyclerViewWishList)
 
-
             editTextSearch.doOnTextChanged { text, start, before, count ->
                 wishListAdapter.filterWishList(text.toString())
             }
-
         }
 
         observe()
     }
 
 
-    fun observe(){
+    private fun observe(){
         wishListViewModel.wishListLiveData.observe(viewLifecycleOwner){wishList->
-            wishList?.let {
-                if(it.data?.size != 0){
 
-                    /*wishListAdapter = WishListAdapter(wishList.data!!,wishListProducts)
+            when(wishList.status){
+                Status.SUCCESS -> {
+                    Log.i("wish list success","")
 
-                    wishList.data.forEach {wishListResponse ->
-                        println("every response: $wishListResponse")
-                        wishListProducts.add(productViewModel.allProductLiveData.value?.data?.find { it.productId == wishListResponse.Product_Id }!!)
+                    if(wishList != null) {
+                        binding.progressBarLoading.hide()
+                        binding.textViewError.hide()
+
+                        if (wishList.data?.size != 0) {
+                            println("wishList: $wishList")
+
+                            wishList.data?.forEach { wishListResponse ->
+                                println("every response: $wishListResponse")
+                                wishListProducts.add(productViewModel.allProductLiveData.value?.data?.find { it.productId == wishListResponse.product_Id }!!)
+                            }
+
+                            wishListAdapter.updateWishList(wishList.data!!, wishListProducts)
+                            binding.recyclerViewWishList.show()
+                            binding.constraintLayoutEmptyList.hide()
+                        } else {
+                            binding.recyclerViewWishList.hide()
+                            binding.constraintLayoutEmptyList.show()
+                        }
                     }
+                }
+                Status.ERROR -> {
+                    Log.i("wish list error",wishList.message.toString())
+                    this.toast(wishList.message.toString())
+                    binding.textViewError.show()
+                    binding.progressBarLoading.hide()
 
-                    println("wishListProducts eklendi: ${wishListProducts}")
-                    println("it: ${it}")
-
-                    wishListAdapter.updateWishList(wishList.data)*/
-
-
-                    println("observe wish list data geldi: $wishList")
-                    wishListAdapter.updateWishList(wishList.data!!)
-                    binding.recyclerViewWishList.show()
                     binding.constraintLayoutEmptyList.hide()
-                } else {
                     binding.recyclerViewWishList.hide()
-                    binding.constraintLayoutEmptyList.show()
+                }
+                Status.LOADING -> {
+                    Log.i("wish list loading","")
+
+                    binding.textViewError.hide()
+                    binding.progressBarLoading.show()
+
+                    binding.constraintLayoutEmptyList.hide()
+                    binding.recyclerViewWishList.hide()
                 }
             }
         }
-
-        /*wishListViewModel.wishListError.observe(this.viewLifecycleOwner){
-            it?.let{
-                if(it.message != null){
-                    println("WİSH LİST VİEW MODEL ERROR: ${it.message}")
-                }
-            }
-        }*/
-
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        println("destroy edildi.")
-        wishListViewModel.wishListError.removeObservers(viewLifecycleOwner)
-    }
-
 }

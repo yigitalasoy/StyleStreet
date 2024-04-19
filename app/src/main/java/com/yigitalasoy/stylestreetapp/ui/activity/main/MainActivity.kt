@@ -3,6 +3,7 @@ package com.yigitalasoy.stylestreetapp.ui.activity.main
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.yigitalasoy.stylestreetapp.ui.fragment.main.MainFragment
 import com.yigitalasoy.stylestreetapp.ui.fragment.notification.NotificationFragment
 import com.yigitalasoy.stylestreetapp.ui.fragment.profile.ProfileFragment
 import com.yigitalasoy.stylestreetapp.ui.fragment.wishlist.WishListFragment
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -37,67 +39,13 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainActivityBinding.root)
 
-
-
-
-
-        //val navController = (supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment).navController
-
         mainActivityBinding.apply {
             constraintHome.setOnClickListener {
-
-                if(!(categoryViewModel.categoryLoading.value?.data!!)) {
-                    imageViewHome.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.home_filled,
-                            null
-                        )
-                    )
-                    imageViewWishList.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.heart,
-                            null
-                        )
-                    )
-                    imageViewProfile.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.profile,
-                            null
-                        )
-                    )
-                    imageViewNotification.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.notification,
-                            null
-                        )
-                    )
-
-                    imageViewStickHome.show()
-                    imageViewStickHearth.hide()
-                    imageViewStickProfile.hide()
-                    imageViewStickNotification.hide()
-
-
-                    //navController.navigate(R.id.mainFragment)
-
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.fragmentContainerView, MainFragment())
-                    fragmentManager.popBackStack()
-                    fragmentTransaction.commit()
-
-
-
-                }
-
+                homeButton()
             }
 
             constraintWishList.setOnClickListener {
-                if(!(categoryViewModel.categoryLoading.value?.data!!)) {
+                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
                     imageViewHome.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
@@ -132,24 +80,17 @@ class MainActivity : AppCompatActivity() {
                     imageViewStickProfile.hide()
                     imageViewStickNotification.hide()
 
-                    //navController.navigate(R.id.wishListFragment)
-
-
-
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.fragmentContainerView, WishListFragment())
                     fragmentManager.popBackStack()
                     fragmentTransaction.commit()
-
-
                 }
-
             }
 
             constraintProfile.setOnClickListener {
 
-                if(!(categoryViewModel.categoryLoading.value?.data!!)) {
+                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
                     imageViewHome.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
@@ -183,21 +124,18 @@ class MainActivity : AppCompatActivity() {
                     imageViewStickHearth.hide()
                     imageViewStickProfile.show()
                     imageViewStickNotification.hide()
-                    //navController.navigate(R.id.profileFragment)
 
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.fragmentContainerView, ProfileFragment())
                     fragmentManager.popBackStack()
                     fragmentTransaction.commit()
-
                 }
-
             }
 
             constraintNotification.setOnClickListener {
 
-                if(!(categoryViewModel.categoryLoading.value?.data!!)) {
+                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
                     imageViewHome.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
@@ -231,7 +169,6 @@ class MainActivity : AppCompatActivity() {
                     imageViewStickHearth.hide()
                     imageViewStickProfile.hide()
                     imageViewStickNotification.show()
-                    //navController.navigate(R.id.notificationFragment)
 
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction = fragmentManager.beginTransaction()
@@ -239,33 +176,17 @@ class MainActivity : AppCompatActivity() {
                     fragmentManager.popBackStack()
                     fragmentTransaction.commit()
 
-
                 }
 
             }
 
             floatingButtonBasket.setOnClickListener {
-
-                /*imageViewHome.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.home,null))
-                imageViewWishList.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.heart,null))
-                imageViewProfile.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.profile,null))
-                imageViewNotification.setImageDrawable(ResourcesCompat.getDrawable(resources,R.drawable.notification,null))
-
-                imageViewStickHome.hide()
-                imageViewStickHearth.hide()
-                imageViewStickProfile.hide()
-                imageViewStickNotification.hide()*/
-
-                if(!(categoryViewModel.categoryLoading.value?.data!!)) {
+                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
                     val basketActivity = Intent(this@MainActivity, BasketActivity::class.java)
                     startActivity(basketActivity)
                 }
-
-
             }
-
             observe()
-
         }
 
         onBackPressedDispatcher.addCallback(this /* lifecycle owner */, object : OnBackPressedCallback(true) {
@@ -290,26 +211,75 @@ class MainActivity : AppCompatActivity() {
                 alertDialog.show()
             }
         })
-
-
-
-
     }
 
-    fun observe(){
+    fun homeButton() {
+        if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
+            mainActivityBinding.apply {
 
-        basketViewModel.basketLiveData.observe(this){
-            if(it.data != null){
-                mainActivityBinding.textViewBasketQuantity.text = basketViewModel.basketLiveData.value?.data?.basketProducts?.size.toString()
+                imageViewHome.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.home_filled,
+                        null
+                    )
+                )
+                imageViewWishList.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.heart,
+                        null
+                    )
+                )
+                imageViewProfile.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.profile,
+                        null
+                    )
+                )
+                imageViewNotification.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.notification,
+                        null
+                    )
+                )
+
+                imageViewStickHome.show()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.hide()
+
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.fragmentContainerView, MainFragment())
+                fragmentManager.popBackStack()
+                fragmentTransaction.commit()
+
             }
         }
-
     }
 
+    private fun observe(){
 
+        basketViewModel.basketLiveData.observe(this){
+            when(it.status){
+                Status.SUCCESS -> {
+                    Log.i("basket live data success","")
 
+                    if(it.data != null){
+                        mainActivityBinding.textViewBasketQuantity.text = basketViewModel.basketLiveData.value?.data?.basketProducts?.size.toString()
+                    }
+                }
+                Status.ERROR -> {
+                    Log.i("basket live data error",it.message.toString())
 
-
-
-
+                }
+                Status.LOADING -> {
+                    Log.i("basket live data loading","")
+                }
+            }
+        }
+    }
 }

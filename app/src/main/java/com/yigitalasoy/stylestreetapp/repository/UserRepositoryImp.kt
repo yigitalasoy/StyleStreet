@@ -62,12 +62,8 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
     override suspend fun userSignUp(user: UserResponse): Resource<UserResponse> {
         return try {
-            println("66")
             val task = auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString())
-            println("68")
             task.await()
-            println("70")
-            println("errrorrr: ${task.exception?.message.toString()}")
             if (task.isSuccessful) {
                 Log.e("error user sign up", "createUserWithEmail:success")
                 val firebaseUser = auth.currentUser

@@ -13,12 +13,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentSignUpBinding
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -49,6 +49,9 @@ class SignUpFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        userViewModel.userLiveData.value = null
+
 
         binding.apply {
 
@@ -100,42 +103,36 @@ class SignUpFragment : Fragment() {
     fun observer(){
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.data != null){
-                    Toast.makeText(context,"Succesfully registered", Toast.LENGTH_LONG).show()
-                    this.view?.let {view ->
-                        val action = SignUpFragmentDirections.actionSignUpFragmentToLoginFragment()
-                        Navigation.findNavController(view).navigate(action)
+            when(it.status){
+                Status.SUCCESS -> {
+                    Log.i("user success","")
+
+                    if(it.data != null){
+                        binding.textViewSignupError.hide()
+                        binding.progressBarSignupLoading.hide()
+
+                        Toast.makeText(context,"Succesfully registered", Toast.LENGTH_LONG).show()
+                        findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
+                        userViewModel.userLiveData.value = Resource.success(null)
+
                     }
                 }
-            }
-        }
+                Status.ERROR -> {
+                    Log.i("user error",it.message.toString())
 
-        userViewModel.userError.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.message.equals("REGISTER SUCCESS")){
-                    findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
-                    userViewModel.userError.value = Resource.error("",null)
-                    this.toast("Register successfully")
-                }
-                if(it.data == true){
                     binding.textViewSignupError.show()
+                    binding.progressBarSignupLoading.hide()
+
                     this.toast(it.message.toString())
-                } else {
-                    binding.textViewSignupError.hide()
+
+                }
+                Status.LOADING -> {
+                    Log.i("user loading","")
+                    binding.progressBarSignupLoading.show()
                 }
             }
         }
 
-        userViewModel.userLoading.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.data == true){
-                    binding.progressBarSignupLoading.show()
-                } else {
-                    binding.progressBarSignupLoading.hide()
-                }
-            }
-        }
     }
 
     fun passwordCheckRequirements(){

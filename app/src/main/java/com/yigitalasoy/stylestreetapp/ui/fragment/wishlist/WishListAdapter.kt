@@ -35,14 +35,11 @@ class WishListAdapter(val wishList: ArrayList<WishListResponse>,val productList:
 
 
         binding.apply {
-
             imageViewProductImage.downloadImage(filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductImageURL?.get(0))
             textViewProductName.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductName
             textViewProductPrice.text = filteredProductList.find { it.productId == filteredWishList[position].product_Id }?.allProducts?.get(0)?.subProductPrice
+
         }
-
-
-
 
     }
 
@@ -67,26 +64,19 @@ class WishListAdapter(val wishList: ArrayList<WishListResponse>,val productList:
             }
         }
 
-
-        /*filteredWishList.forEach {
-            println("filtre çalıştı filtered wish list: ${ it.Product_Id }")
-        }
-
-        filteredProductList.forEach {
-            println("filtre çalıştı filtered product list: ${it.productName}")
-        }*/
-
         notifyDataSetChanged()
-
-        //wishList.any { it.Product_Id in filteredProductList.toList().map { it.productId } }
-
     }
 
-    fun updateWishList(newWishList: List<WishListResponse>){
+    fun updateWishList(
+        newWishList: List<WishListResponse>,
+        newWishListProducts: ArrayList<ProductResponse>
+    ){
         this.wishList.clear()
         this.filteredWishList.clear()
+        this.productList.clear()
 
-        this.filteredProductList.addAll(this.productList)
+        this.filteredProductList.addAll(newWishListProducts)
+        this.productList.addAll(newWishListProducts)
 
         if(newWishList.size != 0){
             this.wishList.addAll(newWishList)
@@ -94,6 +84,8 @@ class WishListAdapter(val wishList: ArrayList<WishListResponse>,val productList:
         }
 
         println("wish list adapter update etti: wish list: ${wishList}")
+        println("wish list adapter update etti: filteredWishList: ${filteredWishList}")
+        //println("wish list adapter update etti: filteredProductList: ${filteredProductList}")
 
         notifyDataSetChanged()
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.yigitalasoy.stylestreetapp.model.CategoryResponse
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -18,34 +19,42 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(val categoryRepository: CategoryRepository): ViewModel() {
 
     val categoryLiveData = MutableLiveData<Resource<ArrayList<CategoryResponse>>>()
-    val categoryError = MutableLiveData<Resource<Boolean>>()
-    val categoryLoading = MutableLiveData<Resource<Boolean>>()
+    //val categoryError = MutableLiveData<Resource<Boolean>>()
+    //val categoryLoading = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
 
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
-        categoryError.value = Resource.error(throwable.message.toString(),true)
+        categoryLiveData.value = Resource.error(throwable.message.toString(),null)
     }
 
     fun getAllCategories(){
 
-        categoryLoading.value = Resource.loading(true)
+        categoryLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
             val response = categoryRepository.getAllCategories()
 
             withContext(Dispatchers.Main){
-                if(response.data != null){
-                    categoryLiveData.value = response
-                } else {
-                    response.message?.let {
-                        categoryError.value = Resource.error(it,true)
+
+                when(response.status){
+                    Status.SUCCESS -> {
+                        if(response.data != null){
+                            categoryLiveData.value = response
+                        }
+                    }
+                    Status.ERROR -> {
+                        categoryLiveData.value = Resource.error(response.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        categoryLiveData.value = Resource.loading(null)
                     }
                 }
-                categoryLoading.value = Resource.loading(false)
+
+
             }
 
 

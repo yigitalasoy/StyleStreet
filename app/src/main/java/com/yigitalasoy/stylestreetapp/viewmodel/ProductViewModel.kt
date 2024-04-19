@@ -9,6 +9,7 @@ import com.yigitalasoy.stylestreetapp.model.ProductSizeResponse
 import com.yigitalasoy.stylestreetapp.model.SubProductResponse
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -25,15 +26,15 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
     val newInProductLiveData = MutableLiveData<Resource<ArrayList<ProductResponse>>>()
 
 
-    val productLoading = MutableLiveData<Resource<Boolean>>()
-    val productError = MutableLiveData<Resource<Boolean>>()
+    //val productLoading = MutableLiveData<Resource<Boolean>>()
+    //val productError = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
 
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
-        productError.value = Resource.error(throwable.message.toString(),true)
+        newInProductLiveData.value = Resource.error(throwable.message.toString(),null)
     }
 
     fun getNewInProduct(){
@@ -43,11 +44,17 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             val productResponse = productRepository.getNewInProduct()
 
             withContext(Dispatchers.Main){
-                if(productResponse.data != null){
-                    newInProductLiveData.value = productResponse
-                } else {
-                    productResponse.message.let {
-                        productError.value = Resource.error(productResponse.message.toString(),true)
+                when(productResponse.status){
+                    Status.SUCCESS -> {
+                        if(productResponse.data != null){
+                            newInProductLiveData.value = productResponse
+                        }
+                    }
+                    Status.ERROR -> {
+                        newInProductLiveData.value = Resource.error(productResponse.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        newInProductLiveData.value = Resource.loading(null)
                     }
                 }
             }
@@ -61,13 +68,21 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
             val productResponse = productRepository.getAllProduct()
 
             withContext(Dispatchers.Main){
-                if(productResponse.data != null){
-                    allProductLiveData.value = productResponse
-                } else {
-                    productResponse.message.let {
-                        productError.value = Resource.error(productResponse.message.toString(),true)
+
+                when(productResponse.status){
+                    Status.SUCCESS -> {
+                        if(productResponse.data != null){
+                            allProductLiveData.value = productResponse
+                        }
+                    }
+                    Status.ERROR -> {
+                        allProductLiveData.value = Resource.error(productResponse.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        allProductLiveData.value = Resource.loading(null)
                     }
                 }
+
             }
         }
     }

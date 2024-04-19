@@ -114,13 +114,12 @@ class BasketProductAdapter(val activity: Activity,
     }
 
     fun updateBasketSubProductList(newProductList: List<SubProductResponse>,newBasketData: BasketResponse){
+
         this.productList.clear()
         this.productList.addAll(newProductList as ArrayList<SubProductResponse>)
 
         basketData = newBasketData
 
-
         notifyDataSetChanged()
     }
-
 }

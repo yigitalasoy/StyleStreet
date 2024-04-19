@@ -20,6 +20,7 @@ import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -61,9 +62,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(userViewModel.userError.value?.message.equals("Error: REGISTER SUCCESS")){
-            userViewModel.userError.value = Resource.error("",null)
-        }
+
+        userViewModel.userLiveData.value = Resource.success(null)
 
         // productViewModel.getNewInProduct()
         // productColorViewModel.getAllProductColors()
@@ -151,55 +151,38 @@ class LoginFragment : Fragment() {
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){
             println("login fragment userViewModel.userLiveData.observe")
-            it?.let {
-                if(it.data != null){
-                    this.toast("Login succesfully")
+            println(it)
+            when(it.status){
+                Status.SUCCESS -> {
+                    Log.i("user data success","")
 
-                    val mainActivity = Intent(activity, MainActivity::class.java)
-                    startActivity(mainActivity)
-                    activity?.finish()
+                    binding.textViewError.hide()
+                    binding.progressBarLoading.hide()
 
+                    if(it.data != null){
+                        this.toast("Login succesfully")
+
+                        val mainActivity = Intent(activity, MainActivity::class.java)
+                        startActivity(mainActivity)
+                        activity?.finish()
+
+                    }
                 }
-            }
-        }
+                Status.ERROR -> {
+                    Log.i("user data error",it.message.toString())
 
-        /*userViewModel.isLogin.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.data!!){
-                    Toast.makeText(context,"Login succesfully islogin", Toast.LENGTH_LONG).show()
-
-                    val mainActivity = Intent(activity, MainActivity::class.java)
-                    startActivity(mainActivity)
-                    activity?.finish()
-                } else {
-                    val loginActivity = Intent(activity, LoginActivity::class.java)
-                    startActivity(loginActivity)
-                    activity?.finish()
-                }
-            }
-        }*/
-
-        userViewModel.userError.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.data == true){
+                    binding.progressBarLoading.hide()
                     binding.textViewError.show()
                     this.toast(it.message!!)
-                } else {
-                    binding.textViewError.hide()
                 }
-            }
-        }
-
-        userViewModel.userLoading.observe(viewLifecycleOwner){
-            it?.let {
-                if(it.data == true){
+                Status.LOADING -> {
+                    Log.i("user data loading","")
                     binding.progressBarLoading.show()
-                } else {
-                    binding.progressBarLoading.hide()
                 }
             }
-        }
 
+
+        }
     }
 
     override fun onDestroy() {

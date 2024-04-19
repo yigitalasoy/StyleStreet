@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.yigitalasoy.stylestreetapp.model.WishListResponse
 import com.yigitalasoy.stylestreetapp.repository.WishListRepository
 import com.yigitalasoy.stylestreetapp.util.Resource
+import com.yigitalasoy.stylestreetapp.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -17,29 +18,34 @@ import javax.inject.Inject
 @HiltViewModel
 class WishListViewModel @Inject constructor(var wishListRepository: WishListRepository): ViewModel() {
     val wishListLiveData = MutableLiveData<Resource<ArrayList<WishListResponse>>>()
-    val wishListLoading = MutableLiveData<Resource<Boolean>>()
-    val wishListError = MutableLiveData<Resource<Boolean>>()
+    //val wishListLoading = MutableLiveData<Resource<Boolean>>()
+    //val wishListError = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
 
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
-        wishListError.value = Resource.error(throwable.localizedMessage ?: "error!",data = true)
+        wishListLiveData.value = Resource.error(throwable.localizedMessage ?: "error!",null)
     }
 
 
     fun getWishList(userId: String){
-        wishListLoading.value = Resource.success(true)
+        wishListLiveData.value = Resource.loading(null)
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = wishListRepository.getWishList(userId)
             withContext(Dispatchers.Main){
-                wishListLoading.value = Resource.success(false)
-
-                if(response.data != null){
-                    wishListLiveData.value = Resource.success(response.data)
-                } else {
-                    wishListError.value = Resource.error(response.message!!,true)
+                when(response.status){
+                    Status.SUCCESS -> {
+                        //println("wish list geldi: ${response.data}")
+                        wishListLiveData.value = Resource.success(response.data)
+                    }
+                    Status.ERROR -> {
+                        wishListLiveData.value = Resource.error(response.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        wishListLiveData.value = Resource.loading(null)
+                    }
                 }
             }
         }
@@ -59,7 +65,7 @@ class WishListViewModel @Inject constructor(var wishListRepository: WishListRepo
                     ))
                     wishListLiveData.value = Resource.success(wishListLiveData.value?.data)
                 } else {
-                    wishListError.value = Resource.error(response["newId"] as String,true)
+                    wishListLiveData.value = Resource.error(response["newId"] as String,null)
                 }
             }
         }
@@ -74,7 +80,7 @@ class WishListViewModel @Inject constructor(var wishListRepository: WishListRepo
                     wishListLiveData.value?.data?.remove(wishListLiveData.value?.data?.find { it.wish_Id == wishId })
                     wishListLiveData.value = Resource.success(wishListLiveData.value?.data)
                 } else {
-                    wishListError.value = Resource.error("HATA",true)
+                    wishListLiveData.value = Resource.error("ERROR TO WISH LIST",null)
                 }
             }
         }
