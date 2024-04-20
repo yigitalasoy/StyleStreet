@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yigitalasoy.stylestreetapp.repository.AddressRepository
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
 import com.yigitalasoy.stylestreetapp.repository.NotificationRepository
@@ -10,6 +11,7 @@ import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.repository.WishListRepository
+import com.yigitalasoy.stylestreetapp.viewmodel.AddressViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
@@ -91,6 +93,15 @@ object ViewModelModule {
         wishListRepository: WishListRepository
     ): WishListViewModel {
         return WishListViewModel(wishListRepository)
+    }
+
+
+    @Provides
+    @Singleton
+    fun getProvidesAddressViewModel(
+        addressRepository: AddressRepository
+    ): AddressViewModel {
+        return AddressViewModel(addressRepository)
     }
 
 

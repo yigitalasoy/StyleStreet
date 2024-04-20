@@ -22,32 +22,42 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
 
         return try {
             docRef.let {
-
+                println("itdata: ${it.data}   ${it.data != null}   ${it.data?.size != 0}")
                 val basketProductList = ArrayList<BasketDetailResponse>()
-                val hashMap: ArrayList<HashMap<String, String>> =
-                    it.data!!["Basket_Products"] as ArrayList<HashMap<String, String>>
 
-                for (hash in hashMap) {
-                    println("quantity: ${hash["Quantity"]?.toInt()}")
-                    basketProductList.add(
-                        BasketDetailResponse(
-                            subProductId = hash["SubProduct_Id"].toString(),
-                            basketDetailId = hash["BasketDetail_Id"].toString(),
-                            basketId = hash["Basket_Id"].toString(),
-                            quantity = hash["Quantity"]!!.toInt(),
-                            productId = hash["Product_Id"].toString()
-                        )
+                if(it.data != null) {
+                    val hashMap: ArrayList<HashMap<String, String>> =
+                        it.data!!["Basket_Products"] as ArrayList<HashMap<String, String>>
+                    println("hashmapsize: ${hashMap.size}   ${hashMap.size != 0}")
+                    if (hashMap.isNotEmpty()) {
+                        for (hash in hashMap) {
+                            println("quantity: ${hash["Quantity"]?.toInt()}")
+                            basketProductList.add(
+                                BasketDetailResponse(
+                                    subProductId = hash["SubProduct_Id"].toString(),
+                                    basketDetailId = hash["BasketDetail_Id"].toString(),
+                                    basketId = hash["Basket_Id"].toString(),
+                                    quantity = hash["Quantity"]!!.toInt(),
+                                    productId = hash["Product_Id"].toString()
+                                )
+                            )
+                        }
+                    }
+
+                    val basket = BasketResponse(
+                        basketId = it.data!!["Basket_Id"].toString(),
+                        userId = it.data!!["User_Id"].toString(),
+                        basketProducts = basketProductList
                     )
+
+                    println("imp gelen data: $basket")
+                    return@let Resource.success(basket)
+
+                } else {
+                    return@let Resource.success(null)
                 }
 
-                val basket = BasketResponse(
-                    basketId = it.data!!["Basket_Id"].toString(),
-                    userId = it.data!!["User_Id"].toString(),
-                    basketProducts = basketProductList
-                )
 
-                println("imp gelen data: $basket")
-                return@let Resource.success(basket)
             }
 
         } catch (e: Exception) {

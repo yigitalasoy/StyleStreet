@@ -2,6 +2,8 @@ package com.yigitalasoy.stylestreetapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yigitalasoy.stylestreetapp.repository.AddressRepository
+import com.yigitalasoy.stylestreetapp.repository.AddressRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
 import com.yigitalasoy.stylestreetapp.repository.BasketRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.CategoryRepository
@@ -91,6 +93,14 @@ object RepositoryModule {
         firebaseFirestore: FirebaseFirestore
     ): WishListRepository{
         return WishListRepositoryImp(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesAddressRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): AddressRepository{
+        return AddressRepositoryImp(firebaseFirestore)
     }
 
 }

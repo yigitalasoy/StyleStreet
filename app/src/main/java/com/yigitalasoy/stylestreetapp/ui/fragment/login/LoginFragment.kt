@@ -19,7 +19,6 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentLoginBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.util.Constants
-import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
@@ -61,9 +60,6 @@ class LoginFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-        userViewModel.userLiveData.value = Resource.success(null)
 
         // productViewModel.getNewInProduct()
         // productColorViewModel.getAllProductColors()
@@ -158,10 +154,11 @@ class LoginFragment : Fragment() {
 
                     binding.textViewError.hide()
                     binding.progressBarLoading.hide()
+                    println("user login observerrrrrrrrrrrrr")
 
                     if(it.data != null){
                         this.toast("Login succesfully")
-
+                        println("login success")
                         val mainActivity = Intent(activity, MainActivity::class.java)
                         startActivity(mainActivity)
                         activity?.finish()
@@ -183,11 +180,6 @@ class LoginFragment : Fragment() {
 
 
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
 }

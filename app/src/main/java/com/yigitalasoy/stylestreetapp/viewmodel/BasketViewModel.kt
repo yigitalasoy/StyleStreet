@@ -72,7 +72,7 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
                         basketLiveData.value = Resource.error(response.message.toString(),null)
                     }
                     Status.LOADING -> {
-                        println("basket loading")
+                        basketLiveData.value = Resource.loading(null)
                     }
                 }
             }

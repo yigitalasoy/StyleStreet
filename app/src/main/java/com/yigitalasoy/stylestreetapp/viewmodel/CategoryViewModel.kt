@@ -19,8 +19,6 @@ import javax.inject.Inject
 class CategoryViewModel @Inject constructor(val categoryRepository: CategoryRepository): ViewModel() {
 
     val categoryLiveData = MutableLiveData<Resource<ArrayList<CategoryResponse>>>()
-    //val categoryError = MutableLiveData<Resource<Boolean>>()
-    //val categoryLoading = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
 
@@ -53,15 +51,7 @@ class CategoryViewModel @Inject constructor(val categoryRepository: CategoryRepo
                         categoryLiveData.value = Resource.loading(null)
                     }
                 }
-
-
             }
-
-
         }
     }
-
-
-
-
 }

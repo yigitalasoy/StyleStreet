@@ -161,7 +161,7 @@ class MainFragment : Fragment() {
             when(user.status){
                 Status.SUCCESS -> {
                     Log.i("get user success","")
-
+                    println("user main observerrrrrrrrrrrrr")
                     if(user.data == null){
                         mainFragmentBinding.progressBarFragmentMain.hide()
                         mainFragmentBinding.scrollViewFragmentMain.show()
@@ -309,4 +309,5 @@ class MainFragment : Fragment() {
         }
 
     }
+
 }

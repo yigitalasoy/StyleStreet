@@ -50,7 +50,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        userViewModel.userLiveData.value = null
+        userViewModel.userLiveData.value = Resource.success(null)
 
 
         binding.apply {
