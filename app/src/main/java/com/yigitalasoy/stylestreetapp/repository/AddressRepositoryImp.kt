@@ -33,14 +33,31 @@ class AddressRepositoryImp(val firebaseFirestore: FirebaseFirestore): AddressRep
     override suspend fun addAddress(newAddress: AddressResponse): Resource<AddressResponse> {
 
         val docRef = firebaseFirestore.collection("tbl_Address")
-        val newId = docRef.document().id
+        if(newAddress.addressId == null){
+            val newId = docRef.document().id
+            newAddress.addressId = newId
+        }
 
-        newAddress.addressId = newId
-        val state = docRef.document(newId).set(newAddress)
+        val state = docRef.document(newAddress.addressId!!).set(newAddress)
         state.await()
 
         return if(state.isSuccessful){
             Resource.success(newAddress)
+        } else {
+            Resource.error(state.exception.toString(),null)
+        }
+
+    }
+
+    override suspend fun removeAddress(addressId: String): Resource<Boolean> {
+
+        val docRef = firebaseFirestore.collection("tbl_Address")
+
+        val state = docRef.document(addressId).delete()
+        state.await()
+
+        return if(state.isSuccessful){
+            Resource.success(true)
         } else {
             Resource.error(state.exception.toString(),null)
         }

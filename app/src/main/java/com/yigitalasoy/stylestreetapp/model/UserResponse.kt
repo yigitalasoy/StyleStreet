@@ -10,5 +10,7 @@ data class UserResponse(
     @get:PropertyName("name") @set:PropertyName("name") var name: String? = "",
     @get:PropertyName("surname") @set:PropertyName("surname") var surname: String? = "",
     @get:PropertyName("email") @set:PropertyName("email") var email: String? = "",
-    @get:PropertyName("password") @set:PropertyName("password") var password: String? = ""
+    @get:PropertyName("password") @set:PropertyName("password") var password: String? = "",
+    @get:PropertyName("imageURL") @set:PropertyName("imageURL") var userImageURL: String? = "",
+    @get:PropertyName("telephone") @set:PropertyName("telephone") var telephone: String? = ""
 ): Parcelable

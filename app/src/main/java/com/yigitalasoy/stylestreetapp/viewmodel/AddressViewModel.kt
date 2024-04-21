@@ -20,6 +20,7 @@ class AddressViewModel @Inject constructor(val addressRepository: AddressReposit
 
     val addressLiveData = MutableLiveData<Resource<ArrayList<AddressResponse>>>()
     val newAddressLiveData = MutableLiveData<Resource<AddressResponse>>()
+    val removeState = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
 
@@ -27,10 +28,11 @@ class AddressViewModel @Inject constructor(val addressRepository: AddressReposit
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
         addressLiveData.value = Resource.error(throwable.message.toString(),null)
+        newAddressLiveData.value = Resource.error(throwable.message.toString(),null)
+        removeState.value = Resource.error(throwable.message.toString(),null)
     }
 
     fun getAddressData(userId: String){
-
         addressLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch{
@@ -58,6 +60,7 @@ class AddressViewModel @Inject constructor(val addressRepository: AddressReposit
 
 
     fun addAddress(newAddress: AddressResponse){
+        println("add address çalıştı")
         newAddressLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch{
@@ -80,8 +83,33 @@ class AddressViewModel @Inject constructor(val addressRepository: AddressReposit
                 }
             }
         }
-
     }
+
+
+    fun removeAddress(addressId: String){
+        removeState.value = Resource.loading(null)
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch{
+            val response = addressRepository.removeAddress(addressId)
+
+            withContext(Dispatchers.Main){
+                when(response.status){
+                    Status.SUCCESS -> {
+                        if(response.data != null) {
+                            removeState.value = Resource.success(true)
+                        }
+                    }
+                    Status.ERROR -> {
+                        removeState.value = Resource.error(response.message.toString(),null)
+                    }
+                    Status.LOADING -> {
+                        removeState.value = Resource.loading(null)
+                    }
+                }
+            }
+        }
+    }
+
 
 
 

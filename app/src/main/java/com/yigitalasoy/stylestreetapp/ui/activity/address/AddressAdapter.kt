@@ -40,11 +40,6 @@ class AddressAdapter(val addressList: ArrayList<AddressResponse>,val onItemClick
             }
 
         }
-
-
-
-
-
     }
 
     fun updateAddressList(newAddressList: List<AddressResponse>){

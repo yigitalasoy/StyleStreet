@@ -8,4 +8,8 @@ interface AddressRepository {
 
     suspend fun addAddress(newAddress: AddressResponse): Resource<AddressResponse>
 
+    suspend fun removeAddress(addressId: String): Resource<Boolean>
+
+
+
 }

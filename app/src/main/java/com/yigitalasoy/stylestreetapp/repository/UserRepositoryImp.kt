@@ -120,7 +120,8 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                         name = account.givenName.toString(),
                         surname = account.familyName.toString(),
                         email = account.email.toString(),
-                        password = "")
+                        password = "",
+                        userImageURL = account.photoUrl.toString())
 
                     registerUserDatabase(user)
 

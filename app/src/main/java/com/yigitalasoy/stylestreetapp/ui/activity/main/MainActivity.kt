@@ -45,139 +45,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             constraintWishList.setOnClickListener {
-                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
-                    imageViewHome.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.home,
-                            null
-                        )
-                    )
-                    imageViewWishList.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.heart_filled,
-                            null
-                        )
-                    )
-                    imageViewProfile.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.profile,
-                            null
-                        )
-                    )
-                    imageViewNotification.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.notification,
-                            null
-                        )
-                    )
-
-                    imageViewStickHome.hide()
-                    imageViewStickHearth.show()
-                    imageViewStickProfile.hide()
-                    imageViewStickNotification.hide()
-
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.fragmentContainerView, WishListFragment())
-                    fragmentManager.popBackStack()
-                    fragmentTransaction.commit()
-                }
+                wishListButton()
             }
 
             constraintProfile.setOnClickListener {
-
-                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
-                    imageViewHome.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.home,
-                            null
-                        )
-                    )
-                    imageViewWishList.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.heart,
-                            null
-                        )
-                    )
-                    imageViewProfile.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.profile_filled,
-                            null
-                        )
-                    )
-                    imageViewNotification.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.notification,
-                            null
-                        )
-                    )
-
-                    imageViewStickHome.hide()
-                    imageViewStickHearth.hide()
-                    imageViewStickProfile.show()
-                    imageViewStickNotification.hide()
-
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.fragmentContainerView, ProfileFragment())
-                    fragmentManager.popBackStack()
-                    fragmentTransaction.commit()
-                }
+                profileButton()
             }
 
             constraintNotification.setOnClickListener {
-
-                if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
-                    imageViewHome.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.home,
-                            null
-                        )
-                    )
-                    imageViewWishList.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.heart,
-                            null
-                        )
-                    )
-                    imageViewProfile.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.profile,
-                            null
-                        )
-                    )
-                    imageViewNotification.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.notification_filled,
-                            null
-                        )
-                    )
-
-                    imageViewStickHome.hide()
-                    imageViewStickHearth.hide()
-                    imageViewStickProfile.hide()
-                    imageViewStickNotification.show()
-
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.fragmentContainerView, NotificationFragment())
-                    fragmentManager.popBackStack()
-                    fragmentTransaction.commit()
-
-                }
-
+                notificationButton()
             }
 
             floatingButtonBasket.setOnClickListener {
@@ -213,9 +89,148 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun profileButton() {
+        mainActivityBinding.apply {
+            if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
+                imageViewHome.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.home,
+                        null
+                    )
+                )
+                imageViewWishList.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.heart,
+                        null
+                    )
+                )
+                imageViewProfile.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.profile_filled,
+                        null
+                    )
+                )
+                imageViewNotification.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.notification,
+                        null
+                    )
+                )
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.show()
+                imageViewStickNotification.hide()
+
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.fragmentContainerView, ProfileFragment())
+                fragmentManager.popBackStack()
+                fragmentTransaction.commit()
+            }
+        }
+    }
+
+    fun wishListButton(){
+        mainActivityBinding.apply {
+            if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
+                imageViewHome.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.home,
+                        null
+                    )
+                )
+                imageViewWishList.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.heart_filled,
+                        null
+                    )
+                )
+                imageViewProfile.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.profile,
+                        null
+                    )
+                )
+                imageViewNotification.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.notification,
+                        null
+                    )
+                )
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.show()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.hide()
+
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.fragmentContainerView, WishListFragment())
+                fragmentManager.popBackStack()
+                fragmentTransaction.commit()
+            }
+        }
+    }
+
+    fun notificationButton() {
+        mainActivityBinding.apply {
+            if (categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
+                imageViewHome.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.home,
+                        null
+                    )
+                )
+                imageViewWishList.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.heart,
+                        null
+                    )
+                )
+                imageViewProfile.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.profile,
+                        null
+                    )
+                )
+                imageViewNotification.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.notification_filled,
+                        null
+                    )
+                )
+
+                imageViewStickHome.hide()
+                imageViewStickHearth.hide()
+                imageViewStickProfile.hide()
+                imageViewStickNotification.show()
+
+                val fragmentManager = supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentTransaction.replace(R.id.fragmentContainerView, NotificationFragment())
+                fragmentManager.popBackStack()
+                fragmentTransaction.commit()
+
+            }
+        }
+    }
+
     fun homeButton() {
-        if(categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
-            mainActivityBinding.apply {
+        mainActivityBinding.apply {
+            if (categoryViewModel.categoryLiveData.value?.status != Status.LOADING) {
 
                 imageViewHome.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -256,7 +271,6 @@ class MainActivity : AppCompatActivity() {
                 fragmentTransaction.replace(R.id.fragmentContainerView, MainFragment())
                 fragmentManager.popBackStack()
                 fragmentTransaction.commit()
-
             }
         }
     }

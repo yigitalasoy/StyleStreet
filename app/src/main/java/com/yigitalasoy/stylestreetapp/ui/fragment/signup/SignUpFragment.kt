@@ -96,7 +96,8 @@ class SignUpFragment : Fragment() {
             name = binding.editTextName.text.toString(),
             surname = binding.editTextSurname.text.toString(),
             email = binding.editTextEmail.text.toString(),
-            password = binding.editTextPassword.text.toString()
+            password = binding.editTextPassword.text.toString(),
+            telephone = binding.editTextTelephone.text.toString()
         )
     }
 
