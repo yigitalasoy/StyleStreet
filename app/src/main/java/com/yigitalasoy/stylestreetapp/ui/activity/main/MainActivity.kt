@@ -270,6 +270,8 @@ class MainActivity : AppCompatActivity() {
 
                     if(it.data != null){
                         mainActivityBinding.textViewBasketQuantity.text = basketViewModel.basketLiveData.value?.data?.basketProducts?.size.toString()
+                    } else {
+                        mainActivityBinding.textViewBasketQuantity.text = "0"
                     }
                 }
                 Status.ERROR -> {

@@ -30,6 +30,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -97,7 +98,8 @@ class MainFragment : Fragment() {
         val istanbulDateTime = LocalDateTime.now(ZoneId.of("Europe/Istanbul"))
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
         val formattedDateTime = istanbulDateTime.format(formatter)
-        println("güncel saat: $formattedDateTime")
+
+        println("güncel saat: $formattedDateTime epoch: ${Instant.now().epochSecond}")
 
 
         mainFragmentBinding.reyclerViewCategory.apply {

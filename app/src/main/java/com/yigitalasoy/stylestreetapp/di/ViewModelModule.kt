@@ -9,6 +9,7 @@ import com.yigitalasoy.stylestreetapp.repository.NotificationRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductColorRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
+import com.yigitalasoy.stylestreetapp.repository.SoldRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.repository.WishListRepository
 import com.yigitalasoy.stylestreetapp.viewmodel.AddressViewModel
@@ -18,6 +19,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
+import com.yigitalasoy.stylestreetapp.viewmodel.SoldViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.WishListViewModel
 import dagger.Module
@@ -102,6 +104,14 @@ object ViewModelModule {
         addressRepository: AddressRepository
     ): AddressViewModel {
         return AddressViewModel(addressRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesSoldViewModel(
+        soldRepository: SoldRepository
+    ): SoldViewModel {
+        return SoldViewModel(soldRepository)
     }
 
 

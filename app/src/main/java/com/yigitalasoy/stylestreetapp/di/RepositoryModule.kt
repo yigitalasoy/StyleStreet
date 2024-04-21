@@ -16,6 +16,8 @@ import com.yigitalasoy.stylestreetapp.repository.ProductRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepository
 import com.yigitalasoy.stylestreetapp.repository.ProductSizeRepositoryImp
+import com.yigitalasoy.stylestreetapp.repository.SoldRepository
+import com.yigitalasoy.stylestreetapp.repository.SoldRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.repository.UserRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.WishListRepository
@@ -101,6 +103,14 @@ object RepositoryModule {
         firebaseFirestore: FirebaseFirestore
     ): AddressRepository{
         return AddressRepositoryImp(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun getProvidesSoldRepository(
+        firebaseFirestore: FirebaseFirestore
+    ): SoldRepository{
+        return SoldRepositoryImp(firebaseFirestore)
     }
 
 }
