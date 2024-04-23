@@ -199,4 +199,13 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
         return allProductLiveData.value?.data?.find { it.productId == selectedProductId }?.allProducts?.find { it.subProductId == selectedSubProductId }
     }
 
+    fun getSubproductWithSubproductId(subProductId: String): SubProductResponse?{
+        allProductLiveData.value?.data?.forEach {searchedProduct ->
+            if(searchedProduct.allProducts?.find { it.subProductId == subProductId } != null){
+                return searchedProduct.allProducts?.find { it.subProductId == subProductId }
+            }
+        }
+        return null
+    }
+
 }

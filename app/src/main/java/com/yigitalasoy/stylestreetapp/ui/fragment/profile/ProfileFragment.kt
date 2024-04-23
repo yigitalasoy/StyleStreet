@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.yigitalasoy.stylestreetapp.databinding.FragmentProfileBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.address.AddressActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
+import com.yigitalasoy.stylestreetapp.ui.activity.sold.SoldActivity
 import com.yigitalasoy.stylestreetapp.util.downloadImage
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +57,8 @@ class ProfileFragment : Fragment() {
             }
 
             buttonUserOrders.setOnClickListener {
-
+                val soldIntent = Intent(requireContext(),SoldActivity::class.java)
+                (activity as MainActivity).startActivity(soldIntent)
             }
 
             buttonUserWishList.setOnClickListener {

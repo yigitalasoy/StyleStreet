@@ -22,6 +22,7 @@ import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
+import com.yigitalasoy.stylestreetapp.viewmodel.AddressViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
@@ -49,6 +50,7 @@ class MainFragment : Fragment() {
     @Inject lateinit var productColorViewModel: ProductColorViewModel
     @Inject lateinit var basketViewModel: BasketViewModel
     @Inject lateinit var wishListViewModel: WishListViewModel
+    @Inject lateinit var addressViewModel: AddressViewModel
 
 
     private val categoryAdapter = CategoryAdapter(arrayListOf())
@@ -91,7 +93,7 @@ class MainFragment : Fragment() {
         })
 
         //productViewModel.getNewInProduct()
-
+        addressViewModel.getAddressData(userViewModel.userLiveData.value?.data?.id!!)
 
 
 

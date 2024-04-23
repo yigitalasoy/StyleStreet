@@ -7,5 +7,6 @@ data class SoldDetailResponse(
     @get:PropertyName("Sold_Id") @set:PropertyName("Sold_Id") var soldId: String? = "",
     @get:PropertyName("SubProduct_Id") @set:PropertyName("SubProduct_Id") var subProductId: String? = "",
     @get:PropertyName("Quantity") @set:PropertyName("Quantity") var quantity: String? = "",
+    @get:PropertyName("Unit_Price") @set:PropertyName("Unit_Price") var unitPrice: Int? = 0,
     @get:PropertyName("User_Id") @set:PropertyName("User_Id") var userId: String? = ""
 )

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="7dp"
     android:background="@drawable/card_view_border"
-    android:backgroundTint="#EFEFEF">
+    android:backgroundTint="#e7a066">
 
     <ImageView
         android:id="@+id/imageViewProductImage"
@@ -15,6 +15,8 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
+        android:background="#e7a066"
+        android:backgroundTint="#e7a066"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,37 +24,37 @@
 
     <TextView
         android:id="@+id/textViewProductName"
-        android:layout_width="210dp"
-        android:layout_height="22dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textColor="@color/black"
+        android:layout_width="218dp"
+        android:layout_height="68dp"
+        android:layout_marginStart="5dp"
+        android:text="subproduct_name"
+        android:textColor="#6D3D17"
         android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/imageViewProductImage"
-        app:layout_constraintTop_toTopOf="@+id/imageViewProductImage" />
+        app:layout_constraintTop_toTopOf="@+id/textViewProductPrice" />
 
     <TextView
         android:id="@+id/textViewProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:text="TextView"
-        android:textColor="@color/background"
+        android:text="100"
+        android:textColor="#6C350A"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/textViewProductName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewProductName" />
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewProductImage"
+        app:layout_constraintEnd_toStartOf="@+id/textView26"
+        app:layout_constraintTop_toTopOf="@+id/imageViewProductImage" />
 
     <TextView
         android:id="@+id/textView26"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
         android:text=" TL"
-        android:textColor="@color/background"
+        android:textColor="#6C350A"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textViewProductPrice"
-        app:layout_constraintStart_toEndOf="@+id/textViewProductPrice"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textViewProductPrice" />
 </androidx.constraintlayout.widget.ConstraintLayout>

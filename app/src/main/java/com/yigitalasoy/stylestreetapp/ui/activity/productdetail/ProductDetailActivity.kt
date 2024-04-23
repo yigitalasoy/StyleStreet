@@ -126,6 +126,9 @@ class ProductDetailActivity : AppCompatActivity() {
                     imageAdapter.updateCategoryList(selectedSubProducts.find { it.subProductColorId?.colorId == itemSelected.colorId}?.subProductImageURL!!)
                 }
 
+                selectedSubProduct = selectedSubProducts.find { it.subProductColorId?.colorId == itemSelected.colorId}
+                println("selected sub product değişti: $selectedSubProduct")
+
 
                 binding.apply {
                     textViewSubProductPrice.text = selectedSubProducts.find { it.subProductColorId?.colorId ==  itemSelected.colorId}?.subProductPrice
@@ -179,7 +182,8 @@ class ProductDetailActivity : AppCompatActivity() {
                     basketViewModel.basketLiveData.value?.data?.basketId,
                     selectedSubProductId,
                     selectedProductId,
-                    textViewSubProductQuantity.text.toString().toInt()),this@ProductDetailActivity, selectedSubProduct!!)
+                    textViewSubProductQuantity.text.toString().toInt(),
+                    textViewSubProductPrice.text.toString().toInt()),this@ProductDetailActivity, selectedSubProduct!!)
             }
 
             fabLike.setOnClickListener {

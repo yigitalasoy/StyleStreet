@@ -190,17 +190,12 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
 
                         showPopUpAlert(activity,selectedSubProductResponse)
 
-
                     } else {
                         println("basket ürün ekleme state false geldi")
                     }
                 }
-
-
             }
-
         }
-
     }
 
     private fun showPopUpAlert(activity: Activity, selectedSubProductResponse: SubProductResponse) {
@@ -250,6 +245,25 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
             }
         }, 3000)
 
+    }
+
+    fun removeAllProducts(userId: String, basketData: BasketResponse){
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+
+            basketData.basketProducts = arrayListOf()
+
+            val state = basketRepository.removeAllProducts(userId,basketData)
+
+            withContext(Dispatchers.Main){
+
+                if(state){
+                    basketLiveData.value = Resource.success(null)
+                    basketSubProductsLiveData.value = Resource.success(null)
+                } else {
+                    println("basket live data all products not removed, state is false")
+                }
+            }
+        }
     }
 
 }

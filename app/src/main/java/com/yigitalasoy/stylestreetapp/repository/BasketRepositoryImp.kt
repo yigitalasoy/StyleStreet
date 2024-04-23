@@ -38,7 +38,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                                     basketDetailId = hash["BasketDetail_Id"].toString(),
                                     basketId = hash["Basket_Id"].toString(),
                                     quantity = hash["Quantity"]!!.toInt(),
-                                    productId = hash["Product_Id"].toString()
+                                    productId = hash["Product_Id"].toString(),
+                                    unitPrice = hash["Unit_Price"].toString().toInt()
                                 )
                             )
                         }
@@ -172,7 +173,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                         "Basket_Id" to data["Basket_Id"].toString(),
                         "Product_Id" to basketItem.basketProducts!![0].productId!!,
                         "Quantity" to basketItem.basketProducts!![0].quantity!!.toString(),
-                        "SubProduct_Id" to basketItem.basketProducts!![0].subProductId!!
+                        "SubProduct_Id" to basketItem.basketProducts!![0].subProductId!!,
+                        "Unit_Price" to basketItem.basketProducts!![0].unitPrice!!,
                     )
 
                     productsArray.add(product)
@@ -216,5 +218,21 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
         }
         println("sepete ürün ekledikten sonra dönen state: $hashReturn")
         return hashReturn
+    }
+
+    override suspend fun removeAllProducts(userId: String, basketData: BasketResponse): Boolean {
+
+        val collectionRef = firebaseFirestore.collection("tbl_Basket")
+        val documentRef = collectionRef.document(userId)
+
+        val state = documentRef.set(hashMapOf(
+            "Basket_Id" to basketData.basketId,
+            "User_Id" to basketData.userId,
+            "Basket_Products" to arrayListOf<String>()))
+
+        state.await()
+
+        return state.isSuccessful
+
     }
 }

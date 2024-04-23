@@ -87,6 +87,7 @@ class SoldRepositoryImp(val firebaseFirestore: FirebaseFirestore): SoldRepositor
                     soldId,
                     basketProduct.subProductId,
                     basketProduct.quantity.toString(),
+                    basketProduct.unitPrice.toString().toInt(),
                     userId
                 )
             )

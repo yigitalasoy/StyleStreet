@@ -43,6 +43,7 @@ class SoldViewModel @Inject constructor(val soldRepository: SoldRepository): Vie
                 when(response.status){
                     Status.SUCCESS -> {
                         if(response.data != null){
+                            println("sold live data geldi: ${response.data}")
                             soldLiveData.value = response
                         }
                     }
@@ -68,6 +69,7 @@ class SoldViewModel @Inject constructor(val soldRepository: SoldRepository): Vie
                 when(response.status){
                     Status.SUCCESS -> {
                         if(response.data != null){
+                            println("sold detail live data geldi: ${response.data}")
                             soldDetailLiveData.value = response
                         }
                     }

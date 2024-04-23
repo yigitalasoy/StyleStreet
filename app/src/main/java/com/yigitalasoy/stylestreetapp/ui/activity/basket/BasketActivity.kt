@@ -331,8 +331,12 @@ class BasketActivity : AppCompatActivity() {
                         selectedAddressId = "null"
 
                         soldViewModel.addSoldState.value = Resource.success(null)
-                        basketViewModel.basketLiveData.value = Resource.success(null)
-                        basketViewModel.basketSubProductsLiveData.value = Resource.success(null)
+                        //basketViewModel.basketLiveData.value = Resource.success(null)
+                        //basketViewModel.basketSubProductsLiveData.value = Resource.success(null)
+
+                        basketViewModel.removeAllProducts(userViewModel.userLiveData.value?.data?.id!!,basketViewModel.basketLiveData.value?.data!!)
+
+                        //basketteki sadece ürünler gidecek.
 
                     }
                 }

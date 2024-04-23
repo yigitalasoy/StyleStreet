@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintSold"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="15dp"
+    android:background="@drawable/spinner_outline"
+    android:backgroundTint="#e7a066"
+    android:paddingBottom="20dp">
+
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="30dp"
+        android:src="@drawable/receipt"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView14" />
+
+    <TextView
+        android:id="@+id/textViewOrderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="13dp"
+        android:text="Order: #"
+        android:textColor="#6D3D17"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/imageView13"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewOrderId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:text=""
+        android:textColor="#6D3D17"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/textViewOrderText"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewItemCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="0"
+        android:textColor="#6D3D17"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewOrderText"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOrderText" />
+
+    <TextView
+        android:id="@+id/textViewItemCount2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text=" items"
+        android:textColor="#6D3D17"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@+id/textViewItemCount"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOrderText" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="13dp"
+        android:layout_height="29dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/arrowleft_orange" />
+</androidx.constraintlayout.widget.ConstraintLayout>
