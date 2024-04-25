@@ -133,32 +133,4 @@ class SoldViewModel @Inject constructor(val soldRepository: SoldRepository): Vie
 
     }
 
-
-    /*fun addUserSoldDetail(soldId: String,soldDetailList: ArrayList<SoldDetailResponse>){
-
-        soldDetailLiveData.value = Resource.loading(null)
-        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = soldRepository.addUserSoldDetail(soldId,soldDetailList)
-            withContext(Dispatchers.Main){
-                when(response.status){
-                    Status.SUCCESS -> {
-                        if(response.data != null){
-                            soldDetailLiveData.value?.data?.addAll(response.data)
-                            soldDetailLiveData.value = Resource.success(soldDetailLiveData.value?.data)
-                        }
-                    }
-                    Status.ERROR -> {
-                        soldDetailLiveData.value = Resource.error(response.message.toString(),null)
-                    }
-                    Status.LOADING -> {
-                        soldDetailLiveData.value = Resource.loading(null)
-                    }
-                }
-            }
-        }
-
-    }*/
-
-
-
 }

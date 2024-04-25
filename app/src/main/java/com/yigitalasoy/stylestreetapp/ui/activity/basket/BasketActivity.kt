@@ -310,9 +310,6 @@ class BasketActivity : AppCompatActivity() {
 
                         println("add sold state success: ${it.data}")
 
-
-
-
                         SUB_TOTAL = 0
                         BASKET_TOTAL = 0
                         SHIPPING_COST = 0

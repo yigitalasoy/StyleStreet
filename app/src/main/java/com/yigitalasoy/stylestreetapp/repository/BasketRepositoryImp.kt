@@ -75,17 +75,6 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
         position: Int
     ): Boolean {
 
-        //val docRef = firebaseFirestore.collection(Constants.FIRESTORE_DATABASE_BASKET).document(userId).get().await()
-
-        //var database: DatabaseReference
-
-        //database = Firebase.database.reference
-        //println("position: $position")
-
-        //database.child(Constants.FIRESTORE_DATABASE_BASKET).child(userId).child("Basket_Products").child(position.toString()).child("Quantity").setValue(5)
-        //println("database: ${database.child(Constants.FIRESTORE_DATABASE_BASKET).child(userId).child("Basket_Products").child(position.toString()).child("Quantity").get()}")
-
-
         val collectionRef = firebaseFirestore.collection("tbl_Basket")
         val documentRef = collectionRef.document(userId)
         var state = false
@@ -184,7 +173,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                     if (update.isSuccessful) {
                         hashReturn = hashMapOf(
                             "state" to true,
-                            "newBasketProductId" to newId
+                            "newBasketProductId" to newId,
+                            "basketId" to data["Basket_Id"].toString()
                         )
                         Log.d("Firestore", "basket Dokümanı başarıyla güncellendi.")
                     }
@@ -212,7 +202,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
             testState.await()
             hashReturn = hashMapOf(
                 "state" to testState.isSuccessful,
-                "newBasketProductId" to newId
+                "newBasketProductId" to newId,
+                "basketId" to newBasketId
             )
 
         }

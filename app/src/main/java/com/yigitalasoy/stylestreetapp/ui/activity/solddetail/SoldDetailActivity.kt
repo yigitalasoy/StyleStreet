@@ -25,7 +25,7 @@ class SoldDetailActivity : AppCompatActivity() {
     @Inject lateinit var productViewModel: ProductViewModel
     @Inject lateinit var addressViewModel: AddressViewModel
 
-    val soldProductsAdapter = SoldProductsAdapter(arrayListOf())
+    val soldProductsAdapter = SoldProductsAdapter(arrayListOf(), arrayListOf())
 
     var gelenSoldString: String? = null
     var gelenSold: SoldResponse? = null
@@ -68,7 +68,7 @@ class SoldDetailActivity : AppCompatActivity() {
                         productsList.add(it)
                     }
                 }
-                soldProductsAdapter.updateProductList(productsList)
+                soldProductsAdapter.updateProductList(productsList,soldViewModel.soldDetailLiveData.value?.data!!)
 
             }
 

@@ -64,7 +64,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
         }
     }
 
-    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {
+    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {0
 
         val productList = ArrayList<ProductResponse>()
         var subProductNumber = 0
@@ -117,8 +117,6 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
                             subProductNumber += 1
                         }
 
-                        //testProduct.allProducts.addAll(subProductList)
-                        //subProductList.clear()
                         if(subProductNumber > 5){
                             println("subProductNumber > 5 returne girdi")
                             return@let Resource.success(productList)

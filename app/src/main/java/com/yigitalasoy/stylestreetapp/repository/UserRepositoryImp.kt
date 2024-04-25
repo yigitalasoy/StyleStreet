@@ -33,7 +33,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             Resource.error(e.message.toString(),null)
         }
-
     }
 
     override suspend fun getUserDataFromDatabase(userUid: String?): Resource<UserResponse> {
@@ -44,10 +43,7 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
 
             if (document != null) {
-                //Log.e("getUserDataFromDatabase succes","succes user: ${document.data?.mapToObject().toString()}")
                 println("user: ${document.toObject(UserResponse::class.java)}")
-
-                //Resource.success(document.data?.mapToObject())
                 Resource.success(document.toObject(UserResponse::class.java))
             } else {
                 Log.d(ContentValues.TAG, "No such document")
@@ -89,6 +85,22 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         return try {
             val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user.id.toString()).set(user)
             doc.await()
+
+
+
+            val collectionRef = db.collection("tbl_Basket")
+
+            val a = collectionRef.document(user.id.toString()).get()
+            a.await()
+            if(a.result.data == null){
+                var newBasketId = collectionRef.document().id
+
+                db.collection("tbl_Basket").document(user.id.toString()).set(hashMapOf(
+                    "Basket_Id" to newBasketId,
+                    "User_Id" to user.id.toString(),
+                    "Basket_Products" to arrayListOf<HashMap<String,Any>>()
+                ))
+            }
 
             if(doc.isSuccessful){
                 Log.e("database added","USER SUCCESFULLY ADDED DATABASE: ${user.id}")
@@ -146,7 +158,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         } catch (e: Exception){
             false
         }
-
     }
 
 

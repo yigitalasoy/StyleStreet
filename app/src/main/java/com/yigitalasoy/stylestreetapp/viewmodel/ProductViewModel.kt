@@ -38,7 +38,6 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
     }
 
     fun getNewInProduct(){
-
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
 
             val productResponse = productRepository.getNewInProduct()
@@ -95,29 +94,6 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
     fun updateProductColorName(colors: ArrayList<ProductColorResponse>){
 
         colors.let {
-            /*
-            val productByNameMap = colors.associateBy { it.colorName }
-
-
-            val productNameToFind = "Blue"
-            val productIdByName = productByNameMap.get(productNameToFind)?.colorId ?: -1
-
-            if (productIdByName != -1) {
-                println("$productNameToFind ürününün ID'si: $productIdByName")
-            } else {
-                println("$productNameToFind ürünü bulunamadı.")
-            }
-
-            val productIdToFind = "xM230BXhr0TTtZ2xfEBy"
-            val productNameById = productByIdMap.get(productIdToFind)?.colorName
-
-            if (productNameById != null) {
-                println("ID $productIdToFind olan ürünün adı: $productNameById")
-            } else {
-                println("ID $productIdToFind olan ürün bulunamadı.")
-            }
-            */
-
             val productByIdMap = colors.associateBy { it.colorId }
 
             if(allProductLiveData.value?.data != null){
@@ -128,9 +104,6 @@ class ProductViewModel @Inject constructor(val productRepository: ProductReposit
                     }
                 }
             }
-
-
-
         }
     }
 

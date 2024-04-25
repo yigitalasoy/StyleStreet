@@ -7,18 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentMainBinding
+import com.yigitalasoy.stylestreetapp.model.CategoryResponse
 import com.yigitalasoy.stylestreetapp.model.ProductResponse
 import com.yigitalasoy.stylestreetapp.ui.activity.login.LoginActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.productdetail.ProductDetailActivity
+import com.yigitalasoy.stylestreetapp.ui.activity.productfilter.ProductFilterActivity
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
 import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.Status
+import com.yigitalasoy.stylestreetapp.util.downloadImage
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -53,8 +57,9 @@ class MainFragment : Fragment() {
     @Inject lateinit var addressViewModel: AddressViewModel
 
 
-    private val categoryAdapter = CategoryAdapter(arrayListOf())
+    private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var newInProductAdapter: ProductAdapter
+    private lateinit var allProductAdapter: ProductAdapter
 
 
 
@@ -78,17 +83,36 @@ class MainFragment : Fragment() {
         //val searchAdapter = SearchAdapter(requireContext(), productViewModel.productLiveData.value?.data!!)
 
         newInProductAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
-            override fun onItemClick(position: Any) {
+            override fun onItemClick(selectedItem: Any) {
+                selectedItem as ProductResponse
 
-                //this@MainFragment.toast(productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productName)
                 val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
-                productDetailActivity.putExtra("selectedProductId",productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.productId)
+                productDetailActivity.putExtra("selectedProductId",productViewModel.newInProductLiveData.value!!.data?.find { it.productId == selectedItem.productId }!!.productId)
                 productDetailActivity.putExtra("selectedSubProductId",
-                    productViewModel.newInProductLiveData.value!!.data?.get(position as Int)!!.allProducts?.get(0)?.subProductId
+                            productViewModel.newInProductLiveData.value!!.data?.find { it.productId == selectedItem.productId }?.allProducts?.get(0)?.subProductId.toString()
                 )
                 startActivity(productDetailActivity)
+            }
+        })
 
+        allProductAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
+            override fun onItemClick(selectedItem: Any) {
+                selectedItem as ProductResponse
 
+                val productDetailActivity = Intent(activity, ProductDetailActivity::class.java)
+                productDetailActivity.putExtra("selectedProductId",productViewModel.allProductLiveData.value!!.data?.find { it.productId == selectedItem.productId }!!.productId)
+                productDetailActivity.putExtra("selectedSubProductId",
+                    productViewModel.allProductLiveData.value!!.data?.find { it.productId == selectedItem.productId }?.allProducts?.get(0)?.subProductId.toString()
+                )
+                startActivity(productDetailActivity)
+            }
+        })
+
+        categoryAdapter = CategoryAdapter(arrayListOf(), object : ItemClickListener{
+            override fun onItemClick(Item: Any) {
+                val productFilterActivity = Intent(this@MainFragment.context,ProductFilterActivity::class.java)
+                productFilterActivity.putExtra("categoryId",(Item as CategoryResponse).categoryId)
+                this@MainFragment.startActivity(productFilterActivity)
             }
         })
 
@@ -114,6 +138,15 @@ class MainFragment : Fragment() {
             adapter = newInProductAdapter
         }
 
+        mainFragmentBinding.recyclerViewAllProducts.apply {
+            layoutManager = GridLayoutManager(requireContext(),2)
+            adapter = allProductAdapter
+        }
+
+        if(!(userViewModel.userLiveData.value?.data?.userImageURL.equals(""))){
+            mainFragmentBinding.imageView3.downloadImage()
+        }
+
         if(categoryViewModel.categoryLiveData.value?.data == null ||
             productColorViewModel.productColorLiveData.value?.data == null ||
             productSizeViewModel.productSizeLiveData.value?.data == null ||
@@ -129,8 +162,6 @@ class MainFragment : Fragment() {
 
 
         mainFragmentBinding.buttonCikisYap.setOnClickListener {
-
-            //Firebase.auth.signOut()
 
             userViewModel.signOut(requireContext())
 
@@ -204,6 +235,8 @@ class MainFragment : Fragment() {
                     }
                 }
                 Status.ERROR -> {
+                    mainFragmentBinding.textViewError.show()
+                    mainFragmentBinding.textViewError.text = list.message.toString()
                     Log.i("category live data error",list.message.toString())
                 }
                 Status.LOADING -> {
@@ -224,6 +257,8 @@ class MainFragment : Fragment() {
 
                     if(products.data != null){
                         products?.let {
+                            allProductAdapter.updateProductList(products.data)
+
                             val searchAdapter = SearchAdapter(requireContext(), products.data!!, object : ItemClickListener{
                                 override fun onItemClick(Item: Any) {
                                     mainFragmentBinding.editTextSearch.text.clear()
@@ -234,8 +269,6 @@ class MainFragment : Fragment() {
                                         Item.allProducts?.get(0)?.subProductId
                                     )
                                     startActivity(productDetailActivity)
-
-
                                 }
                             })
                             mainFragmentBinding.editTextSearch.apply {
@@ -245,6 +278,8 @@ class MainFragment : Fragment() {
                     }
                 }
                 Status.ERROR -> {
+                    mainFragmentBinding.textViewError.show()
+                    mainFragmentBinding.textViewError.text = products.message.toString()
                     Log.e("all products observe error",products.message.toString())
                 }
                 Status.LOADING -> {
@@ -265,14 +300,14 @@ class MainFragment : Fragment() {
                     }
                 }
                 Status.ERROR -> {
+                    mainFragmentBinding.textViewError.show()
+                    mainFragmentBinding.textViewError.text = it.message.toString()
                     Log.i("get new in product error",it.message.toString())
                 }
                 Status.LOADING -> {
                     Log.i("get new in product loading","")
                 }
             }
-
-
         }
 
         productColorViewModel.productColorLiveData.observe(viewLifecycleOwner){ colors ->
@@ -285,6 +320,8 @@ class MainFragment : Fragment() {
                     }
                 }
                 Status.ERROR -> {
+                    mainFragmentBinding.textViewError.show()
+                    mainFragmentBinding.textViewError.text = colors.message.toString()
                     Log.i("get colors error",colors.message.toString())
                 }
                 Status.LOADING -> {
@@ -303,6 +340,8 @@ class MainFragment : Fragment() {
                     }
                 }
                 Status.ERROR -> {
+                    mainFragmentBinding.textViewError.show()
+                    mainFragmentBinding.textViewError.text = sizeList.message.toString()
                     Log.i("get size error",sizeList.message.toString())
                 }
                 Status.LOADING -> {

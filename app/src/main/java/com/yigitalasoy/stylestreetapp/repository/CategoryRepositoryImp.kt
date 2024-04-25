@@ -19,22 +19,12 @@ class CategoryRepositoryImp(val firebaseFirestore: FirebaseFirestore): CategoryR
         return try {
             docRef.documents.let {
                 for (category in it){
-                    /*val categoryModel = CategoryResponse()
-                    categoryModel.categoryId = category.data!![Constants.CATEGORYRESPONSE_categoryId].toString()
-                    categoryModel.categoryName = category.data!![Constants.CATEGORYRESPONSE_categoryName].toString()
-                    categoryModel.categoryImage = category.data!![Constants.CATEGORYRESPONSE_categoryImage].toString()*/
-
-                    //categoryList.add(categoryModel)
-
                     categoryList.add(category.toObject(CategoryResponse::class.java)!!)
-
                 }
                 return@let Resource.success(categoryList)
             }
-
         } catch (e: Exception){
             return Resource.error(e.message.toString(),null)
         }
-
     }
 }

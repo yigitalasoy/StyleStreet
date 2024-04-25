@@ -44,7 +44,7 @@ class ProductAdapter(
         }
 
         binding.cardViewProductDetail.setOnClickListener {
-            onItemClickListener.onItemClick(position)
+            onItemClickListener.onItemClick(productList[position])
         }
 
 

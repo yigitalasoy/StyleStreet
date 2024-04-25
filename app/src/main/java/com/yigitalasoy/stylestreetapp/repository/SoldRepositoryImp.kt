@@ -20,6 +20,8 @@ class SoldRepositoryImp(val firebaseFirestore: FirebaseFirestore): SoldRepositor
                     soldList.add(sold.toObject(SoldResponse::class.java)!!)
                 }
 
+                soldList.sortBy { it.soldDate }
+
                 return@let Resource.success(soldList)
             }
 
@@ -64,10 +66,6 @@ class SoldRepositoryImp(val firebaseFirestore: FirebaseFirestore): SoldRepositor
         } else {
             return Resource.error(state.exception?.message.toString(),null)
         }
-
-
-
-
     }
 
     override suspend fun addUserSoldDetail(

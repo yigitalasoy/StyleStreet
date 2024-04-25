@@ -73,7 +73,6 @@ class SignUpFragment : Fragment() {
 
             buttonSignUp.setOnClickListener {
                 if(emailValidation && isBigChar && isNumber && isSevenChar){
-                    //kayıt olma işlemi yapılacak
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANDI")
 
                     userViewModel.userSignUp(getUser())
@@ -179,14 +178,6 @@ class SignUpFragment : Fragment() {
 
 
     fun checkEmailValidation() {
-        /*val emailRegex = "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
-                "\\@" +
-                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
-                "(" +
-                "\\." +
-                "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
-                ")+"*/
-
         val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$")
         binding.apply {
             //emailValidation = editTextEmail.text.toString().matches(emailRegex.toRegex())

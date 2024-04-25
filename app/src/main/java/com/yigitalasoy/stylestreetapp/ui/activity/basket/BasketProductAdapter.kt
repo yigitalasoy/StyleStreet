@@ -48,7 +48,12 @@ class BasketProductAdapter(val activity: Activity,
 
             imageViewBasketProductImage.downloadImage(productList[position].subProductImageURL!![0])
 
-            textViewBasketProductName.text = productList[position].subProductName
+            if(productList[position].subProductName?.length!! > 24){
+                textViewBasketProductName.text = productList[position].subProductName?.substring(0,23) + "..."
+            } else {
+                textViewBasketProductName.text = productList[position].subProductName
+            }
+
             textViewBasketProductQuantity.text = basketData?.basketProducts?.find { it.subProductId == productList[position].subProductId}?.quantity.toString()
             textViewBasketProductSize.text = "Beden: ${productList[position].subProductSizeId?.productSizeName}"
             textViewBasketProductColor.text = "Renk: ${productList[position].subProductColorId?.colorName}"

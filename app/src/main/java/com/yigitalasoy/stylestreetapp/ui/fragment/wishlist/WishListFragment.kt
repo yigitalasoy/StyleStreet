@@ -70,17 +70,7 @@ class WishListFragment : Fragment() {
             }
 
             buttonStartShopping.setOnClickListener {
-
-                //val fragmentManager = activity?.supportFragmentManager
-                //val fragmentTransaction = fragmentManager?.beginTransaction()
-                //fragmentTransaction?.replace(R.id.fragmentContainerView, MainFragment())
-                //fragmentManager?.popBackStack()
-                //fragmentTransaction?.commit()
-
-
                 (activity as MainActivity?)?.homeButton()
-
-
             }
 
             val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT){

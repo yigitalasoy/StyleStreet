@@ -16,9 +16,6 @@ class ProductSizeRepositoryImp(val firebaseFirestore: FirebaseFirestore): Produc
         return try {
             docRef.documents.let {
                 for (productSize in it){
-                    /*var sizeModel = ProductSizeResponse(productSize.data!![Constants.PRODUCTSIZERESPONSE_productSizeId].toString())
-                    sizeModel.productSizeName = productSize.data!![Constants.PRODUCTSIZERESPONSE_productSizeName].toString()
-                    sizeList.add(sizeModel)*/
                     sizeList.add(productSize.toObject(ProductSizeResponse::class.java)!!)
                 }
                 return@let Resource.success(sizeList)

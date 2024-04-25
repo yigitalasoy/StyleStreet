@@ -64,10 +64,19 @@ class SoldActivity : AppCompatActivity() {
             recyclerViewSold.show()
             progressBarLoading.hide()
 
-            soldAdapter.updateSoldList(
-                soldViewModel.soldLiveData.value?.data!!,
-                soldViewModel.soldDetailLiveData.value?.data!!,
-            )
+            if(soldViewModel.soldLiveData.value?.data!!.size != 0){
+                binding.constraintLayoutEmptyList.hide()
+                binding.recyclerViewSold.show()
+
+                soldAdapter.updateSoldList(
+                    soldViewModel.soldLiveData.value?.data!!,
+                    soldViewModel.soldDetailLiveData.value?.data!!,
+                )
+            } else {
+                binding.constraintLayoutEmptyList.show()
+                binding.recyclerViewSold.hide()
+            }
+
 
         }
     }

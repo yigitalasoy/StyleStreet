@@ -61,7 +61,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     Status.SUCCESS ->{
                         if(databaseUser.status == Status.SUCCESS){
                             userLiveData.value = databaseUser
-                            println("user live data değişti: ${userLiveData.value!!.data}")
+                            Log.i("User login oldu: ","${userLiveData.value!!.data}")
                         } else {
                             userLiveData.value = Resource.error(databaseUser.message.toString(),null)
                         }
@@ -74,31 +74,14 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                         userLiveData.value = Resource.loading(null)
                     }
                 }
-
-
-                /*if(firebaseUser.data==null || databaseUser.data==null){
-                    liveDataError("Error", true)
-                    liveDataLoading(false)
-                } else {
-                    userLiveData.value = databaseUser
-                    println("user live data değişti: ${userLiveData.value!!.data}")
-                    //isLogin.value = Resource.success(true)
-                    liveDataLoading(false)
-                    liveDataError("userLogin", false)
-                }*/
             }
         }
-
-        //giriş işlemi yapılacak
-        //giriş doğru ise database'deki kullanıcı verilerini de alıp userLiveData' ya aktarılacak.
     }
 
     fun userSignUp(user: UserResponse){
-        //kayıt işlemi yapılacak
         userLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            //IO'da sunucu işlemleri yapılır
             val registeredUser = userRepository.userSignUp(user)
 
             withContext(Dispatchers.Main){
@@ -117,13 +100,6 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                         println("else")
                     }
                 }
-
-                /*if(registeredUser.data != null){
-                    liveDataError("REGISTER SUCCESS",false)
-                    liveDataLoading(false)
-                } else {
-                    liveDataError("Error Firebase register: ${registeredUser.message}",true)
-                }*/
             }
         }
     }
@@ -158,15 +134,6 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
         }
     }
 
-    /*private fun liveDataLoading(data: Boolean) {
-        userLoading.value = Resource.loading(data)
-    }
-
-    private fun liveDataError(message: String? = "",data: Boolean) {
-        userError.value = Resource.error(message!!,data)
-    }*/
-
-
     fun signOut(context: Context){
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -180,8 +147,6 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
         }
 
         auth.signOut()
-
-        //isLogin.value = Resource.success(false)
         userLiveData.value = Resource.success(null)
 
     }
@@ -197,17 +162,11 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
                     println("LINK SEND: ${email}")
                 } else {
-                    //fragment.toast("DOES NOT EXIST EMAIL")
                     println("LINK error: ${email}")
                 }
             }
         }
 
     }
-
-
-
-
-
 
 }

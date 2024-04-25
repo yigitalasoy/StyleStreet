@@ -14,6 +14,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
+    <TextView
+        android:id="@+id/textViewError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
     <ScrollView
         android:id="@+id/scrollViewFragmentMain"
         android:layout_width="match_parent"
@@ -85,13 +96,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="13dp"
                 android:text="New In"
-                android:textColor="@color/black"
+                android:textColor="@color/red"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/editTextSearch"
@@ -101,32 +112,32 @@
                 android:id="@+id/recyclerViewNewIn"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginStart="25dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@+id/textView10"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <TextView
-                android:id="@+id/textView8"
+                android:id="@+id/textView35"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="25dp"
-                android:text="Top Selling"
+                android:layout_marginTop="13dp"
+                android:text="All Products"
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/editTextSearch"
+                app:layout_constraintStart_toStartOf="@+id/textView8"
                 app:layout_constraintTop_toBottomOf="@+id/recyclerViewNewIn" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewTopSelling"
+                android:id="@+id/recyclerViewAllProducts"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginStart="25dp"
+                android:layout_height="380dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                android:layout_marginBottom="140dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView35"
+                tools:listitem="@layout/product_row" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
