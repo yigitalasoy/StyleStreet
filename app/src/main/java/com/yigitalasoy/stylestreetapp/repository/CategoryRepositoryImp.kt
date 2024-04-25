@@ -27,14 +27,11 @@ class CategoryRepositoryImp(val firebaseFirestore: FirebaseFirestore): CategoryR
                     //categoryList.add(categoryModel)
 
                     categoryList.add(category.toObject(CategoryResponse::class.java)!!)
-
                 }
                 return@let Resource.success(categoryList)
             }
-
         } catch (e: Exception){
             return Resource.error(e.message.toString(),null)
         }
-
     }
 }

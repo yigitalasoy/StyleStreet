@@ -35,15 +35,28 @@
         app:layout_constraintTop_toTopOf="@+id/imageViewProductImage" />
 
     <TextView
+        android:id="@+id/textViewProductQuantity"
+        android:layout_width="218dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        android:text="subproduct_quantity"
+        android:textColor="#6D3D17"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@+id/imageViewProductImage"
+        app:layout_constraintTop_toBottomOf="@+id/textViewProductName" />
+
+    <TextView
         android:id="@+id/textViewProductPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:text="100"
         android:textColor="#6C350A"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/textViewProductName"
-        app:layout_constraintTop_toBottomOf="@+id/textViewProductName" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewProductQuantity" />
 
     <TextView
         android:id="@+id/textView26"

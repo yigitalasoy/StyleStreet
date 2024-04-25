@@ -7,15 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.CategoryRowBinding
 import com.yigitalasoy.stylestreetapp.model.CategoryResponse
+import com.yigitalasoy.stylestreetapp.util.ItemClickListener
 import com.yigitalasoy.stylestreetapp.util.downloadImage
 
-class CategoryAdapter(var categoryList: ArrayList<CategoryResponse>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CategoryAdapter(
+    var categoryList: ArrayList<CategoryResponse>,
+    val onItemClickListener: ItemClickListener
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var binding: CategoryRowBinding
 
-    class CategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-
-    }
+    class CategoryViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -29,6 +31,10 @@ class CategoryAdapter(var categoryList: ArrayList<CategoryResponse>): RecyclerVi
         binding.textViewCategoryName.text = categoryList[position].categoryName
         categoryList[position].categoryImage?.let {
             binding.imageView4.downloadImage(it)
+        }
+
+        binding.imageView4.setOnClickListener {
+            onItemClickListener.onItemClick(categoryList[position])
         }
 
 

@@ -184,7 +184,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
                     if (update.isSuccessful) {
                         hashReturn = hashMapOf(
                             "state" to true,
-                            "newBasketProductId" to newId
+                            "newBasketProductId" to newId,
+                            "basketId" to data["Basket_Id"].toString()
                         )
                         Log.d("Firestore", "basket Dokümanı başarıyla güncellendi.")
                     }
@@ -212,7 +213,8 @@ class BasketRepositoryImp(val firebaseFirestore: FirebaseFirestore): BasketRepos
             testState.await()
             hashReturn = hashMapOf(
                 "state" to testState.isSuccessful,
-                "newBasketProductId" to newId
+                "newBasketProductId" to newId,
+                "basketId" to newBasketId
             )
 
         }

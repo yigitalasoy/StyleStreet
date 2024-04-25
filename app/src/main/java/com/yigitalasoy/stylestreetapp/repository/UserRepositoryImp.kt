@@ -90,6 +90,22 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
             val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user.id.toString()).set(user)
             doc.await()
 
+
+
+            val collectionRef = db.collection("tbl_Basket")
+
+            val a = collectionRef.document(user.id.toString()).get()
+            a.await()
+            if(a.result.data == null){
+                var newBasketId = collectionRef.document().id
+
+                db.collection("tbl_Basket").document(user.id.toString()).set(hashMapOf(
+                    "Basket_Id" to newBasketId,
+                    "User_Id" to user.id.toString(),
+                    "Basket_Products" to arrayListOf<HashMap<String,Any>>()
+                ))
+            }
+
             if(doc.isSuccessful){
                 Log.e("database added","USER SUCCESFULLY ADDED DATABASE: ${user.id}")
                 Resource.success(user)

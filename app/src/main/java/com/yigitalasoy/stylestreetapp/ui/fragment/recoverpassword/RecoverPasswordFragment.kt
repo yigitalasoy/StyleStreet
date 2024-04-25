@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.databinding.FragmentRecoverPasswordBinding
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -47,6 +48,7 @@ class RecoverPasswordFragment : Fragment() {
 
                 email.let {
                     userViewModel.sendResetPasswordLink(it,this@RecoverPasswordFragment)
+                    this@RecoverPasswordFragment.toast("Recovery password link successfully send.")
                 }
             }
         }

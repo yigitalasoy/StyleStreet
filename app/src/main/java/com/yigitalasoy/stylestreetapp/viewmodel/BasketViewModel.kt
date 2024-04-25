@@ -183,10 +183,18 @@ class BasketViewModel @Inject constructor(val basketRepository: BasketRepository
                     activity.toast("You already have this product in your basket")
                 } else {
                     if(returnHashMap!!["state"] as Boolean){
-                        basketDetail.basketDetailId = returnHashMap["newBasketProductId"].toString()
+                        println("geri dönen id: ${returnHashMap["newBasketProductId"].toString()}")
 
+                        basketDetail.basketDetailId = returnHashMap["newBasketProductId"].toString()
+                        basketDetail.basketId = returnHashMap["basketId"].toString()
+
+
+                        println("baskete eklenecek detay: $basketDetail")
+
+                        println("basket:::: ${basketLiveData.value}")
                         basketLiveData.value?.data?.basketProducts?.add(basketDetail)
                         basketLiveData.value = Resource.success(basketLiveData.value?.data)
+                        println("BASKET live data updated: ${basketLiveData.value?.data}")
 
                         showPopUpAlert(activity,selectedSubProductResponse)
 

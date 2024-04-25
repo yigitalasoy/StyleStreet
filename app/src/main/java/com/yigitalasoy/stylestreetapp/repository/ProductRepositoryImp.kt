@@ -64,7 +64,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
         }
     }
 
-    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {
+    override suspend fun getNewInProduct(): Resource<ArrayList<ProductResponse>> {0
 
         val productList = ArrayList<ProductResponse>()
         var subProductNumber = 0

@@ -20,6 +20,8 @@ class SoldRepositoryImp(val firebaseFirestore: FirebaseFirestore): SoldRepositor
                     soldList.add(sold.toObject(SoldResponse::class.java)!!)
                 }
 
+                soldList.sortBy { it.soldDate }
+
                 return@let Resource.success(soldList)
             }
 

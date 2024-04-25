@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yigitalasoy.stylestreetapp.databinding.FragmentNotificationBinding
 import com.yigitalasoy.stylestreetapp.model.NotificationResponse
 import com.yigitalasoy.stylestreetapp.util.ItemClickListener
+import com.yigitalasoy.stylestreetapp.util.hide
+import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,7 +73,14 @@ class NotificationFragment : Fragment() {
         notificationViewModel.notificationLiveData.observe(viewLifecycleOwner){
             println("notificationViewModel observe çalıştı: ${it.data}")
             if(it.data != null){
-                notificationAdapter.updateNotificationList(it.data)
+                if(it.data.size != 0){
+                    notificationAdapter.updateNotificationList(it.data)
+                    notificationBinding.textViewNoNotification.hide()
+                    notificationBinding.recyclerViewNotification.show()
+                } else {
+                    notificationBinding.textViewNoNotification.show()
+                    notificationBinding.recyclerViewNotification.hide()
+                }
                 println("observe yeni gelen notification list: ${it.data}")
             }
 
