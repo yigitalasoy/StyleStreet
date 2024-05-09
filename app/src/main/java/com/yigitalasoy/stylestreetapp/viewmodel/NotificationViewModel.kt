@@ -43,15 +43,21 @@ class NotificationViewModel @Inject constructor(var notificationRepository: Noti
 
     fun changeNotificationSeen(notificationId: String){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = notificationRepository.changeNotificationSeen(notificationId)
+            val response = notificationRepository.changeNotificationSeen(notificationId,
+                notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen!!
+            )
             println("gelen response: $response")
             withContext(Dispatchers.Main){
                 if (response.data != null && response.data == true) {
                     notificationLoading.value = Resource.loading(false)
                     // val temp = notificationLiveData.value?.data
                     // temp?.find { it.notificationId == notificationId }?.ItSeen = "1"
+                    if(notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen.equals("0")){
+                        notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen = "1"
+                    } else if(notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen.equals("1")) {
+                        notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen = "0"
+                    }
 
-                    notificationLiveData.value?.data?.find { it.notificationId == notificationId }?.ItSeen = "1"
                     notificationLiveData.value = Resource.success(notificationLiveData.value?.data)
 
                     println("bildirim live data: ${notificationLiveData.value?.data}")

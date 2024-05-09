@@ -78,6 +78,7 @@ class ProductRepositoryImp @Inject constructor(val firebaseFirestore: FirebaseFi
             docRef.documents.let {
                 while (true){
                     for (product in it){
+                        print("gelen it: $it")
                         val subProductList = ArrayList<SubProductResponse>()
 
                         val hashMap : ArrayList<HashMap<String, String>> = product.data!!["SubProducts"] as ArrayList<HashMap<String, String>>

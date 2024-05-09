@@ -63,6 +63,8 @@ class SoldActivity : AppCompatActivity() {
         binding.apply {
             recyclerViewSold.show()
             progressBarLoading.hide()
+            binding.textViewError.hide()
+
 
             if(soldViewModel.soldLiveData.value?.data!!.size != 0){
                 binding.constraintLayoutEmptyList.hide()
@@ -92,6 +94,9 @@ class SoldActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     println("soldLiveData error: ${it.message}")
+                    binding.progressBarLoading.hide()
+                    binding.textViewError.show()
+                    binding.textViewError.text = it.message
                 }
                 Status.LOADING -> {
                     binding.progressBarLoading.show()
@@ -109,6 +114,9 @@ class SoldActivity : AppCompatActivity() {
                 }
                 Status.ERROR -> {
                     println("soldDetailLiveData error: ${it.message}")
+                    binding.textViewError.show()
+                    binding.progressBarLoading.hide()
+                    binding.textViewError.text = it.message
                 }
                 Status.LOADING -> {
                     binding.progressBarLoading.show()

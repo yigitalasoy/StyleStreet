@@ -19,7 +19,6 @@ import com.yigitalasoy.stylestreetapp.ui.fragment.wishlist.WishListFragment
 import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
-import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.CategoryViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
@@ -73,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 alertDialog.setTitle("Log out")
                 alertDialog.setMessage("Are you sure for log out ?")
                 alertDialog.setPositiveButton("Yes",DialogInterface.OnClickListener { dialog, which ->
-                    this@MainActivity.toast("YES BASILDI")
+                    //this@MainActivity.toast("YES BASILDI")
 
                     val intent = Intent(this@MainActivity, LoginActivity::class.java)
                     this@MainActivity.startActivity(intent)
@@ -81,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     this@MainActivity.finish()
                 })
                 alertDialog.setNegativeButton("No", DialogInterface.OnClickListener { dialog, which ->
-                    this@MainActivity.toast("NO BASILDI")
+                    //this@MainActivity.toast("NO BASILDI")
 
                 })
                 alertDialog.show()

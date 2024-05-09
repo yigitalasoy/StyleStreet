@@ -1,5 +1,6 @@
 package com.yigitalasoy.stylestreetapp.repository
 
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.model.NotificationResponse
 import com.yigitalasoy.stylestreetapp.util.Resource
@@ -39,9 +40,15 @@ class NotificationRepositoryImp(val firebaseFirestore: FirebaseFirestore): Notif
     }
 
     override suspend fun changeNotificationSeen(
-        notificationId: String
+        notificationId: String,
+        itSeen: String
     ): Resource<Boolean> {
-        val docRef = firebaseFirestore.collection("tbl_Notification").document(notificationId).update("It_Seen","1")
+        lateinit var docRef: Task<Void>
+        if(itSeen == "0"){
+            docRef = firebaseFirestore.collection("tbl_Notification").document(notificationId).update("It_Seen","1")
+        } else if(itSeen == "1"){
+            docRef = firebaseFirestore.collection("tbl_Notification").document(notificationId).update("It_Seen","0")
+        }
         docRef.await()
         if(docRef.isSuccessful){
             return Resource.success(true)

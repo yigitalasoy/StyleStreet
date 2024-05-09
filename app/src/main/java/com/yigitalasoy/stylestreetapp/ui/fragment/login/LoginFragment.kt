@@ -2,6 +2,8 @@ package com.yigitalasoy.stylestreetapp.ui.fragment.login
 
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -23,7 +25,6 @@ import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
-import com.yigitalasoy.stylestreetapp.viewmodel.AddressViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.BasketViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductColorViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.ProductSizeViewModel
@@ -31,6 +32,7 @@ import com.yigitalasoy.stylestreetapp.viewmodel.ProductViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -62,6 +64,64 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val context: Context = requireContext() // Uygulamanın Context'i
+        if (isInternetConnected(context)) {
+            println("İnternet bağlantısı var.")
+
+            productViewModel.getNewInProduct()
+            productViewModel.getAllProduct()
+
+            binding?.apply {
+                textViewSignUp.setOnClickListener {
+                    findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
+                }
+
+                imageViewEye.setOnClickListener {
+                    if(editTextPassword.transformationMethod.equals(HideReturnsTransformationMethod.getInstance())){
+                        editTextPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                        imageViewEye.setImageResource(R.drawable.eye_show)
+                    } else {
+                        editTextPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                        imageViewEye.setImageResource(R.drawable.eye_hide)
+                    }
+                }
+
+                buttonLoginWithGoogle.setOnClickListener {
+                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.googleServerClientId))
+                        .requestEmail()
+                        .build()
+
+                    val googleSignInClient = GoogleSignIn.getClient(it.context,gso)
+
+                    val signInClient = googleSignInClient.signInIntent
+                    startActivityForResult(signInClient,Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
+
+                }
+
+                buttonLogin.setOnClickListener {
+
+                    try {
+                        userViewModel.userLogin(editTextEmail.text.toString(),editTextPassword.text.toString())
+                        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    } catch (e: Exception){
+                        println(e.printStackTrace())
+                    }
+                }
+
+                textViewForgotPassword.setOnClickListener {
+                    findNavController().navigate(R.id.action_loginFragment_to_recoverPasswordFragment)
+                }
+
+
+            }
+            observer()
+
+        } else {
+            println("İnternet bağlantısı yok.")
+        }
+
         // productViewModel.getNewInProduct()
         // productColorViewModel.getAllProductColors()
         // productSizeViewModel.getAllProductSize()
@@ -73,57 +133,7 @@ class LoginFragment : Fragment() {
             Log.e("login","çıkış yapılmadı. kayıtlı hesap yok")
         }*/
 
-        productViewModel.getNewInProduct()
-        productViewModel.getAllProduct()
 
-
-
-        binding?.apply {
-            textViewSignUp.setOnClickListener {
-                findNavController().navigate(R.id.action_loginFragment_to_signUpFragment)
-            }
-
-            imageViewEye.setOnClickListener {
-                if(editTextPassword.transformationMethod.equals(HideReturnsTransformationMethod.getInstance())){
-                    editTextPassword.transformationMethod = PasswordTransformationMethod.getInstance()
-                    imageViewEye.setImageResource(R.drawable.eye_show)
-                } else {
-                    editTextPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
-                    imageViewEye.setImageResource(R.drawable.eye_hide)
-                }
-            }
-
-            buttonLoginWithGoogle.setOnClickListener {
-                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                    .requestIdToken(getString(R.string.googleServerClientId))
-                    .requestEmail()
-                    .build()
-
-                val googleSignInClient = GoogleSignIn.getClient(it.context,gso)
-
-                val signInClient = googleSignInClient.signInIntent
-                startActivityForResult(signInClient,Constants.GOOGLE_SIGN_IN_REQUEST_CODE)
-
-            }
-
-            buttonLogin.setOnClickListener {
-
-                try {
-                    userViewModel.userLogin(editTextEmail.text.toString(),editTextPassword.text.toString())
-                    val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
-                } catch (e: Exception){
-                    println(e.printStackTrace())
-                }
-            }
-
-            textViewForgotPassword.setOnClickListener {
-                findNavController().navigate(R.id.action_loginFragment_to_recoverPasswordFragment)
-            }
-
-
-        }
-        observer()
 
     }
 
@@ -182,5 +192,20 @@ class LoginFragment : Fragment() {
 
         }
     }
+
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            val network = connectivityManager.activeNetwork
+            val capabilities = connectivityManager.getNetworkCapabilities(network)
+            return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) || capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
+        }
+        @Suppress("DEPRECATION")
+        val networkInfo = connectivityManager.activeNetworkInfo
+        return networkInfo != null && networkInfo.isConnected
+    }
+
 
 }

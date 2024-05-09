@@ -58,33 +58,45 @@ class AddAddressActivity : AppCompatActivity() {
             }
 
             buttonSaveAddress.setOnClickListener {
-                val sameHeaderName: AddressResponse?
-                if(gelenAddress == null){
-                    sameHeaderName = addressViewModel.addressLiveData.value?.data?.find { it.addressHeader == editTextAddressHeader.text.toString() }
-                } else {
-                    sameHeaderName = null
-                }
 
-                if(sameHeaderName != null){
-                    this@AddAddressActivity.toast("Already have the same address header. Please change address header.")
+                if(editTextAddressDetail.text.toString().isNullOrBlank() ||
+                editTextAddressHeader.text.toString().isNullOrBlank() ||
+                editTextAddressDistrict.text.toString().isNullOrBlank() ||
+                editTextAddressProvince.text.toString().isNullOrBlank() ||
+                editTextAddressTel.text.toString().isNullOrBlank() ||
+                editTextAddressName.text.toString().isNullOrBlank() ||
+                editTextAddressSurname.text.toString().isNullOrBlank()){
+                    this@AddAddressActivity.toast("Please fill in all address detail")
                 } else {
-                    var newAddress = AddressResponse(
-                        userViewModel.userLiveData.value?.data?.id,
-                        null,
-                        editTextAddressDetail.text.toString(),
-                        editTextAddressHeader.text.toString(),
-                        editTextAddressDistrict.text.toString(),
-                        editTextAddressProvince.text.toString(),
-                        editTextAddressTel.text.toString(),
-                        editTextAddressName.text.toString(),
-                        editTextAddressSurname.text.toString()
-                    )
-                    if(gelenAddress != null){
-                        newAddress.addressId = gelenAddress!!.addressId
+
+                    val sameHeaderName: AddressResponse?
+                    if(gelenAddress == null){
+                        sameHeaderName = addressViewModel.addressLiveData.value?.data?.find { it.addressHeader == editTextAddressHeader.text.toString() }
+                    } else {
+                        sameHeaderName = null
                     }
-                    addressViewModel.addAddress(newAddress)
-                }
 
+                    if(sameHeaderName != null){
+                        this@AddAddressActivity.toast("Already have the same address header. Please change address header.")
+                    } else {
+                        var newAddress = AddressResponse(
+                            userViewModel.userLiveData.value?.data?.id,
+                            null,
+                            editTextAddressDetail.text.toString(),
+                            editTextAddressHeader.text.toString(),
+                            editTextAddressDistrict.text.toString(),
+                            editTextAddressProvince.text.toString(),
+                            editTextAddressTel.text.toString(),
+                            editTextAddressName.text.toString(),
+                            editTextAddressSurname.text.toString()
+                        )
+                        if(gelenAddress != null){
+                            newAddress.addressId = gelenAddress!!.addressId
+                        }
+                        addressViewModel.addAddress(newAddress)
+                    }
+
+                }
             }
         }
 

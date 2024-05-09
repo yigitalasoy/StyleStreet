@@ -7,7 +7,7 @@ interface NotificationRepository {
 
     suspend fun getUserNotification(userId: String): Resource<ArrayList<NotificationResponse>>
 
-    suspend fun changeNotificationSeen(notificationId: String): Resource<Boolean>
+    suspend fun changeNotificationSeen(notificationId: String, itSeen: String): Resource<Boolean>
 
 
 }

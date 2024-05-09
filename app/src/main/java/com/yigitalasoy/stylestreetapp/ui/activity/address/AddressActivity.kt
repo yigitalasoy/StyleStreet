@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -85,15 +84,15 @@ class AddressActivity : AppCompatActivity() {
 
 
                         val builder = AlertDialog.Builder(this@AddressActivity)
-                        builder.setTitle("Sil")
-                        builder.setMessage("Bu öğeyi silmek istediğinize emin misiniz?")
-                        builder.setPositiveButton("Sil") { _: DialogInterface, _: Int ->
+                        builder.setTitle("Delete")
+                        builder.setMessage("Are you sure for delete this address?")
+                        builder.setPositiveButton("Delete") { _: DialogInterface, _: Int ->
                             //addressViewModel.addressLiveData.value?.data?.removeAt(position)
                             //addressAdapter.notifyItemRemoved(position)
                             selectedAddressPosition = viewHolder.bindingAdapterPosition
                             addressViewModel.removeAddress(addressViewModel.addressLiveData.value?.data?.get(selectedAddressPosition)?.addressId.toString())
                         }
-                        builder.setNegativeButton("İptal") { dialog: DialogInterface, _: Int ->
+                        builder.setNegativeButton("Cancel") { dialog: DialogInterface, _: Int ->
                             dialog.dismiss()
                             addressAdapter.notifyItemChanged(position)
                         }
@@ -223,7 +222,7 @@ class AddressActivity : AppCompatActivity() {
                 Status.SUCCESS -> {
                     addressViewModel.addressLiveData.value?.data?.removeAt(selectedAddressPosition)
                     addressViewModel.addressLiveData.value = Resource.success(addressViewModel.addressLiveData.value?.data)
-                    Toast.makeText(this@AddressActivity, "Öğe silindi", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@AddressActivity, "Öğe silindi", Toast.LENGTH_SHORT).show()
                 }
                 Status.ERROR -> {
                     this.toast("ERROR: ${it.message.toString()}")
