@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.yigitalasoy.stylestreetapp.databinding.FragmentProfileBinding
 import com.yigitalasoy.stylestreetapp.ui.activity.address.AddressActivity
+import com.yigitalasoy.stylestreetapp.ui.activity.edituser.EditUserActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.main.MainActivity
 import com.yigitalasoy.stylestreetapp.ui.activity.sold.SoldActivity
+import com.yigitalasoy.stylestreetapp.util.ObjectUtil
 import com.yigitalasoy.stylestreetapp.util.downloadImage
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,15 +47,23 @@ class ProfileFragment : Fragment() {
 
         binding.apply {
 
-            textViewUserNameAndSurname.text = userViewModel.userLiveData.value?.data?.name + userViewModel.userLiveData.value?.data?.surname
+            textViewUserNameAndSurname.text = userViewModel.userLiveData.value?.data?.name + " " + userViewModel.userLiveData.value?.data?.surname
             textViewUserEmail.text = userViewModel.userLiveData.value?.data?.email
             textViewUserTel.text = userViewModel.userLiveData.value?.data?.telephone ?: "-"
 
+            /*if(userViewModel.userLiveData.value?.data?.loginType.equals("google")){
+                buttonEditUser.hide()
+            }*/
+
+            buttonEditUser.setOnClickListener {
+                val editUserActivity = Intent(requireContext(), EditUserActivity::class.java)
+                editUserActivity.putExtra("selectedUser", ObjectUtil().objectToJsonString(userViewModel.userLiveData.value?.data))
+                this@ProfileFragment.startActivity(editUserActivity)
+            }
 
             buttonUserAddress.setOnClickListener {
                 val addressIntent = Intent(requireContext(),AddressActivity::class.java)
                 activity?.startActivity(addressIntent)
-
             }
 
             buttonUserOrders.setOnClickListener {
@@ -66,8 +76,5 @@ class ProfileFragment : Fragment() {
             }
 
         }
-
-
-
     }
 }

@@ -1,11 +1,15 @@
 package com.yigitalasoy.stylestreetapp.repository
 
+import android.app.Activity
 import android.content.ContentValues
+import android.net.Uri
 import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Constants
@@ -127,17 +131,27 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
             if(googleLogin.isSuccessful){
                 Log.e("GOOGLE SIGN IN","google sign in success")
                 account!!.let {
-                    val user = UserResponse(
-                        id = auth.currentUser?.uid,
-                        name = account.givenName.toString(),
-                        surname = account.familyName.toString(),
-                        email = account.email.toString(),
-                        password = "",
-                        userImageURL = account.photoUrl.toString())
 
-                    registerUserDatabase(user)
 
-                    return@let Resource.success(user)
+                    //eğer kullanıcı yoksa register yapıcak.
+                    val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(auth.currentUser?.uid.toString()).get()
+                    doc.await()
+                    if(doc.result.data == null) {
+                        println("NULL GELDİ USER GOOGLE LOGİN")
+                        val user = UserResponse(
+                            id = auth.currentUser?.uid,
+                            name = account.givenName.toString(),
+                            surname = account.familyName.toString(),
+                            email = account.email.toString(),
+                            password = "",
+                            userImageURL = account.photoUrl.toString()
+                        )
+
+                        return@let registerUserDatabase(user)
+                    } else {
+                        println("NULL GELMEDİİİ USER GOOGLE LOGİN")
+                        return@let getUserDataFromDatabase(auth.currentUser?.uid)
+                    }
                 }
             } else {
                 Log.e("GOOGLE SIGN IN ERROR",googleLogin.exception?.message.toString())
@@ -151,7 +165,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
     }
 
     override suspend fun resetPassword(email: String): Boolean {
-
         return try {
             val a = auth.sendPasswordResetEmail(email)
             a.isSuccessful
@@ -160,5 +173,30 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         }
     }
 
+    override suspend fun updateUser(user: UserResponse?,activity: Activity): Task<Void>? {
+
+
+        val firebaseUser = auth.currentUser
+        user?.id = firebaseUser?.uid
+
+        val statePassword = firebaseUser?.updatePassword(user?.password.toString())
+        statePassword!!.await()
+
+        val stateUser = firebaseUser.updateProfile(userProfileChangeRequest {
+            displayName = user?.name + " " + user?.surname
+            photoUri = Uri.parse(user?.userImageURL)
+        })
+
+        stateUser.await()
+        if(stateUser.isSuccessful && statePassword.isSuccessful){
+            val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
+            doc.await()
+
+            return doc
+        } else {
+            return null
+        }
+
+    }
 
 }

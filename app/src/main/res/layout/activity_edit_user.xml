@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.signup.SignUpFragment">
-
+    tools:context=".ui.activity.edituser.EditUserActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="200dp"
                 android:background="@drawable/top_background"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,14 +41,13 @@
                     app:maxImageSize="38dp"
                     app:srcCompat="@drawable/arrowleft_white" />
 
-                <ImageView
-                    android:id="@+id/imageView2"
+                <TextView
+                    android:id="@+id/textView10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="40dp"
-                    android:layout_marginBottom="40dp"
-                    android:src="@drawable/white_logo"
+                    android:text="Change User Information"
+                    android:textColor="@color/white"
+                    android:textSize="34sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +72,6 @@
                     android:layout_marginTop="50dp"
                     android:ems="10"
                     android:inputType="text|textEmailAddress"
-                    android:text="yigit.alasoy@gmail.com"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -94,7 +93,6 @@
                     android:layout_marginTop="30dp"
                     android:ems="10"
                     android:inputType="text|textEmailAddress"
-                    android:text="Yigit"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
@@ -117,7 +115,6 @@
                     android:layout_marginTop="30dp"
                     android:ems="10"
                     android:inputType="textPassword"
-                    android:text="123456A"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextTelephone" />
@@ -138,7 +135,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:onClick="hideShowPassword"
                     android:src="@drawable/eye_show"
                     android:translationZ="2dp"
                     app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
@@ -162,7 +158,6 @@
                     android:layout_marginTop="30dp"
                     android:ems="10"
                     android:inputType="text"
-                    android:text="Alasoy"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextName" />
@@ -194,18 +189,17 @@
                     android:layout_marginTop="30dp"
                     android:ems="10"
                     android:inputType="text"
-                    android:text="5335555555"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/editTextSurname" />
 
                 <Button
-                    android:id="@+id/buttonSignUp"
+                    android:id="@+id/buttonSave"
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:layout_marginTop="30dp"
                     android:background="@drawable/orange_button"
-                    android:text="Sign Up"
+                    android:text="Save"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="20dp"
@@ -244,4 +238,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-</FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

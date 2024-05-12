@@ -1,6 +1,8 @@
 package com.yigitalasoy.stylestreetapp.repository
 
+import android.app.Activity
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Resource
@@ -19,5 +21,7 @@ interface UserRepository {
     suspend fun loginWithGoogle(account: GoogleSignInAccount?): Resource<UserResponse>
 
     suspend fun resetPassword(email: String): Boolean
+
+    suspend fun updateUser(user: UserResponse?,activity: Activity): Task<Void>?
 
 }

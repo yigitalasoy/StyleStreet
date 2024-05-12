@@ -1,5 +1,6 @@
 package com.yigitalasoy.stylestreetapp.ui.activity.productdetail
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -53,10 +54,14 @@ class ProductDetailActivity : AppCompatActivity() {
 
         getSelectedSubProduct(selectedProductId, selectedSubProductId)
 
+        val resources: Resources = getResources()
         if(wishListViewModel.wishListLiveData.value?.data?.find { it.product_Id == selectedProductId } != null){
-            binding.fabLike.setImageResource(R.drawable.heart_filled)
+            //binding.fabLike.setImageResource(R.drawable.heart_filled)
+            binding.fabLike.setImageDrawable(resources.getDrawable(R.drawable.heart_filled))
         } else {
-            binding.fabLike.setImageResource(R.drawable.heart)
+            //binding.fabLike.setImageResource(R.drawable.heart)
+            binding.fabLike.setImageDrawable(resources.getDrawable(R.drawable.heart))
+
         }
 
 

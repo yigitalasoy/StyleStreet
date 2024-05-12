@@ -1,6 +1,7 @@
 package com.yigitalasoy.stylestreetapp.util
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.yigitalasoy.stylestreetapp.model.AddressResponse
 import com.yigitalasoy.stylestreetapp.model.SoldResponse
 
@@ -24,6 +25,17 @@ class ObjectUtil {
     fun jsonStringToSold(soldString: String?): SoldResponse? {
         val gson = Gson()
         return gson.fromJson(soldString,SoldResponse::class.java)
+    }
+
+
+    inline fun <reified T> objectToJsonString(obj: T?): String? {
+        val gson = Gson()
+        return gson.toJson(obj)
+    }
+
+    inline fun <reified T> jsonStringToObject(jsonString: String?): T? {
+        val gson = Gson()
+        return gson.fromJson(jsonString, object : TypeToken<T>() {}.type)
     }
 
 }

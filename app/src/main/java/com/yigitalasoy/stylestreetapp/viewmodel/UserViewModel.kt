@@ -1,5 +1,6 @@
 package com.yigitalasoy.stylestreetapp.viewmodel
 
+import android.app.Activity
 import android.content.Context
 import android.util.Log
 import androidx.core.content.ContextCompat.getString
@@ -14,8 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
+import com.yigitalasoy.stylestreetapp.ui.activity.edituser.EditUserActivity
 import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.Status
+import com.yigitalasoy.stylestreetapp.util.toast
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +63,8 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                 when (firebaseUser.status) {
                     Status.SUCCESS ->{
                         if(databaseUser.status == Status.SUCCESS){
+                            //login type = password
+                            databaseUser.data?.loginType = "password"
                             userLiveData.value = databaseUser
                             Log.i("User login oldu: ","${userLiveData.value!!.data}")
                         } else {
@@ -117,6 +122,8 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     Status.SUCCESS -> {
                         if(googleLoginUser.data != null){
                             Log.e("REGISTER SUCCESS","user email: ${googleLoginUser.data}")
+                            //login type = google
+                            googleLoginUser.data.loginType = "google"
                             userLiveData.value = Resource.success(googleLoginUser.data)
                             println("user live data değişti: ${userLiveData.value!!.data}")
                             //isLogin.value = Resource.success(true)
@@ -168,5 +175,37 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
         }
 
     }
+
+    fun updateUser(user: UserResponse,activity: Activity){
+
+        activity as EditUserActivity
+        activity.loading(true)
+
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val updateUserState = userRepository.updateUser(user,activity)
+
+            withContext(Dispatchers.Main){
+                activity.loading(false)
+                if(updateUserState != null){
+                    if(updateUserState.isSuccessful){
+                        Log.e("USER UPDATE","SUCCESS")
+                        userLiveData.value = Resource.success(user)
+                        activity.toast("Update successfully!")
+                        activity.onBackPressed()
+                    } else {
+                        activity.toast("Update failed! ${updateUserState.exception?.message.toString()}")
+                    }
+
+                } else {
+                    Log.e("USER UPDATE","FAIL")
+                    activity.toast("Update failed!")
+                }
+
+            }
+        }
+
+    }
+
+
 
 }

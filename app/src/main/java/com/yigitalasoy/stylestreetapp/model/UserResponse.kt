@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.model
 
 import android.os.Parcelable
 import com.google.firebase.firestore.PropertyName
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,4 +14,7 @@ data class UserResponse(
     @get:PropertyName("password") @set:PropertyName("password") var password: String? = "",
     @get:PropertyName("imageURL") @set:PropertyName("imageURL") var userImageURL: String? = "",
     @get:PropertyName("telephone") @set:PropertyName("telephone") var telephone: String? = ""
-): Parcelable
+): Parcelable {
+    @IgnoredOnParcel
+    var loginType: String? = ""
+}
