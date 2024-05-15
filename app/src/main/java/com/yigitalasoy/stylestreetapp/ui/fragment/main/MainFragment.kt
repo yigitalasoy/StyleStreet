@@ -77,11 +77,28 @@ class MainFragment : Fragment() {
         return view
     }
 
+    private fun setupScrollSync() {
+        mainFragmentBinding.apply {
+            scrollViewFragmentMain.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+                val totalScrollRange =
+                    scrollViewFragmentMain.getChildAt(0).measuredHeight - scrollViewFragmentMain.measuredHeight
+                val scrollRatio = scrollY.toFloat() / totalScrollRange
+
+                val recyclerViewScrollRange =
+                    recyclerViewAllProducts.computeVerticalScrollRange() - recyclerViewAllProducts.height
+                val recyclerViewScrollY = (scrollRatio * recyclerViewScrollRange).toInt()
+
+                recyclerViewAllProducts.scrollTo(0, recyclerViewScrollY)
+            }
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //val searchAdapter = SearchAdapter(requireContext(), productViewModel.productLiveData.value?.data!!)
 
+        setupScrollSync()
         newInProductAdapter = ProductAdapter(arrayListOf(),object: ItemClickListener{
             override fun onItemClick(selectedItem: Any) {
                 selectedItem as ProductResponse
