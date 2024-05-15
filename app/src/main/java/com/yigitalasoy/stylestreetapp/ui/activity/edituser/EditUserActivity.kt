@@ -1,12 +1,15 @@
 package com.yigitalasoy.stylestreetapp.ui.activity.edituser
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.yigitalasoy.stylestreetapp.databinding.ActivityEditUserBinding
 import com.yigitalasoy.stylestreetapp.model.UserResponse
+import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.ObjectUtil
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
+import com.yigitalasoy.stylestreetapp.util.toast
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -33,6 +36,10 @@ class EditUserActivity : AppCompatActivity() {
         println("gelen user: $gelenUser")
         println("gelen user string: $gelenUserString")
 
+        if(gelenUser?.loginType.equals(Constants.GOOGLE_LOGIN_TYPE)){
+            binding.constraintPassword.visibility = View.INVISIBLE
+        }
+
         if(gelenUser != null){
             binding.apply {
                 editTextEmail.setText(gelenUser?.email)
@@ -49,19 +56,41 @@ class EditUserActivity : AppCompatActivity() {
             }
 
             buttonSave.setOnClickListener {
-                userViewModel.updateUser(UserResponse(
-                    email = editTextEmail.text.toString(),
-                    id = userViewModel.userLiveData.value?.data?.id,
-                    name = editTextName.text.toString(),
-                    surname = editTextSurname.text.toString(),
-                    password = editTextPassword.text.toString(),
-                    userImageURL = "",
-                    telephone = editTextTelephone.text.toString()
-                ),this@EditUserActivity)
+
+                if(checkEmptyEditText()){
+                    this@EditUserActivity.toast("Please fill all the fields")
+                } else {
+                    userViewModel.updateUser(UserResponse(
+                        email = editTextEmail.text.toString(),
+                        id = userViewModel.userLiveData.value?.data?.id,
+                        name = editTextName.text.toString(),
+                        surname = editTextSurname.text.toString(),
+                        password = editTextPassword.text.toString(),
+                        userImageURL = "",
+                        telephone = editTextTelephone.text.toString()
+                    ),this@EditUserActivity)
+                }
+
             }
 
         }
 
+
+    }
+
+    private fun checkEmptyEditText(): Boolean{
+        binding.apply {
+            if(
+                (editTextEmail.text.toString().isNullOrEmpty() ||
+                editTextName.text.toString().isNullOrEmpty() ||
+                editTextSurname.text.toString().isNullOrEmpty() ||
+                editTextTelephone.text.toString().isNullOrEmpty() || (gelenUser?.loginType.equals("password") && editTextPassword.text.toString().isNullOrEmpty()))
+            ) {
+                return true
+            } else {
+                return false
+            }
+        }
 
     }
 

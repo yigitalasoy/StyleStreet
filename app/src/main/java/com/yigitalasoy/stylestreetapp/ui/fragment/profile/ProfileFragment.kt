@@ -47,9 +47,9 @@ class ProfileFragment : Fragment() {
 
         binding.apply {
 
-            textViewUserNameAndSurname.text = userViewModel.userLiveData.value?.data?.name + " " + userViewModel.userLiveData.value?.data?.surname
-            textViewUserEmail.text = userViewModel.userLiveData.value?.data?.email
-            textViewUserTel.text = userViewModel.userLiveData.value?.data?.telephone ?: "-"
+            getUserData()
+
+
 
             /*if(userViewModel.userLiveData.value?.data?.loginType.equals("google")){
                 buttonEditUser.hide()
@@ -76,5 +76,18 @@ class ProfileFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun getUserData(){
+        binding.apply {
+            textViewUserNameAndSurname.text = userViewModel.userLiveData.value?.data?.name + " " + userViewModel.userLiveData.value?.data?.surname
+            textViewUserEmail.text = userViewModel.userLiveData.value?.data?.email
+            textViewUserTel.text = userViewModel.userLiveData.value?.data?.telephone ?: "-"
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getUserData()
     }
 }

@@ -157,15 +157,12 @@ class LoginFragment : Fragment() {
     fun observer(){
 
         userViewModel.userLiveData.observe(viewLifecycleOwner){
-            println("login fragment userViewModel.userLiveData.observe")
-            println(it)
             when(it.status){
                 Status.SUCCESS -> {
                     Log.i("user data success","")
 
                     binding.textViewError.hide()
                     binding.progressBarLoading.hide()
-                    println("user login observerrrrrrrrrrrrr")
 
                     if(it.data != null){
                         this.toast("Login succesfully")

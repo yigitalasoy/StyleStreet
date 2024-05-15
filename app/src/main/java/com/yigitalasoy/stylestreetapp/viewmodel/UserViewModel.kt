@@ -16,6 +16,7 @@ import com.yigitalasoy.stylestreetapp.R
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.repository.UserRepository
 import com.yigitalasoy.stylestreetapp.ui.activity.edituser.EditUserActivity
+import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.Resource
 import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.toast
@@ -38,7 +39,6 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
     //val isLogin = MutableLiveData<Resource<Boolean>>()
 
     private var job : Job? = null
-
 
     val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
         println("Error: ${throwable.localizedMessage}")
@@ -64,7 +64,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                     Status.SUCCESS ->{
                         if(databaseUser.status == Status.SUCCESS){
                             //login type = password
-                            databaseUser.data?.loginType = "password"
+                            databaseUser.data?.loginType = Constants.PASSWORD_LOGIN_TYPE
                             userLiveData.value = databaseUser
                             Log.i("User login oldu: ","${userLiveData.value!!.data}")
                         } else {
@@ -123,9 +123,9 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                         if(googleLoginUser.data != null){
                             Log.e("REGISTER SUCCESS","user email: ${googleLoginUser.data}")
                             //login type = google
-                            googleLoginUser.data.loginType = "google"
+                            googleLoginUser.data.loginType = Constants.GOOGLE_LOGIN_TYPE
                             userLiveData.value = Resource.success(googleLoginUser.data)
-                            println("user live data değişti: ${userLiveData.value!!.data}")
+                            println("user live data değişti: ${userLiveData.value!!.data} ${userLiveData.value!!.data?.loginType}")
                             //isLogin.value = Resource.success(true)
                         }
                     }
@@ -177,7 +177,7 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
     }
 
     fun updateUser(user: UserResponse,activity: Activity){
-
+        user.loginType = userLiveData.value!!.data?.loginType
         activity as EditUserActivity
         activity.loading(true)
 
@@ -192,11 +192,13 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
                         userLiveData.value = Resource.success(user)
                         activity.toast("Update successfully!")
                         activity.onBackPressed()
+                        activity.recreate()
                     } else {
                         activity.toast("Update failed! ${updateUserState.exception?.message.toString()}")
                     }
 
                 } else {
+                    print(updateUserState)
                     Log.e("USER UPDATE","FAIL")
                     activity.toast("Update failed!")
                 }
@@ -205,7 +207,4 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
         }
 
     }
-
-
-
 }

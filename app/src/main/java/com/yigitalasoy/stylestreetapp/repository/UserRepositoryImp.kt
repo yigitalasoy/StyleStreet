@@ -178,19 +178,28 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
         val firebaseUser = auth.currentUser
         user?.id = firebaseUser?.uid
+        var taskPassword: Task<Void>? = null
+        var passwordState = false
+        if (user?.loginType.equals(Constants.PASSWORD_LOGIN_TYPE)){
+            taskPassword = firebaseUser!!.updatePassword(user?.password.toString())
+            taskPassword.await()
+            passwordState = taskPassword.isSuccessful
+        }
 
-        val statePassword = firebaseUser?.updatePassword(user?.password.toString())
-        statePassword!!.await()
 
-        val stateUser = firebaseUser.updateProfile(userProfileChangeRequest {
+        val stateUser = firebaseUser!!.updateProfile(userProfileChangeRequest {
             displayName = user?.name + " " + user?.surname
             photoUri = Uri.parse(user?.userImageURL)
         })
 
         stateUser.await()
-        if(stateUser.isSuccessful && statePassword.isSuccessful){
-            val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
-            doc.await()
+        if(stateUser.isSuccessful){
+            var doc: Task<Void>? = null
+            if( (user?.loginType.equals(Constants.GOOGLE_LOGIN_TYPE)) || (user?.loginType.equals(Constants.PASSWORD_LOGIN_TYPE) && passwordState)){
+                doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
+                doc.await()
+            }
+
 
             return doc
         } else {

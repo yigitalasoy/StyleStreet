@@ -88,7 +88,6 @@ class SignUpFragment : Fragment() {
 
     }
 
-
     fun getUser(): UserResponse {
         return UserResponse(
             id = "",
@@ -175,8 +174,6 @@ class SignUpFragment : Fragment() {
 
     }
 
-
-
     fun checkEmailValidation() {
         val emailRegex = Regex("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,6}$")
         binding.apply {
@@ -193,7 +190,6 @@ class SignUpFragment : Fragment() {
         }
     }
 
-
     fun hideShowPassword(editText: EditText,imageView: ImageView){
         Log.e("ERROR","basıldı")
         binding.apply {
@@ -206,5 +202,4 @@ class SignUpFragment : Fragment() {
             }
         }
     }
-
 }

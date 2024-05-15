@@ -8,12 +8,6 @@ object Constants {
     const val FIRESTORE_DATABASE_PRODUCT_SIZE = "tbl_ProductSize"
     const val FIRESTORE_DATABASE_BASKET = "tbl_Basket"
 
-    //Category Model constant
-    const val CATEGORYRESPONSE_categoryId = "Category_Id"
-    const val CATEGORYRESPONSE_categoryName = "Category_Name"
-    const val CATEGORYRESPONSE_categoryImage = "Category_Image"
-
-
     //product model constant
     const val PRODUCTRESPONSE_productId = "Product_Id"
     const val PRODUCTRESPONSE_productName = "Product_Name"
@@ -30,16 +24,8 @@ object Constants {
     const val SUBPRODUCTRESPONSE_subProductImageURL = "SubProduct_ImageURL"
 
 
-    //product color model constant
-    const val PRODUCTCOLORRESPONSE_colorId = "Color_Id"
-    const val PRODUCTCOLORRESPONSE_colorName = "Color_Name"
-    const val PRODUCTCOLORRESPONSE_colorCode = "Color_Code"
-
-    //product size model constant
-    const val PRODUCTSIZERESPONSE_productSizeId = "ProductSize_Id"
-    const val PRODUCTSIZERESPONSE_productSizeName = "ProductSize_Name"
-
-
+    const val GOOGLE_LOGIN_TYPE = "google"
+    const val PASSWORD_LOGIN_TYPE = "password"
 
     const val STORAGE_USER_IMAGES = ""
     const val STORAGE_CATEGORY_IMAGES = ""
