@@ -1,8 +1,8 @@
 package com.yigitalasoy.stylestreetapp.repository
 
 import android.app.Activity
+import android.graphics.Bitmap
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseUser
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Resource
@@ -14,7 +14,7 @@ interface UserRepository {
 
     suspend fun getUserDataFromDatabase(userUid: String?): Resource<UserResponse>
 
-    suspend fun userSignUp(user: UserResponse): Resource<UserResponse>
+    suspend fun userSignUp(user: UserResponse, photoBitmap: Bitmap): Resource<UserResponse>
 
     suspend fun registerUserDatabase(user: UserResponse): Resource<UserResponse>
 
@@ -22,6 +22,6 @@ interface UserRepository {
 
     suspend fun resetPassword(email: String): Boolean
 
-    suspend fun updateUser(user: UserResponse?,activity: Activity): Task<Void>?
+    suspend fun updateUser(user: UserResponse?,activity: Activity,bitmap: Bitmap): HashMap<String,Any>?
 
 }

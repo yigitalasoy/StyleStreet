@@ -2,22 +2,23 @@ package com.yigitalasoy.stylestreetapp.repository
 
 import android.app.Activity
 import android.content.ContentValues
-import android.net.Uri
+import android.graphics.Bitmap
 import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.yigitalasoy.stylestreetapp.model.UserResponse
 import com.yigitalasoy.stylestreetapp.util.Constants
 import com.yigitalasoy.stylestreetapp.util.Resource
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 
 
-class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserRepository {
+class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore, val storage: FirebaseStorage): UserRepository {
     override suspend fun userLogin(email: String, password: String): Resource<FirebaseUser?> {
         val firebaseUser: FirebaseUser?
 
@@ -60,7 +61,7 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
 
     }
 
-    override suspend fun userSignUp(user: UserResponse): Resource<UserResponse> {
+    override suspend fun userSignUp(user: UserResponse, photoBitmap: Bitmap): Resource<UserResponse> {
         return try {
             val task = auth.createUserWithEmailAndPassword(user.email.toString(), user.password.toString())
             task.await()
@@ -69,7 +70,37 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                 val firebaseUser = auth.currentUser
                 println("REGISTERED USER UUID: ${firebaseUser?.uid}")
 
+                val storageRef = storage.reference
+
+                val riversRef = storageRef.child("images/users/${firebaseUser?.uid}")
+
+                val baos = ByteArrayOutputStream()
+                photoBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                val data = baos.toByteArray()
+
+                var uploadTask = riversRef.putBytes(data)
+
+                uploadTask.await()
+
+                if(uploadTask.isSuccessful){
+                    println("RESİM UPLOAD SUCCESS")
+                    println("DOWNLOAD URL: ${riversRef.downloadUrl}")
+
+                    val photoState = riversRef.getDownloadUrl()
+                    photoState.await()
+
+                    if(photoState.isSuccessful){
+                        user.userImageURL = photoState.result.toString()
+                    } else {
+                        println("RESİM URİ FAİL ${photoState.exception.toString()}")
+                    }
+
+                } else {
+                    println("RESİM UPLOAD FAİL ${uploadTask.exception.toString()}")
+                }
+
                 user.id = firebaseUser?.uid
+                user.loginType = Constants.PASSWORD_LOGIN_TYPE
                 registerUserDatabase(user)
 
                 Resource.success(user)
@@ -89,8 +120,6 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         return try {
             val doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user.id.toString()).set(user)
             doc.await()
-
-
 
             val collectionRef = db.collection("tbl_Basket")
 
@@ -144,8 +173,9 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
                             surname = account.familyName.toString(),
                             email = account.email.toString(),
                             password = "",
-                            userImageURL = account.photoUrl.toString()
+                            userImageURL = account.photoUrl.toString(),
                         )
+                        user.loginType = Constants.GOOGLE_LOGIN_TYPE
 
                         return@let registerUserDatabase(user)
                     } else {
@@ -173,7 +203,7 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         }
     }
 
-    override suspend fun updateUser(user: UserResponse?,activity: Activity): Task<Void>? {
+    override suspend fun updateUser(user: UserResponse?,activity: Activity,bitmap: Bitmap): HashMap<String,Any>? {
 
 
         val firebaseUser = auth.currentUser
@@ -187,24 +217,63 @@ class UserRepositoryImp(val auth: FirebaseAuth,val db: FirebaseFirestore): UserR
         }
 
 
-        val stateUser = firebaseUser!!.updateProfile(userProfileChangeRequest {
+        /*val stateUser = firebaseUser!!.updateProfile(userProfileChangeRequest {
             displayName = user?.name + " " + user?.surname
-            photoUri = Uri.parse(user?.userImageURL)
-        })
+        })*/
 
-        stateUser.await()
-        if(stateUser.isSuccessful){
-            var doc: Task<Void>? = null
-            if( (user?.loginType.equals(Constants.GOOGLE_LOGIN_TYPE)) || (user?.loginType.equals(Constants.PASSWORD_LOGIN_TYPE) && passwordState)){
-                doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
-                doc.await()
+
+        val storageRef = storage.reference
+
+        val riversRef = storageRef.child("images/users/${firebaseUser?.uid}")
+
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+
+        var uploadTask = riversRef.putBytes(data)
+
+        uploadTask.await()
+
+        if(uploadTask.isSuccessful){
+            println("RESİM UPLOAD SUCCESS")
+            println("DOWNLOAD URL: ${riversRef.downloadUrl}")
+
+            val photoState = riversRef.getDownloadUrl()
+            photoState.await()
+
+            if(photoState.isSuccessful){
+                println("RESİM URİ SUCCESS")
+
+
+                var doc: Task<Void>? = null
+                if( (user?.loginType.equals(Constants.GOOGLE_LOGIN_TYPE)) || (user?.loginType.equals(Constants.PASSWORD_LOGIN_TYPE) && passwordState)){
+                    doc = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
+                    doc.await()
+                }
+
+                user?.userImageURL = photoState.result.toString()
+
+                val stateUser = db.collection(Constants.FIRESTORE_DATABASE_USERS).document(user?.id.toString()).set(user!!)
+                stateUser.await()
+
+                if(stateUser.isSuccessful){
+                    return hashMapOf(
+                        "Task" to doc!!.isSuccessful,
+                        "URL" to photoState.result.toString()
+                    )
+                } else {
+                    println("DATABASE UPDATE EDİLMEDİ")
+                }
+
+            } else {
+                println("RESİM URİ FAİL ${photoState.exception.toString()}")
             }
 
-
-            return doc
         } else {
-            return null
+            println("RESİM UPLOAD FAİL ${uploadTask.exception.toString()}")
         }
+
+        return null
 
     }
 

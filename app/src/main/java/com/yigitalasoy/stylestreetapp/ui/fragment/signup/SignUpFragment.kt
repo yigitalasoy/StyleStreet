@@ -1,6 +1,8 @@
 package com.yigitalasoy.stylestreetapp.ui.fragment.signup
 
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
@@ -11,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -22,6 +25,7 @@ import com.yigitalasoy.stylestreetapp.util.Status
 import com.yigitalasoy.stylestreetapp.util.hide
 import com.yigitalasoy.stylestreetapp.util.show
 import com.yigitalasoy.stylestreetapp.util.toast
+import com.yigitalasoy.stylestreetapp.viewmodel.NotificationViewModel
 import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,6 +34,8 @@ import javax.inject.Inject
 class SignUpFragment : Fragment() {
     private lateinit var binding: FragmentSignUpBinding
     @Inject lateinit var userViewModel: UserViewModel
+    @Inject lateinit var notificationViewModel: NotificationViewModel
+
 
     var isSevenChar: Boolean = false
     var isBigChar: Boolean = false
@@ -37,6 +43,7 @@ class SignUpFragment : Fragment() {
     var emailValidation: Boolean = false
     private var container: ViewGroup? = null
 
+    var SELECT_PICTURE = 200
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +61,10 @@ class SignUpFragment : Fragment() {
 
 
         binding.apply {
+
+            imageViewUser.setOnClickListener {
+                imageChooser()
+            }
 
             imageViewBackButton.setOnClickListener {
                 findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
@@ -75,7 +86,13 @@ class SignUpFragment : Fragment() {
                 if(emailValidation && isBigChar && isNumber && isSevenChar){
                     Log.e("KAYIT","KAYIT GEREKLİLİKLERİ SAĞLANDI")
 
-                    userViewModel.userSignUp(getUser())
+                    if(binding.imageViewUser.drawable == null){
+                        println("drawable null geldi")
+                        this@SignUpFragment.toast("Please select profile photo.")
+                    } else {
+                        val bitmap = (binding.imageViewUser.drawable as BitmapDrawable).bitmap
+                        userViewModel.userSignUp(getUser(),bitmap!!)
+                    }
 
                 } else {
                     this@SignUpFragment.toast("Please enter your email and password according to the rules.")
@@ -104,11 +121,14 @@ class SignUpFragment : Fragment() {
         userViewModel.userLiveData.observe(viewLifecycleOwner){
             when(it.status){
                 Status.SUCCESS -> {
+
                     Log.i("user success","")
 
                     if(it.data != null){
                         binding.textViewSignupError.hide()
                         binding.progressBarSignupLoading.hide()
+
+                        notificationViewModel.addNotification(it.data.id.toString(),"Thank you for register to StyleStreet.")
 
                         Toast.makeText(context,"Succesfully registered", Toast.LENGTH_LONG).show()
                         findNavController().navigate(R.id.action_signUpFragment_to_loginFragment)
@@ -172,6 +192,27 @@ class SignUpFragment : Fragment() {
             }
         }
 
+    }
+
+    fun imageChooser() {
+        val i = Intent()
+        i.setType("image/*")
+        i.setAction(Intent.ACTION_GET_CONTENT)
+
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == AppCompatActivity.RESULT_OK) {
+
+            if (requestCode == SELECT_PICTURE) {
+                val selectedImageUri = data?.data
+                if (selectedImageUri != null) {
+                    binding.imageViewUser.setImageURI(selectedImageUri)
+                }
+            }
+        }
     }
 
     fun checkEmailValidation() {

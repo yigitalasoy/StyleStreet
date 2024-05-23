@@ -17,12 +17,14 @@ import com.yigitalasoy.stylestreetapp.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class ProfileFragment : Fragment() {
 
     lateinit var binding: FragmentProfileBinding
 
     @Inject lateinit var userViewModel: UserViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +42,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         if(!(userViewModel.userLiveData.value?.data?.userImageURL.equals(""))){
             binding.imageViewUserImage.downloadImage(userViewModel.userLiveData.value?.data?.userImageURL)
         }
@@ -48,8 +49,6 @@ class ProfileFragment : Fragment() {
         binding.apply {
 
             getUserData()
-
-
 
             /*if(userViewModel.userLiveData.value?.data?.loginType.equals("google")){
                 buttonEditUser.hide()
@@ -78,11 +77,13 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun getUserData(){
         binding.apply {
             textViewUserNameAndSurname.text = userViewModel.userLiveData.value?.data?.name + " " + userViewModel.userLiveData.value?.data?.surname
             textViewUserEmail.text = userViewModel.userLiveData.value?.data?.email
             textViewUserTel.text = userViewModel.userLiveData.value?.data?.telephone ?: "-"
+            imageViewUserImage.downloadImage(userViewModel.userLiveData.value?.data?.userImageURL)
         }
     }
 

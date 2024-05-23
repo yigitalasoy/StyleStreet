@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.di
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.yigitalasoy.stylestreetapp.repository.AddressRepository
 import com.yigitalasoy.stylestreetapp.repository.AddressRepositoryImp
 import com.yigitalasoy.stylestreetapp.repository.BasketRepository
@@ -36,9 +37,10 @@ object RepositoryModule {
     @Singleton
     fun getProvidesUserRepository(
         firebaseAuth: FirebaseAuth,
-        firestore: FirebaseFirestore
+        firestore: FirebaseFirestore,
+        storage: FirebaseStorage
     ): UserRepository{
-        return UserRepositoryImp(auth = firebaseAuth,db=firestore)
+        return UserRepositoryImp(auth = firebaseAuth, db = firestore , storage = storage)
     }
 
     @Provides

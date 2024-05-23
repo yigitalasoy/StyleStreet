@@ -91,6 +91,7 @@ class SoldViewModel @Inject constructor(val soldRepository: SoldRepository): Vie
         addSoldState.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            
             val response = soldRepository.addUserSold(soldResponse)
             withContext(Dispatchers.Main){
                 when(response.status){

@@ -127,7 +127,7 @@ class BasketActivity : AppCompatActivity() {
                             binding.textViewBasketTotal.text.toString(),
                             Instant.now().epochSecond.toString(),
                             "Preparing order",
-                            selectedAddressId,
+                            getAddressString(selectedAddressId),
                             Instant.now().epochSecond.toString(),
                             false),
                         basketViewModel.basketLiveData.value?.data?.basketProducts!!)
@@ -149,6 +149,11 @@ class BasketActivity : AppCompatActivity() {
         observer()
 
 
+    }
+
+    fun getAddressString(addressId: String): String{
+        val selectedAddress = addressViewModel.addressLiveData.value?.data?.find { it.addressId == addressId }
+        return selectedAddress?.addressDetail + selectedAddress?.addressProvince + "/" + selectedAddress?.addressDistrict
     }
 
     fun observer(){

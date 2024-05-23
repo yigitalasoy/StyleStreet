@@ -6,196 +6,204 @@
     android:layout_height="match_parent"
     tools:context=".ui.fragment.profile.ProfileFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-
-        <ImageView
-            android:id="@+id/imageViewUserImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/oval_shape"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@drawable/profile_filled" />
-
-
-        <Button
-            android:id="@+id/button"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/background"
-            android:clickable="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageViewUserImage" />
+            android:layout_height="match_parent">
 
 
-        <Button
-            android:id="@+id/buttonUserAddress"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="@color/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            <ImageView
+                android:id="@+id/imageViewUserImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/oval_shape"
+                android:scaleType="centerCrop"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/profile_filled" />
 
-        <Button
-            android:id="@+id/buttonUserOrders"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonUserAddress" />
 
-        <Button
-            android:id="@+id/buttonUserWishList"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="10dp"
-            android:backgroundTint="@color/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttonUserOrders" />
+            <Button
+                android:id="@+id/button"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/background"
+                android:clickable="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imageViewUserImage" />
 
-        <ImageView
-            android:id="@+id/imageView10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="15dp"
-            android:rotation="180"
-            android:src="@drawable/arrowleft_white"
-            android:translationZ="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserAddress"
-            app:layout_constraintEnd_toEndOf="@+id/buttonUserAddress"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserAddress" />
 
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="15dp"
-            android:rotation="180"
-            android:src="@drawable/arrowleft_white"
-            android:translationZ="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserOrders"
-            app:layout_constraintEnd_toEndOf="@+id/buttonUserOrders"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserOrders" />
+            <Button
+                android:id="@+id/buttonUserAddress"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="5dp"
+                android:backgroundTint="@color/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button" />
 
-        <ImageView
-            android:id="@+id/imageView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:layout_marginEnd="15dp"
-            android:rotation="180"
-            android:src="@drawable/arrowleft_white"
-            android:translationZ="5dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserWishList"
-            app:layout_constraintEnd_toEndOf="@+id/buttonUserWishList"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserWishList" />
+            <Button
+                android:id="@+id/buttonUserOrders"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonUserAddress" />
 
-        <TextView
-            android:id="@+id/textView16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Address"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserAddress"
-            app:layout_constraintStart_toStartOf="@+id/buttonUserAddress"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserAddress" />
+            <Button
+                android:id="@+id/buttonUserWishList"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttonUserOrders" />
 
-        <TextView
-            android:id="@+id/textView29"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Orders"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserOrders"
-            app:layout_constraintStart_toStartOf="@+id/buttonUserOrders"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserOrders" />
+            <ImageView
+                android:id="@+id/imageView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="15dp"
+                android:rotation="180"
+                android:src="@drawable/arrowleft_white"
+                android:translationZ="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserAddress"
+                app:layout_constraintEnd_toEndOf="@+id/buttonUserAddress"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserAddress" />
 
-        <TextView
-            android:id="@+id/textView30"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="Wishlist"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/buttonUserWishList"
-            app:layout_constraintStart_toStartOf="@+id/buttonUserWishList"
-            app:layout_constraintTop_toTopOf="@+id/buttonUserWishList" />
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="15dp"
+                android:rotation="180"
+                android:src="@drawable/arrowleft_white"
+                android:translationZ="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserOrders"
+                app:layout_constraintEnd_toEndOf="@+id/buttonUserOrders"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserOrders" />
 
-        <TextView
-            android:id="@+id/textViewUserNameAndSurname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="13dp"
-            android:text="Yiğitcan Alasoy"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="15dp"
+                android:rotation="180"
+                android:src="@drawable/arrowleft_white"
+                android:translationZ="5dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserWishList"
+                app:layout_constraintEnd_toEndOf="@+id/buttonUserWishList"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserWishList" />
 
-        <TextView
-            android:id="@+id/textViewUserEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="7dp"
-            android:text="yigit.alasoy@gmail.com"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="@+id/button"
-            app:layout_constraintTop_toBottomOf="@+id/textViewUserNameAndSurname" />
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Address"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserAddress"
+                app:layout_constraintStart_toStartOf="@+id/buttonUserAddress"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserAddress" />
 
-        <TextView
-            android:id="@+id/textViewUserTel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="7dp"
-            android:text="5555555555"
-            android:textColor="@color/black"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="@+id/button"
-            app:layout_constraintTop_toBottomOf="@+id/textViewUserEmail" />
+            <TextView
+                android:id="@+id/textView29"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Orders"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserOrders"
+                app:layout_constraintStart_toStartOf="@+id/buttonUserOrders"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserOrders" />
 
-        <Button
-            android:id="@+id/buttonEditUser"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:backgroundTint="@color/white"
-            android:text="Edit"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/button"
-            app:layout_constraintEnd_toEndOf="@+id/button"
-            app:layout_constraintTop_toTopOf="@+id/button" />
+            <TextView
+                android:id="@+id/textView30"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="Wishlist"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/buttonUserWishList"
+                app:layout_constraintStart_toStartOf="@+id/buttonUserWishList"
+                app:layout_constraintTop_toTopOf="@+id/buttonUserWishList" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/textViewUserNameAndSurname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="13dp"
+                android:text="Yiğitcan Alasoy"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintStart_toStartOf="@+id/button"
+                app:layout_constraintTop_toTopOf="@+id/button" />
+
+            <TextView
+                android:id="@+id/textViewUserEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7dp"
+                android:text="yigit.alasoy@gmail.com"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintStart_toStartOf="@+id/button"
+                app:layout_constraintTop_toBottomOf="@+id/textViewUserNameAndSurname" />
+
+            <TextView
+                android:id="@+id/textViewUserTel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="7dp"
+                android:text="5555555555"
+                android:textColor="@color/black"
+                android:translationZ="10dp"
+                app:layout_constraintStart_toStartOf="@+id/button"
+                app:layout_constraintTop_toBottomOf="@+id/textViewUserEmail" />
+
+            <Button
+                android:id="@+id/buttonEditUser"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/white"
+                android:text="Edit"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="@+id/button"
+                app:layout_constraintEnd_toEndOf="@+id/button"
+                app:layout_constraintTop_toTopOf="@+id/button" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
 </FrameLayout>

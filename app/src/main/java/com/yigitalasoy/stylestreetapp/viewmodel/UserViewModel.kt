@@ -2,6 +2,7 @@ package com.yigitalasoy.stylestreetapp.viewmodel
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.core.content.ContextCompat.getString
 import androidx.fragment.app.Fragment
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.R
@@ -83,18 +85,17 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
         }
     }
 
-    fun userSignUp(user: UserResponse){
+    fun userSignUp(user: UserResponse,photoBitmap: Bitmap){
         userLiveData.value = Resource.loading(null)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val registeredUser = userRepository.userSignUp(user)
+            val registeredUser = userRepository.userSignUp(user, photoBitmap)
 
             withContext(Dispatchers.Main){
                 when (registeredUser.status) {
                     Status.SUCCESS ->{
                         println("user success")
                         userLiveData.value = Resource.success(registeredUser.data)
-
                     }
 
                     Status.ERROR -> {
@@ -176,29 +177,31 @@ class UserViewModel @Inject constructor(val userRepository: UserRepository,val a
 
     }
 
-    fun updateUser(user: UserResponse,activity: Activity){
+    fun updateUser(user: UserResponse, activity: Activity, bitMap: Bitmap){
         user.loginType = userLiveData.value!!.data?.loginType
         activity as EditUserActivity
         activity.loading(true)
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val updateUserState = userRepository.updateUser(user,activity)
-
+            val updateUserHash = userRepository.updateUser(user,activity,bitMap)
+            println("gelen hash: $updateUserHash")
             withContext(Dispatchers.Main){
                 activity.loading(false)
-                if(updateUserState != null){
-                    if(updateUserState.isSuccessful){
+                if(updateUserHash != null){
+                    if((updateUserHash["Task"] as Boolean)){
                         Log.e("USER UPDATE","SUCCESS")
+                        user.userImageURL = (updateUserHash["URL"] as String)
+                        println("success olacak user: $user")
                         userLiveData.value = Resource.success(user)
                         activity.toast("Update successfully!")
                         activity.onBackPressed()
                         activity.recreate()
                     } else {
-                        activity.toast("Update failed! ${updateUserState.exception?.message.toString()}")
+                        activity.toast("Update failed! ${(updateUserHash["Task"] as Task<*>).exception?.message.toString()}")
                     }
 
                 } else {
-                    print(updateUserState)
+                    print(updateUserHash)
                     Log.e("USER UPDATE","FAIL")
                     activity.toast("Update failed!")
                 }

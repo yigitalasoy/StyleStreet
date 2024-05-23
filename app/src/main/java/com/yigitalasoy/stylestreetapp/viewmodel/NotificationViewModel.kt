@@ -41,6 +41,17 @@ class NotificationViewModel @Inject constructor(var notificationRepository: Noti
         }
     }
 
+    fun addNotification(userId: String,message: String){
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val state = notificationRepository.addNotification(userId,message)
+            if(state){
+                println("yeni bildirim eklendi")
+            } else {
+                println("yeni bildirim eklenmedi")
+            }
+        }
+    }
+
     fun changeNotificationSeen(notificationId: String){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = notificationRepository.changeNotificationSeen(notificationId,

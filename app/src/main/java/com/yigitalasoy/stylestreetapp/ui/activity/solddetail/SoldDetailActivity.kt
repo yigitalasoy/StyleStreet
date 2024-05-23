@@ -54,9 +54,8 @@ class SoldDetailActivity : AppCompatActivity() {
             println("null gelmedi $gelenSold")
             binding.apply {
                 textViewDeliveryStatus.text = gelenSold?.delivertStatus
-                textViewAddress.text = addressViewModel.addressLiveData.value?.data?.find { it.addressId == gelenSold?.addressId }?.addressDetail
+                textViewAddress.text = gelenSold?.addressId
                 textViewOrderId.text = gelenSold?.soldId
-                println("adres: ${addressViewModel.addressLiveData.value?.data?.find { it.addressId == gelenSold?.addressId }?.addressDetail}")
                 textViewDeliveryDate.text = epochToDate(gelenSold?.lastUpdate!!.toLong())
                 textViewTotalPrice.text = gelenSold?.totalPrice + "TL"
 

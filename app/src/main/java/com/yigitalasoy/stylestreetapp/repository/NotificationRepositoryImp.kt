@@ -5,6 +5,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.yigitalasoy.stylestreetapp.model.NotificationResponse
 import com.yigitalasoy.stylestreetapp.util.Resource
 import kotlinx.coroutines.tasks.await
+import java.time.Instant
 
 class NotificationRepositoryImp(val firebaseFirestore: FirebaseFirestore): NotificationRepository {
     override suspend fun getUserNotification(userId: String): Resource<ArrayList<NotificationResponse>> {
@@ -56,6 +57,31 @@ class NotificationRepositoryImp(val firebaseFirestore: FirebaseFirestore): Notif
             return Resource.error(docRef.exception.toString(),null)
         }
 
+    }
+
+    override suspend fun addNotification(userId: String, message: String): Boolean {
+
+
+
+        var docRef = firebaseFirestore.collection("tbl_Notification")
+
+        val id = docRef.document().id
+
+        val state = docRef.document(id).set(NotificationResponse(
+            id,
+            userId,
+            notificationMessage = message,
+            notificationDate = Instant.now().epochSecond.toString(),
+            ItSeen = "0"
+        ))
+
+        state.await()
+
+        if(state.isSuccessful){
+            return true
+        } else {
+            return false
+        }
     }
 
 
