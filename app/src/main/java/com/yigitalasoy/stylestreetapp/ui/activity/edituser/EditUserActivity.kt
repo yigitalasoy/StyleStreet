@@ -4,7 +4,12 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.yigitalasoy.stylestreetapp.R
@@ -50,6 +55,7 @@ class EditUserActivity : AppCompatActivity() {
 
         if(gelenUser?.loginType.equals(Constants.GOOGLE_LOGIN_TYPE)){
             binding.constraintPassword.visibility = View.INVISIBLE
+            //binding.constraintPassword.hide()
             binding.imageViewUser.isClickable = false
         } else {
             binding.imageViewUser.setOnClickListener {
@@ -68,6 +74,10 @@ class EditUserActivity : AppCompatActivity() {
         }
 
         binding.apply {
+
+            imageViewEye.setOnClickListener {
+                hideShowPassword(editTextPassword,imageViewEye)
+            }
 
             editTextPassword.doOnTextChanged { text, start, before, count ->
                 passwordCheckRequirements()
@@ -110,6 +120,19 @@ class EditUserActivity : AppCompatActivity() {
         i.setAction(Intent.ACTION_GET_CONTENT)
 
         startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE)
+    }
+
+    fun hideShowPassword(editText: EditText, imageView: ImageView){
+        Log.e("ERROR","basıldı")
+        binding.apply {
+            if(editText.transformationMethod.equals(HideReturnsTransformationMethod.getInstance())){
+                editText.transformationMethod = PasswordTransformationMethod.getInstance()
+                imageView.setImageResource(R.drawable.eye_show)
+            } else {
+                editText.transformationMethod = HideReturnsTransformationMethod.getInstance()
+                imageView.setImageResource(R.drawable.eye_hide)
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
